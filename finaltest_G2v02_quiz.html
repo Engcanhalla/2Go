@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고2 영어 기말고사 모의시험 Set 3 (finaltestG2_set3)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#1e40af;--primary-light:#dbeafe;--primary-dark:#1e3a8a;
+  --success:#16a34a;--success-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --warning:#f59e0b;--warning-light:#fef3c7;
+  --sub:#7c3aed;--sub-light:#ede9fe;
+  --bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --radius:12px;
+}
+body{font-family:'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+.container{max-width:760px;margin:0 auto;padding:16px}
+.start-screen{text-align:center;padding:50px 20px}
+.start-screen h1{font-size:1.7rem;margin-bottom:6px;color:var(--primary)}
+.start-screen .sub-title{color:var(--muted);margin-bottom:24px;font-size:0.95rem}
+.start-screen .info-box{background:var(--primary-light);border-radius:var(--radius);padding:22px;margin:18px 0;text-align:left;font-size:.9rem;line-height:1.85}
+.start-screen .info-box strong{color:var(--primary)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 30px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(30,64,175,.3)}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#15803d}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-outline:hover{background:var(--primary-light)}
+.btn-sm{padding:8px 18px;font-size:.85rem}
+.progress-bar{background:var(--border);border-radius:99px;height:8px;margin:10px 0;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--sub));border-radius:99px;transition:width .4s ease}
+.progress-text{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:4px}
+.q-map{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:10px 0 14px}
+.q-dot{aspect-ratio:1;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .15s;background:#fff}
+.q-dot:hover{transform:scale(1.08)}
+.q-dot.answered{background:var(--primary-light);border-color:var(--primary);color:var(--primary)}
+.q-dot.current{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-dot.sub-answered{background:var(--sub-light);border-color:var(--sub);color:var(--sub)}
+.q-dot.review-correct{background:var(--success-light);border-color:var(--success);color:var(--success)}
+.q-dot.review-wrong{background:var(--danger-light);border-color:var(--danger);color:var(--danger)}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.04);padding:22px;margin:14px 0;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+.q-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.q-num{background:var(--primary);color:#fff;border-radius:99px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;flex-shrink:0}
+.q-num.sub{background:var(--sub)}
+.q-type{font-size:.72rem;padding:3px 9px;border-radius:99px;font-weight:600;background:var(--primary-light);color:var(--primary)}
+.q-type.sub{background:var(--sub-light);color:#6d28d9}
+.q-pts{font-size:.72rem;color:var(--muted);font-weight:600}
+.stem{font-size:.95rem;line-height:1.65;margin-bottom:14px;font-weight:500;white-space:pre-line}
+.passage{background:#f1f5f9;border-left:3px solid var(--primary);padding:12px 14px;margin-bottom:14px;font-size:.86rem;line-height:1.8;border-radius:0 8px 8px 0;white-space:pre-line;max-height:340px;overflow-y:auto;font-family:'Times New Roman',serif}
+.passage.sub{border-left-color:var(--sub)}
+.passage u{text-decoration:underline;text-decoration-color:var(--danger);text-underline-offset:3px;font-weight:600}
+.passage b{font-weight:700;color:var(--primary-dark)}
+.choices{list-style:none;display:flex;flex-direction:column;gap:7px}
+.choice{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;font-size:.88rem;line-height:1.55}
+.choice:hover{border-color:var(--primary);background:var(--primary-light)}
+.choice.selected{border-color:var(--primary);background:var(--primary-light)}
+.choice.correct{border-color:var(--success);background:var(--success-light)}
+.choice.wrong{border-color:var(--danger);background:var(--danger-light)}
+.choice input{margin-top:3px;flex-shrink:0;accent-color:var(--primary)}
+.sub-input{width:100%;min-height:80px;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:.9rem;line-height:1.6;resize:vertical;font-family:inherit}
+.sub-input:focus{border-color:var(--sub);outline:none;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px}
+.nav-row .btn{min-width:96px}
+.result-screen{text-align:center;padding:36px 20px}
+.score-circle{width:170px;height:170px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:18px auto;font-size:2.6rem;font-weight:800;border:6px solid}
+.score-circle.perfect{border-color:var(--warning);background:#fffbeb;color:var(--warning);animation:pulse 1s infinite}
+.score-circle.great{border-color:var(--success);background:var(--success-light);color:var(--success)}
+.score-circle.good{border-color:var(--primary);background:var(--primary-light);color:var(--primary)}
+.score-circle.retry{border-color:var(--danger);background:var(--danger-light);color:var(--danger)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.score-circle small{font-size:.78rem;font-weight:400;margin-top:4px}
+.result-msg{font-size:1.05rem;margin:14px 0;line-height:1.6}
+.result-detail{background:#f1f5f9;border-radius:var(--radius);padding:16px;margin:14px 0;text-align:left;font-size:.86rem;line-height:1.85}
+.result-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.sg-section{background:#fff;border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,.08);padding:18px;margin:12px 0}
+.sg-header{font-size:1.05rem;font-weight:700;color:var(--sub);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--sub-light)}
+.sg-block{background:#f8fafc;border-left:4px solid var(--sub);border-radius:0 8px 8px 0;padding:12px 14px;margin:8px 0;font-size:.86rem;line-height:1.7}
+.sg-block .sg-label{font-weight:700;color:var(--sub);font-size:.78rem;margin-right:6px}
+.my-answer{background:#fef3c7;border-radius:6px;padding:10px;margin:8px 0;font-size:.85rem;line-height:1.6;font-family:'Times New Roman',serif}
+.model-answer{background:var(--success-light);border-radius:6px;padding:10px;margin:8px 0;font-size:.85rem;line-height:1.6;font-family:'Times New Roman',serif}
+.rubric{background:#eff6ff;border-radius:6px;padding:10px;margin:8px 0;font-size:.82rem;line-height:1.6;color:var(--text)}
+.grade-btns{display:flex;gap:10px;margin-top:10px}
+.grade-btns .btn{flex:1}
+.review-card{border-left:4px solid var(--danger);margin-bottom:14px}
+.review-card.correct{border-left-color:var(--success)}
+.explanation{background:var(--warning-light);border-radius:6px;padding:10px 12px;margin-top:10px;font-size:.84rem;line-height:1.6;color:#713f12}
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+@media(max-width:520px){
+  .container{padding:10px}
+  .card{padding:14px}
+  .q-map{grid-template-columns:repeat(8,1fr)}
+  .passage{font-size:.8rem;max-height:260px}
+}
+</style>
+</head>
+<body>
+<div class="container" id="app"></div>
+<canvas id="confetti-canvas"></canvas>
+<script>
+// ============= PASSAGES (원본 지문) =============
+const P = {
+P01: `How do we open ourselves up to new possibilities? One of the ways to do this is to connect things that look separate. This can be incredibly pleasing as it helps us to see the world in a different light and gain a greater appreciation for the interrelation of all things. Here are three artists who are willing to experiment with this approach. Art can inspire you to see the world from a new angle. Connecting ideas that at first glance appear unrelated is a powerful tool for exploring the beauty of the world around us. To make such connections, all you need is your imaginative power.
+
+Beyond the Scene (Robin Yayla)
+Meet Robin Yayla, a visual storyteller living in Milan, Italy, who has been delighting his viewers with his unique artworks on social media. He draws illustrations on top of photos of landmarks or buildings and offers whole new ways to see them. To breathe life into well-known structures around the world, he often uses iconic pop culture characters. His unique twists sometimes turn what we consider dull and boring into something delightful. To him, a bridge is a net, and a road is a bowling lane. After finding whatever is common in two unrelated things, he connects them smoothly in his digital drawing. His work combines his passion for traveling and drawing.
+
+Rob Gonsalves
+Paintings of Rob Gonsalves, a Canadian magic realist artist, combine two different points of view. They give the viewer the visual illusion that they are looking at two unrelated realities flawlessly fused in one painting. They usually depict landscapes and objects that seem to change from one thing to another. When you look at the top right corner of the painting above, you can see a kid jumping on his bed. However, as you move your eyes across, the bedcovers change into fields, which a girl now appears to be flying over. This is how the visual illusion is created: an object is gradually changed through a series of similar shapes into something entirely different in a single scene. The result is an unexpected and seemingly impossible whole.
+
+Fun Shadows (Vincent Bal)
+When we look at shadows of objects in real life, most of us think nothing of them. Belgian artist and film-maker Vincent Bal, however, turns them into art forms. He lets his creativity flow to make beautiful and meaningful scenes with shadows. His playful shadow art illustrations are made by adding his own doodles to shadows cast from everyday objects, like a flower or a glass. He uses a very simple process. He keeps a very open mind and tries not to have an idea in advance about what the result should be. In fact, it was by accident that he started making his art pieces.`,
+
+P02: `Would you rather receive $1,000 in a year or $1,100 in a year and a month? Most people will opt for the larger sum in thirteen months — where else will you find a monthly interest rate of 10 percent. A wise choice, since the interest will compensate you generously for any risks you face by waiting the extra few weeks. Second question: Would you prefer $1,000 today cash on the table or $1,100 in a month? If you think like most people, you'll take the $1,000 right away. This is amazing. In both cases, if you hold out for just a month longer, you get $100 more. In the first case, it's simple enough. You figure: "I've already waited twelve months; what's one more?" Not in the second case. The introduction of "now" causes us to make inconsistent decisions. Science calls this phenomenon hyperbolic discounting. The closer a reward is, the higher our "emotional interest rate" rises and the more we are willing to give up in exchange for it.`,
+
+P03: `The writer and zoologist Desmond Morris observed that our feet communicate exactly what we think and feel more honestly than any other part of our bodies. Why are the feet and legs such accurate reflectors of our sentiments? For millions of years, long before humans spoke, our legs and feet reacted to environmental threats (e.g., hot sand, ill-tempered lions) instantaneously, without the need for conscious thought. Our limbic brains made sure that our feet and legs reacted as needed by either ceasing motion, running away, or kicking at a potential threat. This survival regimen, retained from our ancestral heritage, has served us well and continues to do so today. In fact, these age-old reactions are still so hardwired in us that when we are presented with something dangerous or even disagreeable, our feet and legs still react as they did in prehistoric times.`,
+
+P04: `The word "migration" is almost always reported in the popular media and even in scientific literature as a problem or a crisis. For example, migrants are assumed to overcrowd cities, clog up labor markets, and increase poverty. The other questionable assumption is that most migration is involuntary—people fleeing natural or man-made disasters. The reality, however, is more complex, and many migrants are simply seeking greater economic opportunity. Of course migration can and does create social and economic problems. But migration can also be a solution for many preexisting problems. For example, out-migration generally redistributes workers from places of labor surplus to areas where there is greater demand or more opportunity. Migration is generally selective of persons who are younger, healthier, more flexible, and more willing to endure hardship in hopes of a better life relative to their prospects in their places of origin. Most research that examines long-term outcomes of migration, including remittances and intergenerational mobility, finds positive "long-term" effects on places of origin and destination.`,
+
+P05: `Daylight Saving Time Sparks Debate
+
+In March, Daylight Saving Time (DST) began in regions across North America and Europe. Millions of people set their clocks forward one hour to mark the arrival of spring.
+
+Observed in about 70 countries, DST is a system that shifts the clock to extend evening daylight hours. A well-known phrase, "spring forward, fall back," helps people remember to set their clocks one hour forward in the spring and one hour back in the fall.
+
+First proposed by scientist George Vernon Hudson in 1895, the idea was adopted by several countries to save energy during World Wars I and II. DST eventually became a common global practice in the 1970s.
+
+Besides energy conservation, DST allows people more time to enjoy natural sunlight. In addition, DST offers other benefits, including increased work productivity, boosted consumer spending, and additional time for daily activities.
+
+Despite its benefits, critics of DST argue that people often use more energy in the darker mornings. Furthermore, studies have shown that shifting the clock forward in spring causes people to suddenly lose an hour of sleep. This can reportedly disrupt the brain's circadian rhythms, increase the risk of heart attack, and cause people to get into more accidents.
+
+The government of British Columbia, Canada, recently decided to permanently adopt DST, ending the tradition of changing the clocks twice a year. Supported by over 90 percent of the public, residents of the province set their clocks one hour forward for the last time in March 2026.
+
+While other regions, including the United States, Mexico, and Europe, will continue to change their clocks, some policymakers have proposed shifting them by 30 minutes, rather than a full hour.`,
+
+P06: `In a thesis-based doctoral programme, students typically spend a significant amount of time and effort researching a specific topic. While this deep dive into a particular area allows for thorough exploration and understanding, it can also result in narrowing the focus. As students become deeply absorbed in their research, they may spend less time exploring related fields or acquiring skills outside their immediate area of study. Consequently, this singular focus may limit the breadth of knowledge and skills developed during the programme, potentially hindering students' ability to adapt to diverse career paths or address interdisciplinary challenges. Some universities in Europe have recognised the limitations of traditional thesis-based doctoral programmes and have started to implement more structured approaches. These structured programmes often combine research with coursework and training in transferable skills. By incorporating coursework, seminars, workshops and internships into the curriculum, they aim to provide students with a broader skill set and better prepare them for a variety of career paths beyond academia.`,
+
+P07: `Perhaps the best-known development to emerge from the liberation and expansion of aesthetic experience is the aesthetics of everyday life. Although there is presently a flowering of work on everyday aesthetics, the possibility of aesthetic gratification in ordinary objects and events has long been recognized, even if degraded and dismissed by prevalent philosophical theory. Widely valued by poets, especially Romantic poets and those in Asian traditions, the aesthetic in everyday situations has also been recognized by novelists. It may be most convenient, though, to locate its contemporary intellectual origins in John Dewey's Art as Experience. In that book Dewey argued against the separation of art from life by basing aesthetic experience on the biological and cultural conditions of human life. He located the aesthetic, not in an internalized awareness of sensation and feeling but in "a complete interpenetration of self and the world of objects and events." Further, Dewey maintained that "the aesthetic is the clarified and intensified development of traits that belong to every normally complete experience."`,
+
+P08: `One cannot validly argue that humans are morally superior beings on the ground that they possess, while others lack, the capacities of a moral agent. The reason is that, as far as moral standards are concerned, only beings that have the capacities of a moral agent can meaningfully be said to be either morally good or morally bad. Only moral agents can be judged to be morally better or worse than others, and the others in question must be moral agents themselves. Judgments of moral superiority are based on the comparative merits or deficiencies of the entities being judged, and these merits and deficiencies are all moral ones, that is, ones determined by moral standards. One entity is correctly judged morally superior to another if it is the case that, when valid moral standards are applied to both entities, the first fulfills them to a greater degree than the second. Both entities, therefore, must fall within the range of application of moral standards. This would not be the case, however, if humans were being judged superior to animals and plants, since the latter are not moral agents.`,
+
+P09: `Our intuition about states of matter comes from our experience on Earth's surface, where the pressure is uniformly low and variations in temperature cause changes in the state of matter from solid to liquid to gas. Therefore, when we think of melting or boiling or the creation of plasma, we intuitively assume it reflects an increase in temperature. This bias comes from the fact that we live in a very constant pressure environment. Even small changes in pressure, such as those we experience when under water or on high mountaintops, can have very large effects on our metabolism. But the pressure changes we experience are trivial compared to the pressure range of the overall planetary environment. Since pressure is controlled by the weight of overlying material, pressures increase rapidly with depth. Imagine the pressures generated by the weight of rock a mile thick! For this reason a planet's pressure ranges are enormous — from essentially zero pressure in space to pressures of millions of atmospheres in planetary interiors.`,
+
+P10: `When self-experimentation and conventional experiments are both possible, the difference between them often resembles the difference between learning and showing: Self-experiments are better for discovery but worse for convincing others that the solution is helpful or the answer is correct. Of course, most scientists want to do both — discover something and convince others of their discovery. Thus, psychologists should consider doing both self-experiments and conventional ones. The best use of resources may often be self-experiments followed by conventional ones. The researcher begins with self-experiments that, if all goes well, find large effects and / or generate and eliminate many hypotheses. This exploratory and theory-building phase lasts until a convenient solution or large effect is found. Then the researcher uses self-experiments to find the procedural parameters (e.g., duration, time of day, intensity) that optimize the solution or maximize the effect. Only then would the researcher begin conventional experiments, using the optimized parameters. Since self-experiments are suited to exploration while conventional experiments provide validation, the most efficient strategy is for the former to precede the latter.`,
+
+P11: `Over the past few years, auction houses have shattered one record after another. Van Gogh's work sold for more than 117 million dollars in 2022. Before that, Leonardo da Vinci's Salvator Mundi sold for a staggering 450 million dollars in 2017. Numbers like these inevitably raise a question: is any painting actually worth that much? People who say yes tend to point out what should be obvious — a masterpiece is, by definition, one of a kind. You cannot manufacture another Starry Night. That scarcity alone drives prices upward, and it always has. Collectors and institutions willing to pay these sums also tend to have the means to properly store, insure, and care for the works, which is no small thing when a canvas is several centuries old. There is also a straightforward libertarian argument here. If someone has the money and wants to spend it on a painting, that is their business. Markets exist precisely to sort out what things are worth, and art is no exception. But not everyone finds this convincing. Critics look at a 450-million-dollar painting and see something uncomfortable — a world where that kind of money changes hands for a single object while millions of people struggle to cover basic needs. To them, these transactions are not just extravagant. They are a symptom of inequality that has grown almost grotesque. There is a deeper objection, too, one that goes beyond the price tag. Works of major historical importance, the argument goes, belong to everyone in some meaningful sense. A painting by da Vinci is not just a decoration for someone's private collection; it is part of our shared cultural history. For critics who think this way, access matters more than ownership — at least when the stakes are this high.`
+};
+
+// ============= QUESTIONS (40문제) =============
+const QUESTIONS=[
+// ===== P01 (Artists) Q1-Q4 =====
+{id:"q001",num:1,type:"topic-제목",cat:"obj",pts:2,
+ stem:"다음 글의 제목으로 가장 적절한 것은?",passage:P.P01,
+ choices:["The History of Surrealist Painting Movements","Connecting the Unrelated: How Three Artists Reframe the World","The Rise of Social Media in Modern Visual Art","Travel as the Greatest Source of Artistic Inspiration","Shadow Photography: Techniques for Beginners"],
+ answer:2,explanation:"분리된 것들을 연결하여 세상을 새롭게 바라보게 하는 세 작가 소개"},
+{id:"q002",num:2,type:"36-글의 순서",cat:"obj",pts:2,
+ stem:"주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+ passage:`(주어진 글) When we look at shadows of objects in real life, most of us think nothing of them. Belgian artist and film-maker Vincent Bal, however, turns them into art forms.
+
+(A) He uses a very simple process. To start, all he needs is a plain object, a piece of paper, and a light. He keeps a very open mind and tries not to have an idea in advance.
+
+(B) "If I try to shape a shadow into a certain form, it always feels a bit forced. If nothing comes, I take another object, and I just start playing around with it," he says.
+
+(C) In fact, it was by accident that he started making his art pieces. While working on a new script, he noticed how the shadow of a cup on his desk looked like a little elephant.`,
+ choices:["(A)-(B)-(C)","(A)-(C)-(B)","(B)-(A)-(C)","(B)-(C)-(A)","(C)-(A)-(B)"],
+ answer:1,explanation:"과정 소개(A) → 작가의 말(B) → 우연한 시작 일화(C)"},
+{id:"q003",num:3,type:"ins-문장 삽입",cat:"obj",pts:2,
+ stem:`글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?
+
+〈보기〉 This kind of illusion has a fun way of twisting your perception.`,
+ passage:`Paintings of Rob Gonsalves combine two different points of view. ( ① ) When you look at the top right corner, you can see a kid jumping on his bed. ( ② ) However, as you move your eyes across, the bedcovers change into fields, which a girl now appears to be flying over. ( ③ ) An object is gradually changed through a series of similar shapes into something entirely different in a single scene. ( ④ ) It makes you question what is real. ( ⑤ ) Most of his paintings have an unclear boundary between the multiple stories they tell.`,
+ choices:["①","②","③","④","⑤"],
+ answer:4,explanation:"시각적 변환 설명 다음, '현실을 의심하게 한다'는 결론으로 자연스럽게 연결"},
+{id:"q004",num:4,type:"sum-요약문 완성",cat:"obj",pts:2,
+ stem:`다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?
+
+[요약] Three artists demonstrate that creating (A)__________ between seemingly unrelated things can lead the viewer to (B)__________ the familiar world in a new way.`,
+ passage:P.P01,
+ choices:["connections — perceive","boundaries — ignore","tensions — abandon","contrasts — judge","profits — purchase"],
+ answer:1,explanation:"분리된 것의 연결(connections) → 익숙한 세계를 새롭게 인식(perceive)"},
+
+// ===== P02 (쌍곡할인) Q5-Q7 =====
+{id:"q005",num:5,type:"topic-주제",cat:"obj",pts:2,
+ stem:"다음 글의 주제로 가장 적절한 것은?",passage:P.P02,
+ choices:["the mathematical formula behind compound interest calculations","why financial markets always reward long-term investors","how the proximity of a reward distorts rational decision-making","strategies to overcome anxiety in monetary decisions","comparing risk preferences across cultural backgrounds"],
+ answer:3,explanation:"보상이 가까울수록 비합리적 결정 — 쌍곡 할인 현상"},
+{id:"q006",num:6,type:"blank-빈칸 문장",cat:"obj",pts:2,
+ stem:"다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`The introduction of "now" causes us to make inconsistent decisions. Science calls this phenomenon hyperbolic discounting. The closer a reward is, the higher our "emotional interest rate" rises and the more we are willing to give up in exchange for it. This is why __________.`,
+ choices:["interest rates are typically determined by central banks","we sometimes settle for a smaller, immediate gain over a larger, delayed one","economists prefer to study long-term trends rather than daily fluctuations","savings accounts have become less popular among young investors","markets are most efficient when participants act with full information"],
+ answer:2,explanation:"즉시성 선호 → 작은 즉시 보상 선택"},
+{id:"q007",num:7,type:"21-함축 의미",cat:"obj",pts:2,
+ stem:`밑줄 친 "emotional interest rate"가 의미하는 바로 가장 적절한 것은?`,
+ passage:`The introduction of "now" causes us to make inconsistent decisions. Science calls this phenomenon hyperbolic discounting. The closer a reward is, the higher our <u>"emotional interest rate"</u> rises and the more we are willing to give up in exchange for it.`,
+ choices:["the bank rate that varies with economic mood","the psychological premium we demand for postponing a reward","the financial gain people expect from emotional investments","the inflation rate measured by consumer sentiment indices","the long-term return of stable government bonds"],
+ answer:2,explanation:"보상 지연에 대한 심리적 프리미엄 — 가까울수록 더 큰 보상 요구"},
+
+// ===== P03 (발/다리) Q8-Q9 =====
+{id:"q008",num:8,type:"topic-주제",cat:"obj",pts:2,
+ stem:"다음 글의 주제로 가장 적절한 것은?",passage:P.P03,
+ choices:["the role of verbal cues in cross-cultural communication","how the limbic brain processes higher-order reasoning","training methods to control involuntary body movements","the evolutionary reason why feet and legs honestly reflect emotion","medical applications of body language analysis in therapy"],
+ answer:4,explanation:"진화적 생존 반응으로 발과 다리가 감정 정직 반영"},
+{id:"q009",num:9,type:"29-어법",cat:"obj",pts:2,
+ stem:"다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+ passage:`The writer and zoologist Desmond Morris observed that our feet communicate exactly what we think and feel more honestly than any other part of our bodies. For millions of years, long before humans spoke, our legs and feet <b>ⓐ reacted</b> to environmental threats instantaneously, without the need for conscious thought. Our limbic brains made sure that our feet and legs reacted as needed by either <b>ⓑ ceasing</b> motion, running away, or kicking at a potential threat. This survival regimen, <b>ⓒ retaining</b> from our ancestral heritage, has served us well and <b>ⓓ continues</b> to do so today. In fact, these age-old reactions are still so hardwired in us that when we <b>ⓔ are presented</b> with something dangerous, our feet and legs still react as they did in prehistoric times.`,
+ choices:["ⓐ","ⓑ","ⓒ","ⓓ","ⓔ"],
+ answer:3,explanation:"retaining → retained (수동 의미: ancestral heritage로부터 '유지된' survival regimen)"},
+
+// ===== P04 (이주) Q10-Q12 =====
+{id:"q010",num:10,type:"topic-요지",cat:"obj",pts:2,
+ stem:"다음 글의 요지로 가장 적절한 것은?",passage:P.P04,
+ choices:["이주민은 도시 과밀과 노동시장 혼잡의 주요 원인이다.","대부분의 이주는 자연·인재 재난을 피해 이루어진다.","이주에 대한 부정적 통념과 달리, 이주는 기존 문제의 해결책이 될 수 있다.","이주의 장기적 효과는 출신지보다 도착지에 더 부정적이다.","이주 정책은 개인의 의지보다 국가 안보를 우선해야 한다."],
+ answer:3,explanation:"위기로 보는 통념 반박 + 노동 재분배·송금·세대 간 이동성의 긍정 효과"},
+{id:"q011",num:11,type:"irr-무관한 문장",cat:"obj",pts:2,
+ stem:"다음 글에서 전체 흐름과 관계 없는 문장은?",
+ passage:`Of course migration can and does create social and economic problems. ① But migration can also be a solution for many preexisting problems. ② For example, out-migration generally redistributes workers from places of labor surplus to areas where there is greater demand. ③ International tourism, particularly cruise travel, has rebounded to pre-pandemic levels in major coastal cities. ④ Migration is generally selective of persons who are younger, healthier, more flexible, and more willing to endure hardship. ⑤ Most research finds positive long-term effects on places of origin and destination.`,
+ choices:["①","②","③","④","⑤"],
+ answer:3,explanation:"국제 관광·크루즈 회복은 이주 논의와 무관"},
+{id:"q012",num:12,type:"blank-빈칸 문장",cat:"obj",pts:2,
+ stem:"다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`The word "migration" is almost always reported as a problem or a crisis. The other questionable assumption is that most migration is involuntary—people fleeing natural or man-made disasters. The reality, however, is more complex, and many migrants are simply __________.`,
+ choices:["fleeing from political persecution and war","following established family networks abroad","seeking greater economic opportunity","replacing the aging workforce in host countries","avoiding climate-driven coastal flooding"],
+ answer:3,explanation:"본문 명시 — 더 큰 경제적 기회 추구"},
+
+// ===== P05 (DST) Q13-Q15 =====
+{id:"q013",num:13,type:"topic-목적",cat:"obj",pts:2,
+ stem:"다음 글의 목적으로 가장 적절한 것은?",passage:P.P05,
+ choices:["일광절약시간제의 전면 폐지를 촉구하려고","일광절약시간제의 도입 배경과 찬반 양론을 소개하려고","캐나다 BC주의 시간제 변경 청원에 동참을 권유하려고","시계를 30분 단위로 조정하는 새 표준을 제안하려고","봄철 수면 부족이 건강에 미치는 영향을 경고하려고"],
+ answer:2,explanation:"역사·이점·비판·BC주 사례·30분 안 등 전반적 소개"},
+{id:"q014",num:14,type:"ex-mismatch",cat:"obj",pts:2,
+ stem:"다음 글의 내용과 일치하지 않는 것은?",passage:P.P05,
+ choices:["DST는 약 70개국에서 시행되고 있다.","'spring forward, fall back'은 시계 조정을 기억하기 위한 표현이다.","DST는 1895년 George Vernon Hudson에 의해 처음 제안되었다.","캐나다 British Columbia 주민의 70% 이상이 영구 DST 시행을 지지했다.","일부 정책 입안자들은 1시간 대신 30분 조정을 제안하고 있다."],
+ answer:4,explanation:"본문은 'over 90 percent of the public' — 90% 이상 (70%가 아님)"},
+{id:"q015",num:15,type:"ins-문장 삽입",cat:"obj",pts:2,
+ stem:`글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?
+
+〈보기〉 Despite its benefits, critics of DST argue that people often use more energy in the darker mornings.`,
+ passage:`Besides energy conservation, DST allows people more time to enjoy natural sunlight. ( ① ) In addition, DST offers other benefits, including increased work productivity, boosted consumer spending, and additional time for daily activities. ( ② ) Furthermore, studies have shown that shifting the clock forward in spring causes people to suddenly lose an hour of sleep. ( ③ ) This can reportedly disrupt the brain's circadian rhythms, increase the risk of heart attack, and cause people to get into more accidents. ( ④ ) The government of British Columbia, Canada, recently decided to permanently adopt DST. ( ⑤ ) Supported by over 90 percent of the public, residents of the province set their clocks one hour forward for the last time in March 2026.`,
+ choices:["①","②","③","④","⑤"],
+ answer:2,explanation:"이점 나열 → '그러나 비판도 있다'(보기) → 비판 구체화(수면 부족)"},
+
+// ===== P06 (박사과정) Q16-Q18 =====
+{id:"q016",num:16,type:"blank-빈칸 문장",cat:"obj",pts:2,
+ stem:"다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`In a thesis-based doctoral programme, students typically spend a significant amount of time researching a specific topic. As students become deeply absorbed in their research, they may spend less time exploring related fields or acquiring skills outside their immediate area of study. Consequently, this singular focus may __________.`,
+ choices:["reduce competition between rival academic disciplines","accelerate the publication of high-impact research papers","limit the breadth of knowledge and skills developed during the programme","improve students' chances of receiving generous research funding","shorten the average time required to defend a doctoral thesis"],
+ answer:3,explanation:"단일 초점 → 지식·기술의 폭 제한 (본문 명시)"},
+{id:"q017",num:17,type:"wrongword",cat:"obj",pts:2,
+ stem:"다음 글에서 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+ passage:`In a thesis-based doctoral programme, students typically spend a significant amount of time researching a specific topic. While this deep dive allows for <b>① thorough</b> exploration, it can also result in <b>② narrowing</b> the focus. Some universities in Europe have recognised the limitations of traditional programmes and have started to implement more <b>③ rigid</b> approaches. These structured programmes often combine research with coursework and training in transferable skills. By <b>④ incorporating</b> coursework, seminars, and internships, they aim to provide students with a <b>⑤ broader</b> skill set.`,
+ choices:["①","②","③","④","⑤"],
+ answer:3,explanation:"rigid(경직된) → structured(구조화된) 필요 (전통적 한계 인식 후 새로 도입한 접근)"},
+{id:"q018",num:18,type:"31-빈칸 어구",cat:"obj",pts:2,
+ stem:"다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`Some universities in Europe have started to implement more structured approaches. These structured programmes often combine research with coursework and training in transferable skills. By incorporating coursework, seminars, workshops and internships into the curriculum, they aim to provide students with a broader skill set and better prepare them for __________.`,
+ choices:["a stable academic position after graduation","a variety of career paths beyond academia","the publication of multiple peer-reviewed articles","the development of a single specialized expertise","international research collaboration networks"],
+ answer:2,explanation:"'학계를 넘어선 다양한 경력' — 본문 마지막 문장 명시"},
+
+// ===== P07 (Dewey) Q19-Q21 =====
+{id:"q019",num:19,type:"21-함축 의미",cat:"obj",pts:2,
+ stem:`밑줄 친 "a complete interpenetration of self and the world of objects and events"가 의미하는 바로 가장 적절한 것은?`,
+ passage:`In John Dewey's Art as Experience, Dewey argued against the separation of art from life by basing aesthetic experience on the biological and cultural conditions of human life. He located the aesthetic, not in an internalized awareness of sensation and feeling but in <u>"a complete interpenetration of self and the world of objects and events."</u>`,
+ choices:["a scientific analysis of how external objects shape inner feelings","the philosophical separation between aesthetic theory and ordinary life","an intellectual understanding of art's distinction from daily routine","a thorough merging of one's inner experience with the surrounding world","an absolute boundary between private sensation and public reality"],
+ answer:4,explanation:"자아와 객체 세계의 상호침투 = 내적 경험과 외부 세계의 완전한 융합"},
+{id:"q020",num:20,type:"29-어법",cat:"obj",pts:2,
+ stem:"다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+ passage:`Perhaps the best-known development to emerge from the liberation of aesthetic experience is the aesthetics of everyday life. Although there <b>ⓐ is</b> presently a flowering of work on everyday aesthetics, the possibility of aesthetic gratification in ordinary objects has long <b>ⓑ been recognized</b>, even if degraded by prevalent philosophical theory. Widely <b>ⓒ valued</b> by poets, the aesthetic in everyday situations has also been recognized by novelists. In Art as Experience Dewey argued against the separation of art from life by <b>ⓓ base</b> aesthetic experience on the biological and cultural conditions of human life. Further, Dewey <b>ⓔ maintained</b> that "the aesthetic is the clarified and intensified development of traits that belong to every normally complete experience."`,
+ choices:["ⓐ","ⓑ","ⓒ","ⓓ","ⓔ"],
+ answer:4,explanation:"by base → by basing (전치사 by 다음 동명사)"},
+{id:"q021",num:21,type:"topic-요지",cat:"obj",pts:2,
+ stem:"다음 글의 요지로 가장 적절한 것은?",passage:P.P07,
+ choices:["예술과 일상의 경계를 분명히 함으로써 미학 이론이 완성되었다.","Dewey의 미학은 낭만주의 시인들의 영향력을 부정한다.","미적 경험은 일상의 사물과 사건 속에서 자아와 세계가 융합될 때 성립한다.","동양 전통에서만 일상의 미학이 진지하게 탐구되어 왔다.","일상의 미학은 철학 이론으로는 다룰 수 없는 영역이다."],
+ answer:3,explanation:`Dewey의 "complete interpenetration" — 자아·세계 융합으로서의 미적 경험`},
+
+// ===== P08 (도덕적 우월성) Q22-Q24 =====
+{id:"q022",num:22,type:"ins-문장 삽입",cat:"obj",pts:2,
+ stem:`글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?
+
+〈보기〉 Both entities, therefore, must fall within the range of application of moral standards.`,
+ passage:`Judgments of moral superiority are based on the comparative merits or deficiencies of the entities being judged. ( ① ) These merits and deficiencies are all moral ones, that is, ones determined by moral standards. ( ② ) One entity is correctly judged morally superior to another if it is the case that, when valid moral standards are applied to both entities, the first fulfills them to a greater degree than the second. ( ③ ) This would not be the case, however, if humans were being judged superior to animals and plants, since the latter are not moral agents. ( ④ ) Only moral agents can be judged morally better or worse than others. ( ⑤ ) The argument therefore fails to establish human moral superiority over non-moral beings.`,
+ choices:["①","②","③","④","⑤"],
+ answer:3,explanation:"'두 존재 모두 도덕 기준 적용 범위 안에 있어야 한다' → '그러나 인간 vs 동식물은 그렇지 않다'로 자연 연결"},
+{id:"q023",num:23,type:"sum-요약문 완성",cat:"obj",pts:2,
+ stem:`다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?
+
+[요약] Humans cannot be meaningfully judged morally (A)__________ to animals and plants because moral comparisons require that both parties (B)__________ moral standards.`,
+ passage:P.P08,
+ choices:["superior — fall outside","superior — fall under","inferior — escape from","equal — disregard","similar — promote"],
+ answer:2,explanation:"우월(superior) 판단 성립 위해 양쪽이 도덕 기준에 '속해야'(fall under) 함"},
+{id:"q024",num:24,type:"blank-빈칸 문장",cat:"obj",pts:2,
+ stem:"다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`One cannot validly argue that humans are morally superior beings on the ground that they possess, while others lack, the capacities of a moral agent. The reason is that, as far as moral standards are concerned, only beings that have the capacities of a moral agent can meaningfully be said to be __________.`,
+ choices:["subject to the laws of physical causation","either morally good or morally bad","entitled to legal personhood and rights","capable of complex linguistic communication","deserving of compassion and empathy"],
+ answer:2,explanation:"도덕 행위자만이 도덕적 선·악 판단의 대상 — 본문 직접 인용"},
+
+// ===== P09 (물질 상태) Q25-Q27 =====
+{id:"q025",num:25,type:"topic-주제",cat:"obj",pts:2,
+ stem:"다음 글의 주제로 가장 적절한 것은?",passage:P.P09,
+ choices:["the role of temperature alone in driving phase transitions","techniques for accurately measuring planetary core pressures","a low-pressure bias in our intuitive grasp of states of matter","medical effects of extreme atmospheric pressure on the human body","historical discoveries of plasma in early laboratory experiments"],
+ answer:3,explanation:"지구 표면의 일정한 저압 경험이 만든 인지 편향"},
+{id:"q026",num:26,type:"wrongword",cat:"obj",pts:2,
+ stem:"다음 글에서 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+ passage:`Our intuition about states of matter comes from our experience on Earth's surface, where the pressure is <b>① uniformly</b> low. Therefore, when we think of melting or boiling, we intuitively assume it reflects an increase in temperature. This bias comes from the fact that we live in a very <b>② constant</b> pressure environment. Even small changes in pressure can have <b>③ trivial</b> effects on our metabolism. But the pressure changes we experience are <b>④ small</b> compared to the pressure range of the overall planetary environment. Since pressure is controlled by the weight of overlying material, pressures increase <b>⑤ rapidly</b> with depth.`,
+ choices:["①","②","③","④","⑤"],
+ answer:3,explanation:"trivial(사소한) → large/significant(큰) 필요 (본문: 'very large effects on our metabolism')"},
+{id:"q027",num:27,type:"29-어법",cat:"obj",pts:2,
+ stem:"다음 글의 밑줄 친 부분 중, 어법상 틀린 것은?",
+ passage:`Our intuition about states of matter <b>ⓐ comes</b> from our experience on Earth's surface, where the pressure is uniformly low and variations in temperature cause changes in the state of matter. This bias comes from the fact that we <b>ⓑ live</b> in a very constant pressure environment. But the pressure changes we experience are trivial <b>ⓒ comparing</b> to the pressure range of the overall planetary environment. Since pressure is controlled by the weight of overlying material, pressures increase rapidly with depth. Imagine the pressures <b>ⓓ generated</b> by the weight of rock a mile thick! For this reason a planet's pressure ranges are enormous — from essentially zero pressure in space to pressures of millions of atmospheres <b>ⓔ in</b> planetary interiors.`,
+ choices:["ⓐ","ⓑ","ⓒ","ⓓ","ⓔ"],
+ answer:3,explanation:"comparing → compared (수동 분사 — '비교될 때')"},
+
+// ===== P10 (자기실험) Q28-Q30 =====
+{id:"q028",num:28,type:"36-글의 순서",cat:"obj",pts:2,
+ stem:"주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+ passage:`(주어진 글) When self-experimentation and conventional experiments are both possible, the difference between them often resembles the difference between learning and showing.
+
+(A) Then the researcher uses self-experiments to find the procedural parameters (e.g., duration, time of day, intensity) that optimize the solution. Only then would the researcher begin conventional experiments, using the optimized parameters.
+
+(B) Self-experiments are better for discovery but worse for convincing others that the answer is correct. Thus, psychologists should consider doing both. The best use of resources may often be self-experiments followed by conventional ones.
+
+(C) The researcher begins with self-experiments that, if all goes well, find large effects and / or generate and eliminate many hypotheses. This exploratory phase lasts until a convenient solution is found.`,
+ choices:["(A)-(B)-(C)","(A)-(C)-(B)","(B)-(A)-(C)","(B)-(C)-(A)","(C)-(A)-(B)"],
+ answer:4,explanation:"차이 명시(B) → 탐색 단계(C) → 매개변수 최적화 단계(A)"},
+{id:"q029",num:29,type:"31-빈칸 어구",cat:"obj",pts:2,
+ stem:"다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`The researcher begins with self-experiments that find large effects and generate and eliminate many hypotheses. Then the researcher uses self-experiments to find the procedural parameters that optimize the solution. Only then would the researcher begin conventional experiments. Since self-experiments are suited to exploration while conventional experiments provide validation, the most efficient strategy is for the former to __________.`,
+ choices:["replace the latter entirely in psychological research","be conducted only when conventional methods fail","precede the latter","remain hidden from peer review","depend on large-scale funding"],
+ answer:3,explanation:"탐색(자기실험) → 검증(통상실험) — 자기실험이 통상실험에 선행"},
+{id:"q030",num:30,type:"sum-요약문 완성",cat:"obj",pts:2,
+ stem:`다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?
+
+[요약] Because self-experiments are better for (A)__________ while conventional experiments excel at (B)__________, researchers gain the most by performing the former first and the latter afterward.`,
+ passage:P.P10,
+ choices:["discovery — validation","precision — speed","funding — publication","teaching — learning","tradition — innovation"],
+ answer:1,explanation:"자기실험=발견(discovery), 통상실험=검증(validation)"},
+
+// ===== P11 (경매) Q31-Q33 =====
+{id:"q031",num:31,type:"topic-제목",cat:"obj",pts:2,
+ stem:"다음 글의 제목으로 가장 적절한 것은?",passage:P.P11,
+ choices:["The Investment Guide for Beginning Art Collectors","Are Multi-Million Dollar Paintings Worth the Price? Two Views","The Forgotten History of European Renaissance Painters","How to Insure Centuries-Old Canvases at Home","The Decline of the Global Auction Industry After 2022"],
+ answer:2,explanation:"희소성·시장 논리 옹호 vs 불평등·공공 접근권 비판 — 양 관점 대조"},
+{id:"q032",num:32,type:"ex-mismatch",cat:"obj",pts:2,
+ stem:"다음 글의 내용과 일치하지 않는 것은?",passage:P.P11,
+ choices:["Van Gogh 작품은 2022년 1억 1,700만 달러 이상에 팔렸다.","Leonardo da Vinci의 Salvator Mundi는 2017년 4억 5,000만 달러에 팔렸다.","희소성 옹호자들은 명화가 본질적으로 유일무이하다고 주장한다.","비판자들은 거액 거래가 불평등의 한 증상이라고 본다.","비판자들은 모든 사적 명화 소유를 법으로 금지할 것을 주장한다."],
+ answer:5,explanation:"본문은 'access matters more than ownership when the stakes are this high' — 모든 사적 소유 금지 주장은 아님 (과장)"},
+{id:"q033",num:33,type:"wrongword",cat:"obj",pts:2,
+ stem:"다음 글에서 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+ passage:`People who say yes tend to point out what should be obvious — a masterpiece is, by definition, one of a kind. That <b>① scarcity</b> alone drives prices upward, and it always has. Collectors willing to pay these sums also tend to have the means to properly store, insure, and care for the works. But not everyone finds this convincing. Critics look at a 450-million-dollar painting and see something <b>② uncomfortable</b> — a world where that kind of money changes hands for a single object while millions struggle to cover basic needs. To them, these transactions are not just extravagant. They are a symptom of inequality that has grown almost <b>③ moderate</b>. Works of major historical importance, the argument goes, belong to everyone in some <b>④ meaningful</b> sense. If locked away in a billionaire's living room, the public loses the chance to see something that should probably be in a <b>⑤ museum</b>.`,
+ choices:["①","②","③","④","⑤"],
+ answer:3,explanation:"moderate(보통의) → grotesque/extreme(극심한) (본문: 'almost grotesque')"},
+
+// ===== 주관식 Q34-Q40 =====
+{id:"q034",num:34,type:"w-rel ★",cat:"sub",pts:5,
+ stem:`다음 두 문장을 [전치사+관계대명사]를 이용하여 한 문장으로 결합하시오.
+
+Sentence 1: This is the digital drawing.
+Sentence 2: Robin connects two unrelated things smoothly in it.`,
+ passage:"",choices:null,
+ answer:"This is the digital drawing in which Robin connects two unrelated things smoothly.",
+ explanation:`채점 기준 (5점):
+• 'in which' 정확 사용 (2점)
+• 어순·시제 정확 (2점)
+• 철자·문법 오류 없음 (1점)
+• 부분 점수: 'where' 사용 시 3점 / 전치사 누락 시 2점 / 관계대명사만 사용 시 1점`},
+{id:"q035",num:35,type:"w-part ★",cat:"sub",pts:5,
+ stem:`다음 문장의 [부사절]을 [접속사+분사구문] 형태로 바꾸어 쓰시오. (접속사는 유지)
+
+원문: When we are presented with something dangerous, our feet and legs still react as they did in prehistoric times.`,
+ passage:"",choices:null,
+ answer:"When presented with something dangerous, our feet and legs still react as they did in prehistoric times.",
+ explanation:`채점 기준 (5점):
+• 'When presented' 정확 사용 (3점) — 주어 we 생략 + be동사 are 생략 + 과거분사 유지
+• 주절 그대로 유지 (1점)
+• 철자·문법 오류 없음 (1점)
+• 부분 점수: 'When being presented' 형태 3점 / 접속사 누락 2점 / 능동 'presenting' 1점`},
+{id:"q036",num:36,type:"w-all ★",cat:"sub",pts:5,
+ stem:`다음 빈칸에 [보기]의 단어들을 모두 사용하여 알맞은 어순으로 배열하시오.
+
+문장: ______________________________ to combine exploratory self-experiments with later conventional ones.
+
+[보기]: do / has / All / to / the researcher / is`,
+ passage:"",choices:null,
+ answer:"All the researcher has to do is",
+ explanation:`채점 기준 (5점):
+• 정확한 어순: All + 주어(the researcher) + has to do + is (5점)
+• 부분 점수: 어순 1곳 오류 3점 / 2곳 이상 오류 1점
+• 대체 정답 'What the researcher has to do is' 시 4점`},
+{id:"q037",num:37,type:"w6",cat:"sub",pts:5,
+ stem:`다음 우리말 의미와 같도록, 가주어 It를 사용하고 [보기] 단어를 활용하여 영작하시오.
+
+우리말: 두 존재 모두 도덕 기준의 적용 범위에 속해야 한다는 것이 필수적이다.
+
+[보기]: essential / both entities / fall within / the range of moral standards`,
+ passage:"",choices:null,
+ answer:"It is essential that both entities fall within the range of moral standards.",
+ explanation:`채점 기준 (5점):
+• 가주어 It (1점)
+• 진주어 that절 (1점)
+• 시제·수일치 정확 (1점)
+• 보기 단어 모두 사용 + 어순 정확 (2점)
+• 대체 정답: 'It is essential for both entities to fall within the range of moral standards.' (5점)
+• 부분 점수: It 누락 2점 / that 누락 3점 / 시제 오류 1곳당 -1점`},
+{id:"q038",num:38,type:"w4",cat:"sub",pts:5,
+ stem:`다음 우리말 의미와 같도록 [보기] 단어를 모두 사용하여 영작하시오. (필요시 형태 변형 가능)
+
+우리말: 보상이 가까울수록, 우리의 '감정적 이자율'은 더 높이 상승한다.
+
+[보기]: closer / reward / higher / emotional interest rate / rise`,
+ passage:"",choices:null,
+ answer:`The closer a reward is, the higher our "emotional interest rate" rises.`,
+ explanation:`채점 기준 (5점):
+• 'The 비교급 ~, the 비교급 ~' 구문 정확 (2점)
+• 주어·동사 일치 (rises) (1점)
+• 어순 정확 (1점)
+• 보기 단어 모두 사용 (1점)
+• 부분 점수: The 누락 3점 / 비교급 형태 오류 -1점/곳`},
+{id:"q039",num:39,type:"w5 (대화 변환)",cat:"sub",pts:4,
+ stem:"다음 대화는 두 학생이 위 글(박사과정)을 검토한 것이다. 빈칸에 들어갈 알맞은 한 단어를 본문 어휘를 활용하여 쓰시오. (필요시 형태 변형 가능)",
+ passage:`[Review 대화 — 문어체 변환]
+
+A: I read the article about traditional doctoral programmes. What's the author's main point?
+B: They say that focusing too deeply on one thesis topic can __________ a student's focus.
+A: Right. So students end up missing out on transferable skills.
+B: That's why some European universities now add coursework and internships to the curriculum.`,
+ choices:null,
+ answer:"narrow",
+ explanation:`채점 기준 (4점):
+• 정답 'narrow' (4점)
+• 본문 원문: "...can also result in narrowing the focus"
+• 부분 점수: 'narrows' 4점 (3인칭 단수 일치 가능) / 'narrowing' 3점 / 'limit' 2점 (의미 유사하나 본문 어휘 아님)`},
+{id:"q040",num:40,type:"w7 (대화 변환+영작)",cat:"sub",pts:5,
+ stem:`다음 대화는 두 학생이 위 글(경매가 논쟁)을 검토한 것이다. 빈칸에 들어갈 말을 우리말과 [보기] 단어를 활용하여 영작하시오.
+
+우리말: 그들은 역사적으로 중요한 작품들이 어떤 의미 있는 방식으로 모든 사람에게 속한다고 주장한다.
+
+[보기]: argue / works of historical importance / belong to / everyone / meaningful sense`,
+ passage:`[Review 대화 — 문어체 변환]
+
+A: I read the article on multi-million dollar art auctions. What's the critics' deepest objection?
+B: Well, beyond the unfair price tag, they raise a deeper point.
+A: Which is...?
+B: ______________________________________________________
+A: I see. That's why they think those works should be in museums, not private collections.`,
+ choices:null,
+ answer:"They argue that works of historical importance belong to everyone in some meaningful sense.",
+ explanation:`채점 기준 (5점):
+• 주절 'They argue that' (1점)
+• 종속절 어순 정확 (1점)
+• 'belong to' 정확 사용 (1점)
+• 'in some meaningful sense' 정확 사용 (1점)
+• 보기 단어 모두 활용 + 철자 정확 (1점)
+• 부분 점수: that 누락 4점 / 어순 오류 1곳당 -1점 / 전치사 오류 -1점`}
+];
+
+// ============= APP STATE =============
+let state={
+  screen:"start",currentQ:0,
+  userAnswers:{},   // {q001: 3, q034: "user text"}
+  subGrades:{},     // {q034: true/false}
+  score:0,wrongIds:[],retryMode:null,attempt:1
+};
+const app=document.getElementById("app");
+const totalPts=QUESTIONS.reduce((s,q)=>s+q.pts,0);
+const objCount=QUESTIONS.filter(q=>q.cat==="obj").length;
+const subCount=QUESTIONS.filter(q=>q.cat==="sub").length;
+const objPts=QUESTIONS.filter(q=>q.cat==="obj").reduce((s,q)=>s+q.pts,0);
+const subPts=QUESTIONS.filter(q=>q.cat==="sub").reduce((s,q)=>s+q.pts,0);
+
+function getActiveQs(){
+  if(state.retryMode==="wrong") return QUESTIONS.filter(q=>state.wrongIds.includes(q.id));
+  return QUESTIONS;
+}
+
+function render(){
+  switch(state.screen){
+    case"start":renderStart();break;
+    case"quiz":renderQuiz();break;
+    case"selfgrade":renderSelfGrade();break;
+    case"result":renderResult();break;
+    case"review":renderReview();break;
+  }
+}
+
+function renderStart(){
+  app.innerHTML=`
+  <div class="start-screen">
+    <h1>고2 영어 기말고사 모의시험</h1>
+    <p class="sub-title">finaltestG2_set3 · 11지문 40문제 · 100점</p>
+    <div class="info-box">
+      <strong>총 ${QUESTIONS.length}문제</strong> | 만점 <strong>${totalPts}점</strong><br><br>
+      <strong>객관식</strong> ${objCount}문제 (${objPts}점) — 5지선다 자동 채점<br>
+      <strong>주관식</strong> ${subCount}문제 (${subPts}점) — 자기 채점 (모범답안·채점 기준 제공)<br><br>
+      <strong>채점 규칙:</strong><br>
+      • 90점 이상 — 🎉 EXCELLENT! 축포!<br>
+      • 80~89점 — 틀린 문제만 재도전 가능<br>
+      • 79점 이하 — 전체 재도전 권장<br><br>
+      <strong>주관식 유형:</strong> w-rel ★ / w-part ★ / w-all ★ / w6 / w4 / w5 / w7
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="font-size:1.05rem;padding:14px 44px">시작하기</button>
+  </div>`;
+}
+
+function startQuiz(){
+  state.screen="quiz";state.currentQ=0;
+  state.userAnswers={};state.subGrades={};state.score=0;state.wrongIds=[];
+  render();
+}
+
+function renderQuiz(){
+  const qs=getActiveQs();
+  const q=qs[state.currentQ];
+  const total=qs.length;
+  const answered=Object.keys(state.userAnswers).filter(k=>{
+    const v=state.userAnswers[k];
+    return v!==undefined&&v!==""&&v!==null;
+  }).length;
+  const pct=Math.round(((state.currentQ+1)/total)*100);
+  const catLabel=q.cat==="obj"?"객관식":"주관식";
+
+  let inputHtml="";
+  if(q.cat==="obj"){
+    const sel=state.userAnswers[q.id];
+    inputHtml=`<ul class="choices">${q.choices.map((c,i)=>{
+      const num=i+1;
+      const checked=sel===num;
+      return`<li class="choice${checked?" selected":""}" onclick="selectObj(${num})">
+        <input type="radio" name="q${q.id}" ${checked?"checked":""}>
+        <span>${"①②③④⑤"[i]} ${escapeHTML(c)}</span>
+      </li>`;
+    }).join("")}</ul>`;
+  } else {
+    const val=state.userAnswers[q.id]||"";
+    inputHtml=`<textarea class="sub-input" id="sub-${q.id}" placeholder="답안을 입력하세요..." oninput="updateSub('${q.id}',this.value)">${escapeHTML(val)}</textarea>`;
+  }
+
+  app.innerHTML=`
+  <div class="progress-text"><span>${state.currentQ+1} / ${total}</span><span>${answered}/${total} 완료</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  <div class="q-map">${qs.map((qq,i)=>{
+    let cls="q-dot";
+    if(i===state.currentQ) cls+=" current";
+    else if(state.userAnswers[qq.id]!==undefined&&state.userAnswers[qq.id]!==""&&state.userAnswers[qq.id]!==null) cls+=qq.cat==="sub"?" sub-answered":" answered";
+    return`<div class="${cls}" onclick="goTo(${i})" title="${qq.num}번">${qq.num}</div>`;
+  }).join("")}</div>
+  <div class="card">
+    <div class="q-header">
+      <div class="q-num ${q.cat==="sub"?"sub":""}">${q.num}</div>
+      <span class="q-type ${q.cat==="sub"?"sub":""}">${escapeHTML(q.type)} · ${catLabel}</span>
+      <span class="q-pts">${q.pts}점</span>
+    </div>
+    <div class="stem">${escapeHTML(q.stem)}</div>
+    ${q.passage?`<div class="passage ${q.cat==="sub"?"sub":""}">${q.passage}</div>`:""}
+    ${inputHtml}
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-outline btn-sm" ${state.currentQ===0?"disabled":""} onclick="goTo(${state.currentQ-1})">◀ 이전</button>
+    ${state.currentQ===total-1?
+      `<button class="btn btn-success btn-sm" onclick="submitQuiz()">제출하기 ✓</button>`
+      :`<button class="btn btn-primary btn-sm" onclick="goTo(${state.currentQ+1})">다음 ▶</button>`}
+  </div>`;
+}
+
+function selectObj(num){
+  const qs=getActiveQs();
+  state.userAnswers[qs[state.currentQ].id]=num;
+  render();
+}
+function updateSub(qid,text){
+  state.userAnswers[qid]=text;
+  // 진행률 업데이트만 위해 부분 재렌더 — 입력 중에는 전체 렌더 피함
+}
+function goTo(i){
+  const qs=getActiveQs();
+  if(i>=0&&i<qs.length){state.currentQ=i;render()}
+}
+
+function submitQuiz(){
+  const qs=getActiveQs();
+  // 객관식 자동 채점
+  let objScore=0;
+  const objWrong=[];
+  qs.filter(q=>q.cat==="obj").forEach(q=>{
+    if(state.userAnswers[q.id]===q.answer) objScore+=q.pts;
+    else objWrong.push(q.id);
+  });
+  state.score=objScore;
+  state.wrongIds=objWrong;
+  // 주관식 있으면 자기채점 화면으로
+  const subQs=qs.filter(q=>q.cat==="sub");
+  if(subQs.length>0){
+    state.screen="selfgrade";
+    state.currentQ=0; // selfgrade index
+  } else {
+    state.screen="result";
+  }
+  render();
+}
+
+function renderSelfGrade(){
+  const qs=getActiveQs();
+  const subQs=qs.filter(q=>q.cat==="sub");
+  app.innerHTML=`
+  <div class="card">
+    <h2 style="color:var(--sub);margin-bottom:6px">✍️ 주관식 자기 채점</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:14px">
+      ${subQs.length}문제의 모범답안과 채점 기준을 확인하고, 본인 답안을 채점해 주세요.
+    </p>
+    ${subQs.map((q,i)=>{
+      const myAns=state.userAnswers[q.id]||"(미응답)";
+      const graded=state.subGrades[q.id];
+      return `
+      <div class="sg-section">
+        <div class="sg-header">${q.num}번 · ${escapeHTML(q.type)} · ${q.pts}점</div>
+        <div class="sg-block">
+          <span class="sg-label">[문제]</span>${escapeHTML(q.stem)}
+          ${q.passage?`<div style="background:#f1f5f9;border-radius:4px;padding:8px;margin-top:6px;font-size:.82rem;white-space:pre-line;font-family:'Times New Roman',serif">${q.passage}</div>`:""}
+        </div>
+        <div class="my-answer"><b>[내 답안]</b><br>${escapeHTML(myAns)}</div>
+        <div class="model-answer"><b>[모범답안]</b><br>${escapeHTML(q.answer)}</div>
+        <div class="rubric"><b>[채점 기준]</b><br><span style="white-space:pre-line">${escapeHTML(q.explanation)}</span></div>
+        <div class="grade-btns">
+          <button class="btn btn-success btn-sm" onclick="markSub('${q.id}',true)" ${graded===true?'style="opacity:1;outline:3px solid var(--success);outline-offset:2px"':""}>✓ 맞았어요 (+${q.pts}점)</button>
+          <button class="btn btn-danger btn-sm" onclick="markSub('${q.id}',false)" ${graded===false?'style="opacity:1;outline:3px solid var(--danger);outline-offset:2px"':""}>✗ 틀렸어요 (0점)</button>
+        </div>
+      </div>`;
+    }).join("")}
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn btn-primary" onclick="finalizeSelfGrade()">채점 완료 → 결과 보기</button>
+    </div>
+  </div>`;
+}
+
+function markSub(qid,correct){
+  state.subGrades[qid]=correct;
+  renderSelfGrade();
+}
+
+function finalizeSelfGrade(){
+  const qs=getActiveQs();
+  const subQs=qs.filter(q=>q.cat==="sub");
+  const ungraded=subQs.filter(q=>state.subGrades[q.id]===undefined);
+  if(ungraded.length>0){
+    if(!confirm(`아직 ${ungraded.length}문제를 채점하지 않았습니다. 계속하시겠습니까?`)) return;
+  }
+  // 주관식 점수 합산
+  subQs.forEach(q=>{
+    if(state.subGrades[q.id]===true) state.score+=q.pts;
+    else state.wrongIds.push(q.id);
+  });
+  state.screen="result";
+  render();
+  if(state.score>=90) launchConfetti();
+}
+
+function renderResult(){
+  const qs=getActiveQs();
+  const maxPts=qs.reduce((s,q)=>s+q.pts,0);
+  const pct=Math.round((state.score/maxPts)*100);
+  const wrongCount=state.wrongIds.length;
+  const correctCount=qs.length-wrongCount;
+  let cls,msg,btns;
+  if(state.score>=90){
+    cls="perfect";msg=`<b>🎉 EXCELLENT!</b> ${state.score}점!<br>대단합니다, 정말 잘했어요!`;
+    btns=`<button class="btn btn-outline" onclick="showReview()">오답 복습</button>
+          <button class="btn btn-primary" onclick="resetAll()">처음부터 다시</button>`;
+  }else if(pct>=80){
+    cls="great";msg=`잘했어요! ${pct}점 (${state.score}/${maxPts}점)<br>틀린 ${wrongCount}문제만 다시 풀어보세요.`;
+    btns=`<button class="btn btn-success" onclick="retryWrong()">틀린 문제 재도전</button>
+          <button class="btn btn-outline" onclick="showReview()">오답 복습</button>
+          <button class="btn btn-outline" onclick="resetAll()">처음부터 다시</button>`;
+  }else{
+    cls="retry";msg=`${pct}점 (${state.score}/${maxPts}점)<br>오답을 복습한 후 다시 도전해보세요!`;
+    btns=`<button class="btn btn-danger" onclick="showReview()">오답 복습하기</button>
+          <button class="btn btn-warning" onclick="resetAll()">전체 재도전</button>`;
+  }
+  app.innerHTML=`
+  <div class="result-screen">
+    <h2 style="margin-bottom:6px">${state.attempt>1?`${state.attempt}차 `:""}채점 결과</h2>
+    <div class="score-circle ${cls}"><span>${state.score}</span><small>/ ${maxPts}점</small></div>
+    <div class="result-msg">${msg}</div>
+    <div class="result-detail">
+      <b>정답:</b> ${correctCount}문제 / <b>오답:</b> ${wrongCount}문제<br>
+      <b>정답률:</b> ${pct}%<br>
+      ${wrongCount>0?`<b>틀린 문제 번호:</b> ${state.wrongIds.map(id=>QUESTIONS.find(x=>x.id===id)?.num).filter(Boolean).sort((a,b)=>a-b).join(", ")}번`:""}
+    </div>
+    <div class="result-btns">${btns}</div>
+  </div>`;
+}
+
+function retryWrong(){
+  state.retryMode="wrong";state.attempt++;state.screen="quiz";state.currentQ=0;
+  state.userAnswers={};state.subGrades={};state.score=0;
+  render();
+}
+function resetAll(){
+  state.retryMode=null;state.attempt=1;state.screen="start";
+  state.userAnswers={};state.subGrades={};state.score=0;state.wrongIds=[];
+  render();
+}
+function showReview(){state.screen="review";render();}
+
+function renderReview(){
+  const qs=getActiveQs();
+  app.innerHTML=`
+  <div class="card">
+    <h2 style="color:var(--primary);margin-bottom:14px">📖 오답 복습</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:14px">틀린 문제를 모범답안·해설과 함께 확인하세요.</p>
+    ${qs.filter(q=>state.wrongIds.includes(q.id)).map(q=>{
+      const myAns=q.cat==="obj"?
+        (state.userAnswers[q.id]?`${"①②③④⑤"[state.userAnswers[q.id]-1]}번`:"(미응답)")
+        :(state.userAnswers[q.id]||"(미응답)");
+      const correctAns=q.cat==="obj"?`${"①②③④⑤"[q.answer-1]}번 ${escapeHTML(q.choices[q.answer-1])}`:escapeHTML(q.answer);
+      return `
+      <div class="card review-card">
+        <div class="q-header">
+          <div class="q-num ${q.cat==="sub"?"sub":""}">${q.num}</div>
+          <span class="q-type ${q.cat==="sub"?"sub":""}">${escapeHTML(q.type)}</span>
+          <span class="q-pts">${q.pts}점</span>
+        </div>
+        <div class="stem">${escapeHTML(q.stem)}</div>
+        ${q.passage?`<div class="passage ${q.cat==="sub"?"sub":""}">${q.passage}</div>`:""}
+        <div class="my-answer"><b>[내 답안]</b> ${escapeHTML(String(myAns))}</div>
+        <div class="model-answer"><b>[정답]</b> ${correctAns}</div>
+        <div class="explanation"><b>해설:</b> <span style="white-space:pre-line">${escapeHTML(q.explanation)}</span></div>
+      </div>`;
+    }).join("")}
+    <div style="text-align:center;margin-top:18px">
+      <button class="btn btn-outline" onclick="state.screen='result';render()">결과로 돌아가기</button>
+    </div>
+  </div>`;
+}
+
+function escapeHTML(s){
+  if(s===null||s===undefined) return "";
+  // Allow <u> and <b> tags for highlighted passages, escape others
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/&lt;u&gt;/g,"<u>").replace(/&lt;\/u&gt;/g,"</u>")
+    .replace(/&lt;b&gt;/g,"<b>").replace(/&lt;\/b&gt;/g,"</b>");
+}
+
+// ============= CONFETTI =============
+function launchConfetti(){
+  const canvas=document.getElementById("confetti-canvas");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const colors=["#1e40af","#16a34a","#f59e0b","#dc2626","#7c3aed","#fbbf24"];
+  const parts=[];
+  for(let i=0;i<140;i++){
+    parts.push({x:Math.random()*canvas.width,y:-20,vx:(Math.random()-0.5)*5,vy:Math.random()*4+3,
+      size:Math.random()*8+4,color:colors[Math.floor(Math.random()*colors.length)],angle:Math.random()*Math.PI*2,spin:(Math.random()-0.5)*0.2});
+  }
+  let frame=0;
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.angle+=p.spin;p.vy+=0.05;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+      ctx.restore();
+    });
+    frame++;
+    if(frame<260) requestAnimationFrame(tick);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  tick();
+}
+
+// ============= INIT =============
+render();
+</script>
+</body>
+</html>
