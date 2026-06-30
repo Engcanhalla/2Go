@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 서해고 1학년 영어 Set 3 (v03) — 객관식 즉시 채점기</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#0d9488;--primary-light:#ccfbf1;--primary-dark:#115e59;
+  --success:#16a34a;--success-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --warning:#f59e0b;--warning-light:#fef3c7;
+  --bg:#f0fdfa;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#a7f3d0;
+}
+body{font-family:'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.55;min-height:100vh;padding:20px 12px}
+.container{max-width:880px;margin:0 auto}
+header{text-align:center;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:24px 16px;border-radius:14px;box-shadow:0 4px 12px rgba(13,148,136,.25);margin-bottom:18px}
+header h1{font-size:1.45rem;margin-bottom:4px}
+header .sub{opacity:.92;font-size:.92rem}
+
+.card{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.04);padding:22px;margin-bottom:18px}
+.card h2{color:var(--primary);font-size:1.05rem;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.help{font-size:.85rem;color:var(--muted);background:var(--primary-light);padding:10px 12px;border-radius:8px;margin-bottom:14px;line-height:1.6}
+
+.ans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:680px){.ans-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.ans-grid{grid-template-columns:1fr}}
+
+.ans-cell{background:#fafafa;border:1.5px solid #e5e7eb;border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:8px;transition:all .2s}
+.ans-cell.answered{background:var(--primary-light);border-color:var(--primary)}
+.ans-cell.wrong-result{background:var(--danger-light);border-color:var(--danger)}
+.ans-cell.correct-result{background:var(--success-light);border-color:var(--success)}
+.ans-cell .num{font-weight:700;font-size:.92rem;color:var(--primary-dark);min-width:34px;text-align:center;background:#fff;padding:5px 0;border-radius:6px;border:1px solid var(--border)}
+.ans-cell.wrong-result .num{background:var(--danger);color:#fff;border-color:var(--danger)}
+.ans-cell.correct-result .num{background:var(--success);color:#fff;border-color:var(--success)}
+.opts{display:flex;gap:4px}
+.opt{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#fff;border:1.5px solid #cbd5e1;cursor:pointer;font-size:.85rem;font-weight:600;color:#64748b;transition:all .15s;user-select:none}
+.opt:hover{border-color:var(--primary);color:var(--primary)}
+.opt.selected{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{flex:1;min-width:130px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 22px;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-outline{background:#fff;border:2px solid var(--primary);color:var(--primary)}
+.btn-outline:hover{background:var(--primary-light)}
+
+.progress-info{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;margin-bottom:8px}
+.progress-info .answered-count{font-weight:700;color:var(--primary-dark)}
+.progress-bar{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:99px;transition:width .3s}
+
+.exam-info{background:var(--primary-light);border-left:4px solid var(--primary);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.92rem;color:var(--primary-dark);margin-bottom:14px}
+.exam-info b{color:var(--primary-dark)}
+.score-circle-wrap{text-align:center;padding:20px 0}
+.score-circle{width:160px;height:160px;border-radius:50%;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;border:6px solid;font-size:2.4rem;font-weight:800;margin-bottom:10px}
+.score-circle.perfect{border-color:var(--warning);background:#fffbeb;color:var(--warning);animation:pulse 1s infinite}
+.score-circle.great{border-color:var(--success);background:var(--success-light);color:var(--success)}
+.score-circle.retry{border-color:var(--danger);background:var(--danger-light);color:var(--danger)}
+.score-circle small{font-size:.78rem;font-weight:400;margin-top:2px;opacity:.85}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.score-msg{font-size:1.05rem;margin:8px 0;line-height:1.5}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.stat-box{background:#fafafa;border-radius:10px;padding:12px;text-align:center}
+.stat-box .label{font-size:.78rem;color:var(--muted);margin-bottom:4px}
+.stat-box .value{font-size:1.3rem;font-weight:700;color:var(--primary-dark)}
+.stat-box.correct .value{color:var(--success)}
+.stat-box.wrong .value{color:var(--danger)}
+
+.wrong-card{background:var(--danger-light);border-left:4px solid var(--danger);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:12px}
+.wrong-card .wrong-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.wrong-card .wrong-num{background:var(--danger);color:#fff;width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem}
+.wrong-card .wrong-type{font-size:.72rem;background:#fff;color:var(--danger);padding:3px 9px;border-radius:99px;font-weight:600;border:1px solid var(--danger)}
+.wrong-card .wrong-pts{font-size:.72rem;color:var(--muted);margin-left:auto;font-weight:600}
+.wrong-card .my-pick{margin-top:4px;font-size:.86rem;color:#374151}
+.wrong-card .my-pick b{color:var(--danger)}
+.wrong-card .right-ans{background:#fff;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:.88rem;border-left:3px solid var(--success)}
+.wrong-card .right-ans b{color:var(--success)}
+.wrong-card .explanation{background:var(--warning-light);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:.85rem;line-height:1.55;color:#713f12;border-left:3px solid var(--warning)}
+.wrong-card .explanation b{color:#92400e}
+
+.hidden{display:none!important}
+
+.all-correct{text-align:center;padding:20px;background:var(--success-light);border-radius:12px;color:var(--success);font-size:1.05rem;font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🍁 객관식 즉시 채점기</h1>
+  <div class="sub">finaltestGo1 Set 3 (v03 신규 출제) · 객관식 33문제 · 66점 만점</div>
+</header>
+
+<div class="card">
+  <h2>📝 답안 입력</h2>
+  <div class="help">시험지를 풀고 아래 표에 자신의 답을 표시한 후 <b>채점하기</b>를 누르세요. 객관식 1~33번만 채점됩니다 (주관식 34~40번 제외).</div>
+  <div class="progress-info">
+    <span>진행률</span>
+    <span class="answered-count"><span id="cnt">0</span> / 33 완료</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="bar" style="width:0%"></div></div>
+  <div class="ans-grid" id="grid"></div>
+  <div class="actions">
+    <button class="btn btn-primary" onclick="grade()">✓ 채점하기</button>
+    <button class="btn btn-outline" onclick="reset()">↺ 초기화</button>
+  </div>
+</div>
+
+<div class="card hidden" id="result">
+  <h2>📊 채점 결과</h2>
+  <div class="exam-info">
+    <b>📋 시험:</b> finaltestGo1 Set 3 (v03 신규 출제) · 객관식 33문제 (66점 만점)
+  </div>
+  <div class="score-circle-wrap">
+    <div class="score-circle" id="circle"><span id="scoreVal">0</span><small id="scoreMax">/ 66점</small></div>
+    <div class="score-msg" id="scoreMsg"></div>
+  </div>
+  <div class="stats">
+    <div class="stat-box correct"><div class="label">정답</div><div class="value" id="cc">0</div></div>
+    <div class="stat-box wrong"><div class="label">오답</div><div class="value" id="wc">0</div></div>
+    <div class="stat-box"><div class="label">정답률</div><div class="value" id="pct">0%</div></div>
+  </div>
+  <div id="wrong-list"></div>
+</div>
+
+</div>
+
+<script>
+const Q=[
+{num:1,type:"topic-제목",answer:2,choices:["Why Children Crave Endless Toy Variety","Less Messy, Deeper Play: Simplifying Kids' Spaces","The Marketing Tricks Behind Modern Toy Stores","How Parents Can Buy Toys More Efficiently","Why Open Outdoor Spaces Always Beat Indoors"],explanation:"P10 — 단순화(streamlining)가 깊은 놀이를 가능하게 함"},
+{num:2,type:"36-순서",answer:4,choices:["(A)-(B)-(C)","(A)-(C)-(B)","(B)-(A)-(C)","(B)-(C)-(A)","(C)-(A)-(B)"],explanation:"P09 — burden→(B)부유국 정반대→(C)this contrast→(A)역설(treadmill)"},
+{num:3,type:"topic-주제",answer:5,choices:["the precision of statistical methods in social research","historical roots of modern data-driven government","economic benefits of large-scale national surveys","how charts can replace narrative reporting easily","the human cost hidden behind impersonal statistics"],explanation:"P03 — '눈물 닦인 인간' 비유: 통계 뒤 숨겨진 인간 비용"},
+{num:4,type:"21-밑줄 의미",answer:3,choices:["시원함을 잠시만 기억하게 하는 일시적 기술","전기 사용량 통계를 잊게 하는 편리한 가전","전통 건축의 기후 적응 지혜를 잊게 만드는 기술","옛 도시의 거리 풍경을 사라지게 하는 기술","사용자가 작동법을 빨리 잊게 만드는 단순 가전"],explanation:"P02 — 두꺼운 벽·흰 지붕·통풍 등 전통 건축 지혜 망각"},
+{num:5,type:"21-밑줄 의미",answer:1,choices:["직접 연주 없이도 음악 인생을 이어가는 방식","피아노를 더 작게 개조하여 다시 연주하는 시도","학생 없이 홀로 작품을 분석하는 침묵의 연구","피아노가 없는 학교에서 임시로 가르치는 일","본인의 옛 녹음만 반복해서 듣는 회상의 시간"],explanation:"P08 — 손가락 통제력 상실 후 가르침으로 음악 인생 지속"},
+{num:6,type:"sum-요약",answer:2,choices:["rigid — broaden","flexible — readjust","changeable — reinforce","fixed — abandon","shrinking — preserve"],explanation:"P05 — flexible(유연) + readjust(재조정)"},
+{num:7,type:"ex-claim",answer:3,choices:["습관 형성에는 강한 끌림이 가장 중요하다.","운동은 보상 없이도 꾸준히 지속해야 한다.","새 습관은 유혹 결합 전략을 통해 만들어라.","좋은 습관은 좋은 기기와의 조합으로 형성된다.","휴대용 기기 사용은 운동 효율을 향상시킨다."],explanation:"P07 — temptation bundling(유혹 결합)으로 새 습관 형성"},
+{num:8,type:"wrongword",answer:4,choices:["ⓐ vital","ⓑ bears","ⓒ absorbs","ⓓ released","ⓔ respond"],explanation:"P01 — 스펀지가 물에 'released'는 부적합(dipped/put이 맞음)"},
+{num:9,type:"★ 29-어법(수동태)",answer:4,choices:["ⓐ don't offer","ⓑ disappears","ⓒ must be created","ⓓ are needed","ⓔ should be reshaped"],explanation:"P15 — are needed to changed → need to be changed (또는 must be changed)"},
+{num:10,type:"wrongword",answer:2,choices:["ⓐ illusion","ⓑ encourage","ⓒ strengthen","ⓓ counters","ⓔ revealing"],explanation:"P11 — passive methods가 bias를 약화 X → 강화(strengthen). ⓑ encourage 부적합"},
+{num:11,type:"★ 29-어법(수동태)",answer:4,choices:["ⓐ is","ⓑ rally","ⓒ must be","ⓓ making","ⓔ are"],explanation:"P17 — must be making → made of plastic (수동태 p.p.)"},
+{num:12,type:"ins-삽입",answer:3,choices:["①","②","③","④","⑤"],explanation:"P13 — 'each reduction→universal' 다음, 'phone became a screen' 앞 ③"},
+{num:13,type:"blank-빈칸 문장",answer:5,choices:["they invented written contracts among traders","they recorded only royal taxation from the start","they distinguished colors of various livestock","they wrote stories instead of inventory lists","they separated the number from the object"],explanation:"P12 — 수메르인의 도약: 숫자와 대상의 분리"},
+{num:14,type:"blank-빈칸 문장",answer:1,choices:["turns shallow familiarity into genuine mastery","replaces every form of independent study","proves recognition is identical to recall","shortens the time spent on writing tasks","removes any need for active questioning"],explanation:"P11 — teacher mindset이 표면 친숙→진짜 숙달로 전환"},
+{num:15,type:"blank-빈칸 단어",answer:1,choices:["absorbs","releases","blocks","reflects","absords"],explanation:"P17 Kendler — 바다가 CO2를 흡수(absorb)하면 산성화"},
+{num:16,type:"★ 29-어법(수동태)",answer:3,choices:["ⓐ was promoted","ⓑ came","ⓒ symbolize","ⓓ were countered","ⓔ was presented"],explanation:"P14 — ⓑ came(과거, 주변 시제와 통일). ⓒ symbolize는 to 누락 → 'came to symbolize'여야 함(정답)"},
+{num:17,type:"31-빈칸 단어",answer:5,choices:["bottom","low","plateau","pause","peak"],explanation:"P06 — 동조성이 14세 무렵 '정점(peak)'에 도달"},
+{num:18,type:"topic-주제",answer:3,choices:["the technical limits of early clay tablets","daily life in Mesopotamian river cities","the cognitive birth of abstract number in Sumer","the difference between numeral and numbers","political conflicts surrounding ancient taxation"],explanation:"P12 — 추상수(abstract number)의 인지적 탄생"},
+{num:19,type:"sum-요약",answer:4,choices:["economic — schools","private — markets","digital — classrooms","cultural — environments","medical — playgrounds"],explanation:"P15 — cultural(문화적) + environments(환경) 변화"},
+{num:20,type:"irr-무관",answer:3,choices:["①","②","③","④","⑤"],explanation:"P09 — ③ '공항 무빙워크'는 걷기 대조 주제와 무관"},
+{num:21,type:"irr-무관",answer:3,choices:["①","②","③","④","⑤"],explanation:"P07 — ③ 'Wharton MBA 졸업생의 에너지 절약 연구'는 습관 주제와 무관"},
+{num:22,type:"36-순서",answer:2,choices:["(A)-(B)-(C)","(A)-(C)-(B)","(B)-(A)-(C)","(B)-(C)-(A)","(C)-(A)-(B)"],explanation:"P02 — (A)옛 건물 지혜→(C)두꺼운 벽·트랜섬→(B)통풍 방향"},
+{num:23,type:"ex-mismatch",answer:5,choices:["\"Homestead\"는 Jon Ching의 회화 작품이다.","Ching의 작품 대부분은 자연을 찬미한다.","Ching은 \"우리는 자연에서 분리되었다\"고 말한다.","Ching은 \"모든 것이 연결되어 있음\"을 보이고 싶어 한다.","Ching의 작품은 도시 풍경을 사진으로 기록한다."],explanation:"P17 Ching — 자연·생명 그림(painting), 도시 풍경 사진 X"},
+{num:24,type:"★ g-passive-id 식별",answer:1,choices:["The plastic dream was eventually challenged by environmental concerns.","Plastic was powerfully symbolized the prosperity of the postwar boom.","Recycling has been promoting as the only viable solution.","The campaigns were designed industry lobbyists at first.","Boycotts is launched consumers across many regions."],explanation:"① was challenged(정상). ② 수동태 뒤 목적어(능동·수동 혼동) ③ promoting→promoted ④ by 누락 ⑤ is→are + by 누락"},
+{num:25,type:"★ g-passive 변환",answer:5,choices:["Silkscreen portraits of cultural icons mass-produced by Warhol.","Silkscreen portraits were mass-producing by Warhol.","Silkscreen portraits has been mass-produced by Warhol.","Silkscreen portraits of cultural icons are mass-produced Warhol.","Silkscreen portraits of cultural icons were mass-produced by Warhol."],explanation:"능동 'Warhol mass-produced' → 수동 'were mass-produced by Warhol' (과거 수동)"},
+{num:26,type:"31-빈칸 단어",answer:1,choices:["exposure","exercise","measurement","supervision","medication"],explanation:"P05 — 반복적 '노출(exposure)' + 변화 의지"},
+{num:27,type:"blank-빈칸 단어",answer:4,choices:["shortage","surplus","shipment","volume","promise"],explanation:"P17 Von Wong — 매일 바다로 들어가는 거대한 '양(volume)'의 플라스틱"},
+{num:28,type:"blank-빈칸 문장",answer:2,choices:["to fact-check every claim you make later","to identify with you and lower their guard","to compare your speech with classical drama","to demand longer Q&A sessions afterwards","to accept the data behind your arguments"],explanation:"P04 — 개인 약점 공유 → 청중이 화자와 동일시"},
+{num:29,type:"★ ex-mismatch (Banksy)",answer:4,choices:["Banksy는 영국 거리 예술가로 알려져 있다.","Banksy의 실명은 수십 년간 비공개로 유지되어 왔다.","작품들은 종종 풍자적이고 정치적이다.","\"Girl with Balloon\"은 파리의 한 갤러리 벽에 그려졌다.","2018년 경매에서 작품 일부가 스스로 절단되었다."],explanation:"P16 Banksy — Girl with Balloon은 런던 벽(파리 갤러리 X)"},
+{num:30,type:"topic-요지",answer:3,choices:["도시 미술관은 자연 작품 전시를 늘려야 한다.","회화는 사진보다 자연 표현에 더 적합하다.","Ching의 작품은 자연과의 연결을 회복하라는 메시지를 전한다.","야생 동물 다큐멘터리가 예술보다 더 효과적이다.","환경 운동가들은 회화 작품 수집을 자제해야 한다."],explanation:"P17 Ching — 자연과의 연결 회복 메시지"},
+{num:31,type:"topic-주제",answer:1,choices:["the cognitive trade-offs hidden in minimalist design","how marketing campaigns popularize new gadgets","why touchscreens always outperform mechanical keys","the historical roots of mass-produced household goods","pros and cons in simplifying devices' functions"],explanation:"P13 — minimalist design의 인지적 절충(메뉴 암기 어려움)"},
+{num:32,type:"wrongword",answer:2,choices:["ⓐ too much","ⓑ multiplies","ⓒ reduces","ⓓ focus","ⓔ deeply"],explanation:"P10 — streamlining은 인지 부담 multiplies X → reduces(ⓑ가 부적합)"},
+{num:33,type:"topic-제목",answer:2,choices:["Why Museums Are Replacing Photography with Sculpture","Environmental Art: Images That Move Us Toward Action","A Short History of Pop Art in the Twentieth Century","How Auctions Have Shaped Modern Art Investment","The Rise of Artificial Intelligence in Studio Painting"],explanation:"P17 전체 — 환경 예술: 행동을 촉구하는 이미지"}
+];
+const CIRC=["①","②","③","④","⑤"];
+const state={ans:{}};
+
+function renderGrid(){
+  const grid=document.getElementById('grid');
+  grid.innerHTML=Q.map(q=>`
+    <div class="ans-cell" data-num="${q.num}">
+      <div class="num">${q.num}</div>
+      <div class="opts">
+        ${[1,2,3,4,5].map(c=>`<span class="opt" data-c="${c}" onclick="pick(${q.num},${c})">${CIRC[c-1]}</span>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function pick(num,c){
+  state.ans[num]=c;
+  const cell=document.querySelector(`.ans-cell[data-num="${num}"]`);
+  cell.classList.add('answered');
+  cell.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  cell.querySelector(`.opt[data-c="${c}"]`).classList.add('selected');
+  updateProgress();
+}
+
+function updateProgress(){
+  const cnt=Object.keys(state.ans).length;
+  document.getElementById('cnt').textContent=cnt;
+  document.getElementById('bar').style.width=`${Math.round(cnt/33*100)}%`;
+}
+
+function grade(){
+  const unanswered=Q.filter(q=>!state.ans[q.num]);
+  if(unanswered.length>0){
+    if(!confirm(`아직 ${unanswered.length}문제를 풀지 않았습니다. 채점하시겠습니까?`)) return;
+  }
+  let score=0;const wrong=[];
+  Q.forEach(q=>{
+    const cell=document.querySelector(`.ans-cell[data-num="${q.num}"]`);
+    cell.classList.remove('wrong-result','correct-result');
+    if(state.ans[q.num]===q.answer){score+=2;cell.classList.add('correct-result');}
+    else{wrong.push(q);cell.classList.add('wrong-result');}
+  });
+
+  const max=66;
+  const pct=Math.round(score/max*100);
+  const cc=33-wrong.length;
+  const wc=wrong.length;
+
+  document.getElementById('scoreVal').textContent=score;
+  document.getElementById('scoreMax').textContent=`/ ${max}점`;
+  document.getElementById('cc').textContent=cc;
+  document.getElementById('wc').textContent=wc;
+  document.getElementById('pct').textContent=pct+'%';
+
+  const circle=document.getElementById('circle');
+  const msg=document.getElementById('scoreMsg');
+  circle.className='score-circle';
+  if(pct>=90){circle.classList.add('perfect');msg.innerHTML=`🎉 <b>EXCELLENT!</b> 정말 잘했어요!`;}
+  else if(pct>=70){circle.classList.add('great');msg.innerHTML=`👍 잘했어요! 틀린 ${wc}문제만 더 복습하면 완벽!`;}
+  else{circle.classList.add('retry');msg.innerHTML=`📚 ${wc}문제 오답을 꼼꼼히 복습한 후 다시 도전!`;}
+
+  const list=document.getElementById('wrong-list');
+  if(wc===0){
+    list.innerHTML=`<div class="all-correct">🏆 만점! 모든 객관식 문제 정답입니다.</div>`;
+  } else {
+    list.innerHTML=`<h2 style="margin-top:18px">✗ 틀린 문제 (${wc}개)</h2>`+
+      wrong.map(q=>{
+        const my=state.ans[q.num]?`${CIRC[state.ans[q.num]-1]} ${q.choices[state.ans[q.num]-1]}`:'(미응답)';
+        const right=`${CIRC[q.answer-1]} ${q.choices[q.answer-1]}`;
+        return `<div class="wrong-card">
+          <div class="wrong-header">
+            <div class="wrong-num">${q.num}</div>
+            <span class="wrong-type">${q.type}</span>
+            <span class="wrong-pts">2점</span>
+          </div>
+          <div class="my-pick">내 답: <b>${my}</b></div>
+          <div class="right-ans"><b>정답:</b> ${right}</div>
+          <div class="explanation"><b>해설:</b> ${q.explanation}</div>
+        </div>`;
+      }).join('');
+  }
+
+  document.getElementById('result').classList.remove('hidden');
+  document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function reset(){
+  if(!confirm('답안을 모두 초기화하시겠습니까?')) return;
+  state.ans={};
+  document.getElementById('result').classList.add('hidden');
+  document.querySelectorAll('.ans-cell').forEach(c=>{
+    c.classList.remove('answered','wrong-result','correct-result');
+    c.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  });
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+renderGrid();
+</script>
+</body>
+</html>
+
