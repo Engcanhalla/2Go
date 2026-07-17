@@ -1,0 +1,2617 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1a">
+<title>단어의 추억 · 고2 Lv.9</title>
+<style>
+  :root{
+    --bg-deep:#0f172a;
+    --bg-card:#1e293b;
+    --bg-card-hover:#253347;
+    --bg-card-2:#253347;
+    --accent:#f59e0b;
+    --accent-light:#fbbf24;
+    --accent-glow:rgba(245,158,11,0.15);
+    --accent-glow-strong:rgba(245,158,11,0.30);
+    --text:#f1f5f9;
+    --text-on-dark:#f1f5f9;
+    --text-muted:#94a3b8;
+    --text-on-dark-muted:#94a3b8;
+    --success:#10b981;
+    --danger:#ef4444;
+    --info:#3b82f6;
+    --grade:#10b981;
+    --grade-soft:rgba(16,185,129,.15);
+    --grade-glow:rgba(16,185,129,.30);
+    --grade-glow-strong:rgba(16,185,129,.50);
+    --radius-sm:8px;
+    --radius-md:14px;
+    --radius-lg:20px;
+    --radius-xl:28px;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.30);
+    --shadow-md:0 4px 16px rgba(0,0,0,.35);
+    --shadow-lg:0 12px 40px rgba(0,0,0,.45);
+    --shadow-xl:0 24px 60px rgba(0,0,0,.55);
+    --transition:0.25s cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0;padding:0;background:var(--bg-deep);color:var(--text);
+    font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;overscroll-behavior:none;
+  }
+  /* ── Noise texture overlay ── */
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events:none;z-index:0;
+  }
+  /* ── Ambient glow blob (top-right) ── */
+  body::after{
+    content:'';position:fixed;top:-200px;right:-200px;
+    width:600px;height:600px;
+    background:radial-gradient(circle, rgba(16,185,129,0.10) 0%, transparent 70%);
+    pointer-events:none;z-index:0;
+  }
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+  input{font-family:inherit;}
+
+  /* ---------- HEADER ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    background:linear-gradient(180deg, rgba(15,23,42,.96), rgba(15,23,42,.82));
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(148,163,184,.10);
+    padding:12px 16px 10px;
+  }
+  .topbar-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .grade-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--grade-soft);color:var(--grade);
+    padding:6px 14px;border-radius:100px;
+    font-weight:700;font-size:.78rem;
+    letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid rgba(16,185,129,.35);
+    box-shadow:0 0 0 3px rgba(16,185,129,.08);
+  }
+  .grade-badge .chap{color:var(--text);opacity:.85;font-weight:600;text-transform:none;letter-spacing:0;}
+  .stats{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);}
+  .stat-pill{
+    display:inline-flex;align-items:center;gap:4px;
+    background:rgba(148,163,184,.08);
+    padding:6px 10px;border-radius:var(--radius-sm);
+    border:1px solid rgba(148,163,184,.12);
+    transition:background var(--transition);
+  }
+  .stat-pill b{color:var(--text);font-weight:700;}
+  .icon-btn{
+    width:38px;height:38px;border-radius:var(--radius-sm);
+    display:inline-flex;align-items:center;justify-content:center;
+    background:rgba(148,163,184,.08);
+    border:1px solid rgba(148,163,184,.12);
+    font-size:18px;line-height:1;
+    transition:all var(--transition);
+  }
+  .icon-btn:hover{background:rgba(148,163,184,.14);transform:translateY(-1px);}
+  .icon-btn:active{transform:translateY(0) scale(.94);}
+  .icon-btn.on{background:var(--grade-soft);border-color:var(--grade);box-shadow:0 0 12px var(--grade-glow);}
+
+  .progress-wrap{margin-top:12px;}
+  .dots{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+  .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:rgba(148,163,184,.15);
+    transition:all var(--transition);
+  }
+  .dot.done{background:var(--grade);box-shadow:0 0 6px var(--grade-glow);}
+  .dot.current{background:var(--accent);transform:scale(1.35);box-shadow:0 0 10px var(--accent-glow-strong);}
+  .pbar{
+    height:6px;border-radius:100px;
+    background:rgba(148,163,184,.12);
+    overflow:hidden;
+    position:relative;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.2);
+  }
+  .pbar-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg, var(--grade), #34d399);
+    box-shadow:0 0 10px var(--grade-glow-strong), inset 0 1px 0 rgba(255,255,255,.2);
+    border-radius:100px;
+    transition:width .45s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ---------- MAIN ---------- */
+  main{
+    position:relative;z-index:1;
+    max-width:560px;margin:0 auto;padding:16px;
+    min-height:calc(100vh - 130px);
+    display:flex;flex-direction:column;
+  }
+  @keyframes view-in{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  main > *{animation:view-in .35s cubic-bezier(.4,0,.2,1);}
+
+  /* ---------- HOME ---------- */
+  .home{
+    text-align:center;padding:36px 16px 20px;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+  }
+  .home .badge-mini{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(16,185,129,.12);color:var(--grade);
+    font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    padding:6px 16px;border-radius:100px;
+    border:1px solid rgba(16,185,129,.25);
+    margin-bottom:8px;
+  }
+  .home h1{
+    font-family:'Segoe UI','Malgun Gothic',sans-serif;
+    font-size:2.4rem;margin:0;
+    color:var(--text-on-dark);
+    font-weight:800;letter-spacing:-1px;line-height:1.15;
+  }
+  .home h1 .accent{
+    background:linear-gradient(135deg, var(--grade) 0%, #34d399 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  }
+  .home .sub{color:var(--text-on-dark-muted);font-size:1rem;line-height:1.6;max-width:340px;}
+  .home .lvl{
+    font-family:'Segoe UI','Malgun Gothic',sans-serif;
+    font-size:56px;font-weight:900;color:var(--grade);
+    text-shadow:0 0 30px var(--grade-glow-strong);margin:6px 0 0;
+    letter-spacing:-2px;
+  }
+  .home-card{
+    background:var(--bg-card);border:1px solid rgba(148,163,184,.10);
+    border-radius:var(--radius-lg);padding:22px;width:100%;max-width:420px;
+    box-shadow:var(--shadow-lg);
+    margin-top:6px;
+  }
+  .home-card .row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 0;border-bottom:1px solid rgba(148,163,184,.10);
+    font-size:.92rem;color:var(--text-on-dark-muted);
+  }
+  .home-card .row:last-child{border-bottom:0;}
+  .home-card .row b{color:var(--grade);font-weight:700;}
+  .start-btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    margin-top:10px;
+    background:linear-gradient(135deg, var(--grade) 0%, #059669 100%);
+    color:#ffffff;font-weight:700;font-size:1.05rem;letter-spacing:.02em;
+    padding:15px 40px;border-radius:var(--radius-md);
+    box-shadow:0 8px 24px rgba(16,185,129,.35), inset 0 1px 0 rgba(255,255,255,.15);
+    transition:all var(--transition);min-height:52px;
+  }
+  .start-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(16,185,129,.45), inset 0 1px 0 rgba(255,255,255,.15);}
+  .start-btn:active{transform:translateY(0) scale(.98);}
+  .start-btn.alt{
+    background:linear-gradient(135deg, var(--accent) 0%, #d97706 100%);
+    box-shadow:0 8px 24px rgba(245,158,11,.35), inset 0 1px 0 rgba(255,255,255,.15);
+  }
+  .start-btn.alt:hover{box-shadow:0 12px 32px rgba(245,158,11,.45), inset 0 1px 0 rgba(255,255,255,.15);}
+  .start-btn.adv{
+    background:linear-gradient(135deg, #a855f7 0%, #6d28d9 100%);
+    box-shadow:0 8px 24px rgba(168,85,247,.40), inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .start-btn.adv:hover{box-shadow:0 12px 32px rgba(168,85,247,.55), inset 0 1px 0 rgba(255,255,255,.18);}
+  .start-btn.wrong-only{
+    background:linear-gradient(135deg,#ef4444 0%,#b91c1c 100%);
+    box-shadow:0 8px 24px rgba(239,68,68,.40), inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .start-btn.wrong-only:hover{box-shadow:0 12px 32px rgba(239,68,68,.55), inset 0 1px 0 rgba(255,255,255,.18);}
+
+  /* ---------- STAGE PICKER (홈) ---------- */
+  .stage-picker{
+    display:grid;grid-template-columns:1fr;gap:12px;width:100%;max-width:420px;margin:8px 0;
+  }
+  .stage-btn{
+    display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;gap:2px 14px;
+    align-items:center;text-align:left;
+    padding:16px 20px;border-radius:var(--radius-lg);
+    background:linear-gradient(135deg, rgba(30,41,59,.85), rgba(15,23,42,.85));
+    border:1px solid rgba(148,163,184,.20);
+    color:var(--text-on-dark);cursor:pointer;
+    transition:all var(--transition);
+    position:relative;
+  }
+  .stage-btn .ic{grid-row:span 2;font-size:2rem;text-align:center;}
+  .stage-btn .ttl{font-size:1.10rem;font-weight:800;letter-spacing:.02em;}
+  .stage-btn .desc{font-size:.82rem;color:var(--text-on-dark-muted);}
+  .stage-btn:hover{transform:translateY(-2px);border-color:rgba(148,163,184,.45);box-shadow:0 8px 24px rgba(0,0,0,.35);}
+  .stage-btn.basic{border-color:rgba(16,185,129,.35);}
+  .stage-btn.basic .ttl{color:var(--grade);}
+  .stage-btn.basic:hover{border-color:rgba(16,185,129,.65);box-shadow:0 8px 24px rgba(16,185,129,.30);}
+  .stage-btn.advanced{border-color:rgba(168,85,247,.35);}
+  .stage-btn.advanced .ttl{color:#c4b5fd;}
+  .stage-btn.advanced:hover:not([disabled]){border-color:rgba(168,85,247,.65);box-shadow:0 8px 24px rgba(168,85,247,.30);}
+  .stage-btn[disabled]{opacity:.55;cursor:not-allowed;filter:grayscale(.4);}
+  .stage-btn[disabled]:hover{transform:none;box-shadow:none;}
+
+  /* ---------- CLOZE 입력 ---------- */
+  .cloze-prompt .cloze-sentence{
+    font-size:1.35rem;line-height:2.2;color:#f8fafc;font-weight:500;
+    margin-top:14px;padding:14px 16px;
+    background:rgba(15,23,42,.55);border-radius:var(--radius-md);
+    border:1px solid rgba(148,163,184,.18);
+    text-align:center;letter-spacing:.02em;
+  }
+  .cloze-input{
+    display:inline-block;
+    background:rgba(168,85,247,.10);color:#f8fafc;
+    border:2px solid rgba(168,85,247,.50);border-radius:8px;
+    font:inherit;font-weight:700;
+    padding:2px 10px;margin:0 4px;
+    outline:none;transition:all var(--transition);
+    min-width:60px;text-align:center;
+  }
+  .cloze-input:focus{border-color:#c4b5fd;background:rgba(168,85,247,.18);box-shadow:0 0 0 4px rgba(168,85,247,.20);}
+  .grammar-prompt .qkr{color:#fef3c7;}
+  .grammar-hint{margin-top:10px;padding:8px 12px;background:rgba(252,211,77,.10);border:1px solid rgba(252,211,77,.28);border-radius:8px;color:#fcd34d;font-size:.92rem;line-height:1.5;}
+  .cloze-input.correct{border-color:var(--grade);background:rgba(16,185,129,.15);color:#a7f3d0;}
+  .cloze-input.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+  .input-box.only-btn{justify-content:center;}
+  /* 첫글자 프리필 인풋 — 미리 채워진 첫 글자를 시각적으로 강조 */
+  .prefill-input{caret-color:#fef3c7;font-family:'Courier New',ui-monospace,monospace;letter-spacing:.05em;font-weight:700;}
+  .prefill-hint{color:#c4b5fd;font-size:.82rem;font-weight:500;margin-left:6px;letter-spacing:0;}
+  /* ---------- 낱말박스 (자동완성 방어) ---------- */
+  .word-answer{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center;margin:6px 0;}
+  .word-answer.inline{display:inline-flex;gap:8px;vertical-align:middle;margin:0 4px;}
+  .word-group{
+    display:inline-flex;align-items:center;gap:0;
+    background:rgba(11,18,32,.7);border:1.5px solid #334155;border-radius:8px;
+    padding:0;transition:all .15s;overflow:hidden;flex-shrink:0;
+  }
+  .word-group:focus-within{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(168,139,250,.22);}
+  .word-group.correct{border-color:var(--grade);background:rgba(16,185,129,.10);}
+  .word-group.wrong{border-color:var(--danger);background:rgba(239,68,68,.10);}
+  /* 폰트: body 상속 sans-serif (이전 .input-box input과 동일한 스타일) */
+  .first-letter{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:26px;padding:0 8px;height:44px;line-height:44px;
+    background:linear-gradient(180deg,#3b2966 0%,#2a1e4d 100%);
+    color:#fef3c7;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    border-right:1px solid #8b5cf6;user-select:none;
+  }
+  .rest-input{
+    border:0;background:transparent;color:var(--text);outline:none;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    padding:0 10px;height:44px;line-height:44px;width:120px;min-width:90px;
+    text-transform:lowercase;
+  }
+  .rest-input::placeholder{color:#475569;font-weight:400;}
+  .word-group.correct .rest-input{color:#a7f3d0;}
+  .word-group.wrong .rest-input{color:#fca5a5;}
+  .cloze-sentence .word-answer{display:inline-flex;flex-wrap:wrap;gap:6px 8px;margin:0 4px;vertical-align:middle;}
+  .cloze-sentence .word-group{border-radius:6px;}
+  .cloze-sentence .first-letter{height:38px;line-height:38px;font-size:1.05rem;min-width:22px;padding:0 7px;}
+  .cloze-sentence .rest-input{height:38px;line-height:38px;font-size:1.05rem;width:100px;min-width:70px;padding:0 9px;}
+  /* .input-box input 스타일이 .rest-input을 override 하는 문제 해결 */
+  .input-box .word-answer input.rest-input{
+    background:transparent;border:0;padding:0 10px;
+    min-height:44px;height:44px;line-height:44px;text-align:left;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    width:120px;min-width:90px;box-shadow:none;
+  }
+  .input-box .word-answer input.rest-input:focus{border:0;box-shadow:none;}
+  /* single-letter 그룹 */
+  .word-group.single-letter{background:rgba(11,18,32,.5);}
+  .word-group.single-letter input.rest-input{width:80px;min-width:60px;}
+  .hint-line{margin-top:12px;padding:10px 14px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.35);border-radius:10px;color:#c4b5fd;font-size:.95rem;line-height:1.55;text-align:center;letter-spacing:.03em;}
+  .hint-line b{color:#fef3c7;font-weight:800;font-family:'Courier New',ui-monospace,monospace;font-size:1.05rem;letter-spacing:.15em;margin:0 2px;}
+
+  /* ---------- CARD STUDY ---------- */
+  .stage{position:relative;padding:14px 2px;perspective:1200px;flex:1;display:flex;flex-direction:column;}
+  .word-counter{
+    color:var(--text-on-dark-muted);text-align:center;font-size:.82rem;
+    margin-bottom:12px;letter-spacing:.02em;
+  }
+  .word-counter b{color:var(--grade);font-weight:700;}
+
+  .flipcard{
+    position:relative;width:100%;min-height:400px;
+    transform-style:preserve-3d;
+    transition:transform .48s cubic-bezier(.2,.7,.1,1.2);
+    cursor:pointer;
+  }
+  .flipcard.flipped{transform:rotateY(180deg);}
+  .face{
+    position:absolute;inset:0;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    background:var(--bg-card);
+    border:1px solid rgba(148,163,184,.10);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-lg);
+    padding:22px;
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    transition:border-color var(--transition), box-shadow var(--transition);
+  }
+  .face.front{
+    align-items:center;justify-content:center;text-align:center;gap:14px;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(16,185,129,.10), transparent 65%),
+      var(--bg-card);
+  }
+  .face.front .pos-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+  .pos-tag{
+    background:rgba(245,158,11,.14);color:var(--accent-light);
+    padding:4px 10px;border-radius:100px;
+    font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    border:1px solid rgba(245,158,11,.20);
+  }
+  .face.front .word{
+    font-family:'Segoe UI','Malgun Gothic',sans-serif;
+    font-size:64px;font-weight:800;letter-spacing:-1.5px;
+    line-height:1.05;
+    color:var(--text-on-dark);
+    text-shadow:0 0 32px rgba(16,185,129,.22);
+    word-break:break-word;
+  }
+  .face.front .ph{color:var(--text-on-dark-muted);font-size:1.05rem;font-style:italic;}
+  .face.front .cefr{
+    position:absolute;top:16px;right:16px;
+    background:var(--grade-soft);color:var(--grade);
+    padding:4px 10px;border-radius:100px;font-size:.68rem;font-weight:700;
+    letter-spacing:.08em;border:1px solid rgba(16,185,129,.25);
+  }
+  .face.front .hint{color:var(--text-on-dark-muted);font-size:.78rem;margin-top:10px;opacity:.7;letter-spacing:.02em;}
+  .speak-btn{
+    margin-top:6px;
+    background:rgba(59,130,246,.10);color:var(--info);
+    border:1px solid rgba(59,130,246,.28);
+    padding:10px 18px;border-radius:var(--radius-sm);
+    font-size:.88rem;font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;min-height:40px;
+    transition:all var(--transition);
+  }
+  .speak-btn:hover{background:rgba(59,130,246,.18);transform:translateY(-1px);}
+  .speak-btn:active{transform:translateY(0) scale(.96);}
+
+  .face.back{
+    transform:rotateY(180deg);
+    padding:18px 18px 16px;
+    overflow-y:auto;
+    background:linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
+  }
+  /* ── 뒷면 폰트 +20% · 고대비 muted 오버라이드 ── */
+  .back{
+    /* 뒷면 전용 강화 색 (기본 muted #94a3b8 → #cbd5e1 slate-300) */
+    --back-muted:#cbd5e1;
+    --back-muted-strong:#e2e8f0;
+  }
+  .back .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .back .top .w{font-family:'Segoe UI','Malgun Gothic',sans-serif;font-size:1.8rem;font-weight:800;color:var(--grade);letter-spacing:-.5px;}
+  .back .top .ph{color:var(--back-muted-strong);font-size:.98rem;font-style:italic;}
+  .back .kr{
+    font-size:1.5rem;font-weight:700;line-height:1.4;
+    margin:6px 0 16px;color:#ffffff;
+  }
+  .back .kr .sep{color:var(--back-muted);margin:0 6px;font-weight:500;opacity:.85;}
+  .section{
+    background:rgba(15,23,42,.62);border-radius:var(--radius-md);padding:14px 16px;
+    margin-bottom:12px;border:1px solid rgba(148,163,184,.18);
+  }
+  .section .label{
+    font-size:.80rem;color:var(--back-muted-strong);
+    text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;font-weight:700;
+    display:flex;align-items:center;gap:4px;
+  }
+  .section.sound{
+    background:linear-gradient(135deg, rgba(245,158,11,.14), rgba(245,158,11,.05));
+    border:1px solid rgba(245,158,11,.35);
+  }
+  .section.sound .label{color:var(--accent-light);}
+  .section.sound .body{color:#fef3c7;font-weight:600;font-size:1.10rem;}
+  .section.story{
+    background:linear-gradient(135deg, rgba(59,130,246,.14), rgba(59,130,246,.05));
+    border:1px solid rgba(59,130,246,.35);
+  }
+  .section.story .label{color:#93c5fd;}
+  .section.story .body{color:#dbeafe;font-size:1.03rem;line-height:1.55;}
+  /* ── 한자 풀이 (wexplain krDetail) ── */
+  .section.hanja{
+    background:linear-gradient(135deg, rgba(249,115,22,.14), rgba(249,115,22,.05));
+    border:1px solid rgba(253,186,116,.38);
+  }
+  .section.hanja .label{color:#fed7aa;}
+  .section.hanja .hanja-list{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+  .section.hanja .hanja-item{
+    display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+    color:#fff7ed;font-size:1rem;line-height:1.55;
+  }
+  .section.hanja .ko-word{font-weight:800;color:#fed7aa;white-space:nowrap;}
+  .section.hanja .arrow{color:#fdba74;font-weight:600;}
+  .section.hanja .explain{color:#ffedd5;font-weight:500;}
+  /* ── 자·타동사 예시 (wexplain usageExamples) ── */
+  .section.usage{
+    background:linear-gradient(135deg, rgba(20,184,166,.14), rgba(20,184,166,.05));
+    border:1px solid rgba(94,234,212,.38);
+  }
+  .section.usage .label{color:#5eead4;}
+  .section.usage .usage-list{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+  .section.usage .usage-item{
+    display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+    color:#ecfeff;line-height:1.5;
+  }
+  .section.usage .usage-item .en{font-weight:600;color:#5eead4;}
+  .section.usage .usage-item .ko{color:#a5f3fc;}
+  .section.usage .usage-item .speak-btn{
+    background:transparent;border:1px solid rgba(94,234,212,.4);color:#5eead4;
+    padding:2px 6px;border-radius:6px;font-size:.85rem;cursor:pointer;
+  }
+  /* ── 문법 포인트 (wexplain grammarNote) ── */
+  .section.grammar{
+    background:linear-gradient(135deg, rgba(245,158,11,.14), rgba(245,158,11,.05));
+    border:1px solid rgba(252,211,77,.38);
+  }
+  .section.grammar .label{color:#fcd34d;}
+  .section.grammar .body{color:#fef3c7;font-weight:500;line-height:1.55;font-size:.98rem;}
+  /* ── 뉘앙스 섹션 (wkorean) ── */
+  .section.nuance{
+    background:linear-gradient(135deg, rgba(168,85,247,.14), rgba(168,85,247,.05));
+    border:1px solid rgba(168,85,247,.38);
+  }
+  .section.nuance .label{color:#c4b5fd;}
+  .section.nuance .body.ko-simple{color:#f5f3ff;font-weight:600;font-size:1.05rem;line-height:1.55;}
+  .section.nuance .when-to-use{
+    color:#ddd6fe;font-size:.94rem;line-height:1.55;margin-top:8px;padding-top:8px;
+    border-top:1px dashed rgba(168,85,247,.28);font-style:italic;letter-spacing:.01em;
+  }
+  .section .body{font-size:1.03rem;line-height:1.55;color:#f8fafc;}
+  .buddy-list,.col-list{display:flex;flex-direction:column;gap:8px;}
+  .buddy-item,.col-item{
+    display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;
+    font-size:1.03rem;
+    padding:6px 0;border-bottom:1px dashed rgba(148,163,184,.18);
+  }
+  .buddy-item:last-child,.col-item:last-child{border-bottom:0;}
+  .buddy-item .en, .col-item .en{color:#ffffff;font-weight:700;}
+  .buddy-item .ko, .col-item .ko{color:var(--back-muted-strong);font-size:.94rem;text-align:right;font-weight:500;}
+  .buddy-item .why{font-size:.86rem;color:var(--back-muted);opacity:1;display:block;width:100%;margin-top:3px;font-style:italic;}
+  .ex-line{font-size:1.03rem;line-height:1.55;}
+  .ex-line .en{color:#f8fafc;font-style:italic;font-weight:500;}
+  .ex-line .ko{color:var(--back-muted-strong);font-size:.94rem;display:block;margin-top:4px;font-weight:500;}
+  /* 콜로케이션·예문 재생 버튼 */
+  .speak-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;flex:0 0 26px;
+    padding:0;margin-right:8px;
+    border:1px solid rgba(59,130,246,.35);
+    background:rgba(59,130,246,.10);
+    color:var(--info);
+    font-size:.78rem;line-height:1;
+    border-radius:8px;cursor:pointer;
+    transition:var(--transition);
+  }
+  .speak-btn:hover{
+    background:rgba(59,130,246,.22);
+    border-color:rgba(59,130,246,.55);
+    transform:translateY(-1px);
+    box-shadow:0 4px 12px rgba(59,130,246,.20);
+  }
+  .speak-btn:active{transform:translateY(0);}
+  .col-item .en, .ex-line .en{flex:1 1 auto;min-width:0;}
+  .ex-line{display:flex;flex-wrap:wrap;align-items:baseline;}
+
+  /* Grade buttons */
+  .grade-row{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+    margin-top:14px;
+  }
+  .grade-btn{
+    padding:15px 6px;border-radius:var(--radius-md);
+    font-weight:700;font-size:.92rem;
+    min-height:56px;
+    border:1.5px solid transparent;
+    transition:all var(--transition);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  }
+  .grade-btn .ic{font-size:20px;line-height:1;}
+  .grade-btn.prev{background:rgba(59,130,246,.14);color:#93c5fd;border-color:rgba(59,130,246,.35);}
+  .grade-btn.home{background:rgba(245,158,11,.12);color:var(--accent-light);border-color:rgba(245,158,11,.30);}
+  .grade-btn.next{background:rgba(16,185,129,.16);color:#6ee7b7;border-color:rgba(16,185,129,.40);}
+  .grade-btn:hover{transform:translateY(-2px);filter:brightness(1.1);}
+  .grade-btn.prev:hover{box-shadow:0 6px 16px rgba(59,130,246,.25);}
+  .grade-btn.home:hover{box-shadow:0 6px 16px rgba(245,158,11,.20);}
+  .grade-btn.next:hover{box-shadow:0 6px 16px rgba(16,185,129,.30);}
+  .grade-btn:active{transform:translateY(0) scale(.97);}
+  .grade-btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(.6);}
+  .grade-btn:disabled:hover{transform:none;box-shadow:none;filter:grayscale(.6);}
+
+  .flip-hint{
+    text-align:center;color:var(--text-on-dark-muted);
+    font-size:.72rem;margin-top:10px;opacity:.6;letter-spacing:.02em;
+  }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-stage{padding:12px 2px;flex:1;display:flex;flex-direction:column;}
+  .quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .quiz-num{
+    background:var(--bg-card);padding:7px 14px;border-radius:100px;
+    font-size:.82rem;font-weight:600;
+    border:1px solid rgba(148,163,184,.15);
+    color:var(--text-on-dark-muted);
+  }
+  .quiz-num b{color:var(--grade);font-weight:700;}
+  .quiz-mode{
+    background:rgba(245,158,11,.12);color:var(--accent-light);
+    padding:6px 12px;border-radius:100px;
+    font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid rgba(245,158,11,.22);
+  }
+  .quiz-card{
+    background:var(--bg-card);border:1px solid rgba(148,163,184,.10);
+    border-radius:var(--radius-lg);padding:24px 20px;
+    box-shadow:var(--shadow-lg);
+    min-height:320px;display:flex;flex-direction:column;
+  }
+  .quiz-prompt{
+    text-align:center;margin-bottom:20px;
+  }
+  .quiz-prompt .label{
+    font-size:.68rem;color:var(--text-on-dark-muted);
+    text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:10px;
+  }
+  .quiz-prompt .qword{
+    font-family:'Segoe UI','Malgun Gothic',sans-serif;
+    font-size:2.2rem;font-weight:800;color:var(--text-on-dark);
+    line-height:1.15;word-break:break-word;letter-spacing:-1px;
+    text-shadow:0 0 24px rgba(16,185,129,.20);
+  }
+  .quiz-prompt .qkr{font-size:1.5rem;font-weight:700;color:var(--accent-light);line-height:1.3;}
+  .quiz-prompt .qph{color:var(--text-on-dark-muted);font-size:.88rem;margin-top:6px;font-style:italic;}
+  .quiz-prompt .lis-btn{
+    margin:10px auto 0;display:flex;
+    background:linear-gradient(135deg, var(--info) 0%, #2563eb 100%);
+    color:#ffffff;font-weight:700;font-size:.95rem;
+    padding:14px 24px;border-radius:var(--radius-md);align-items:center;gap:8px;
+    box-shadow:0 6px 20px rgba(59,130,246,.35), inset 0 1px 0 rgba(255,255,255,.15);
+    min-height:48px;transition:all var(--transition);
+  }
+  .quiz-prompt .lis-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(59,130,246,.42);}
+  .quiz-prompt .lis-btn:active{transform:translateY(0) scale(.97);}
+  .choices{display:flex;flex-direction:column;gap:10px;}
+  .choice{
+    background:var(--bg-card-2);
+    border:1.5px solid rgba(148,163,184,.12);
+    border-radius:var(--radius-md);padding:14px 16px;
+    text-align:left;font-size:.98rem;font-weight:600;color:var(--text-on-dark);
+    transition:all var(--transition);
+    display:flex;align-items:center;gap:12px;
+    min-height:52px;line-height:1.3;
+  }
+  .choice:hover{background:rgba(148,163,184,.10);border-color:rgba(148,163,184,.22);transform:translateY(-1px);}
+  .choice .idx{
+    flex-shrink:0;width:26px;height:26px;border-radius:var(--radius-sm);
+    background:rgba(148,163,184,.14);color:var(--text-on-dark-muted);
+    display:flex;align-items:center;justify-content:center;
+    font-size:.78rem;font-weight:700;
+    transition:all var(--transition);
+  }
+  .choice:active{transform:scale(.98);}
+  .choice.correct{background:rgba(16,185,129,.16);border-color:var(--grade);color:#a7f3d0;box-shadow:0 4px 16px rgba(16,185,129,.20);}
+  .choice.correct .idx{background:var(--grade);color:#0f172a;}
+  .choice.wrong{background:rgba(239,68,68,.14);border-color:var(--danger);color:#fca5a5;}
+  .choice.wrong .idx{background:var(--danger);color:#fff;}
+  .choice.dimmed{opacity:.4;}
+  body.cb-mode .choice.correct::after{content:"✓";margin-left:auto;font-size:22px;font-weight:900;}
+  body.cb-mode .choice.wrong::after{content:"✕";margin-left:auto;font-size:22px;font-weight:900;}
+
+  .input-box{
+    display:flex;flex-direction:column;gap:12px;margin-top:6px;
+  }
+  .input-box input{
+    background:var(--bg-card-2);
+    border:1.5px solid rgba(148,163,184,.15);
+    border-radius:var(--radius-md);padding:16px;
+    color:var(--text-on-dark);font-size:1.15rem;font-weight:600;
+    text-align:center;letter-spacing:.5px;
+    min-height:52px;outline:none;
+    transition:all var(--transition);
+  }
+  .input-box input:focus{border-color:var(--grade);box-shadow:0 0 0 4px rgba(16,185,129,.15);}
+  .input-box input.correct{border-color:var(--grade);background:rgba(16,185,129,.10);color:#a7f3d0;}
+  .input-box input.wrong{border-color:var(--danger);background:rgba(239,68,68,.10);color:#fca5a5;}
+  .submit-btn{
+    background:linear-gradient(135deg, var(--grade) 0%, #059669 100%);
+    color:#ffffff;font-weight:700;font-size:1rem;
+    padding:15px;border-radius:var(--radius-md);min-height:52px;
+    box-shadow:0 6px 20px rgba(16,185,129,.30), inset 0 1px 0 rgba(255,255,255,.15);
+    transition:all var(--transition);
+  }
+  .submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(16,185,129,.40);}
+  .submit-btn:active{transform:translateY(0) scale(.98);}
+  .submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  .feedback{
+    text-align:center;margin-top:16px;
+    min-height:24px;font-weight:700;font-size:.92rem;
+    letter-spacing:.02em;
+  }
+  .feedback.ok{color:#6ee7b7;}
+  .feedback.bad{color:#fca5a5;}
+
+  /* ---------- RESULT ---------- */
+  .result{text-align:center;padding:20px 4px;}
+  .result h2{
+    font-family:'Segoe UI','Malgun Gothic',sans-serif;
+    font-size:2rem;margin:10px 0 6px;font-weight:800;letter-spacing:-1px;
+    background:linear-gradient(135deg, var(--accent) 0%, var(--grade) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  }
+  .result .score-big{
+    font-family:'Segoe UI','Malgun Gothic',sans-serif;
+    font-size:4rem;font-weight:900;line-height:1;
+    margin:20px 0 6px;color:var(--grade);letter-spacing:-2px;
+    text-shadow:0 0 40px var(--grade-glow-strong);
+  }
+  .result .score-pct{color:var(--text-on-dark-muted);font-size:1.1rem;font-weight:600;}
+  .result .score-time{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-top:10px;padding:8px 16px;border-radius:var(--radius-lg);
+    background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.20);
+    color:#f8fafc;font-size:1.05rem;font-weight:600;letter-spacing:.02em;
+  }
+  .result .score-time b{color:var(--accent-light);font-weight:800;font-variant-numeric:tabular-nums;}
+  /* 심화 90%+ 배곧 쵝오 배너 */
+  .grand-banner{
+    position:relative;margin:14px auto 4px;padding:16px 22px;max-width:520px;
+    border-radius:var(--radius-lg);
+    background:linear-gradient(135deg,#7c3aed 0%,#db2777 45%,#f59e0b 100%);
+    box-shadow:0 12px 40px rgba(168,85,247,.45),0 0 0 1px rgba(255,255,255,.15) inset;
+    text-align:center;overflow:hidden;
+    animation:grandPop .8s cubic-bezier(.2,.7,.1,1.4) both, grandGlow 2s ease-in-out infinite alternate;
+  }
+  .grand-banner::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 50%),
+               radial-gradient(circle at 70% 80%, rgba(255,255,255,.25), transparent 50%);
+    pointer-events:none;
+  }
+  .grand-banner .grand-line{
+    font-size:1.65rem;font-weight:900;color:#fff;letter-spacing:.02em;
+    text-shadow:0 2px 12px rgba(0,0,0,.35);position:relative;
+  }
+  .grand-banner .grand-line b{
+    background:linear-gradient(135deg,#fde68a 0%,#fbbf24 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    font-weight:900;padding:0 4px;
+  }
+  .grand-banner .grand-sub{
+    margin-top:6px;color:rgba(255,255,255,.95);
+    font-size:.98rem;font-weight:700;letter-spacing:.02em;position:relative;
+  }
+  @keyframes grandPop{
+    0%{transform:scale(.7) rotate(-3deg);opacity:0;}
+    60%{transform:scale(1.06) rotate(1deg);opacity:1;}
+    100%{transform:scale(1) rotate(0);opacity:1;}
+  }
+  @keyframes grandGlow{
+    from{box-shadow:0 12px 40px rgba(168,85,247,.45),0 0 0 1px rgba(255,255,255,.15) inset;}
+    to  {box-shadow:0 20px 60px rgba(245,158,11,.65),0 0 0 1px rgba(255,255,255,.35) inset;}
+  }
+  /* 고등학교 심화 100% — 화면 전체 랜덤 축하 오버레이 */
+  .hg-celebration{
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(15,23,42,.55) 0%, rgba(2,6,23,.90) 60%, rgba(0,0,0,.98) 100%);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    animation:hgFadeIn .35s ease-out both, hgFadeOut .8s ease-in 5.2s forwards;
+  }
+  .hg-celebration::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(251,191,36,.30), transparent 20%),
+      radial-gradient(circle at 80% 25%, rgba(236,72,153,.28), transparent 22%),
+      radial-gradient(circle at 30% 75%, rgba(59,130,246,.28), transparent 24%),
+      radial-gradient(circle at 75% 80%, rgba(16,185,129,.28), transparent 22%);
+    animation:hgSwirl 6s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  .hg-halo{
+    position:absolute;inset:0;pointer-events:none;
+    background:conic-gradient(from 0deg,#fbbf24,#ef4444,#a855f7,#3b82f6,#10b981,#fbbf24);
+    mix-blend-mode:screen;opacity:.28;
+    animation:hgRotate 12s linear infinite;
+  }
+  .hg-msg{
+    position:relative;font-family:inherit;
+    font-size:clamp(28px, 6vw, 68px);font-weight:900;line-height:1.25;text-align:center;
+    padding:32px 40px;max-width:92vw;letter-spacing:-.01em;
+    background:linear-gradient(90deg,#fbbf24,#ef4444,#ec4899,#a855f7,#3b82f6,#10b981,#fbbf24);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 24px rgba(251,191,36,.75)) drop-shadow(0 0 40px rgba(236,72,153,.45));
+    animation:hgRainbow 3.5s linear infinite, hgPop 1.6s cubic-bezier(.2,.7,.1,1.4) both, hgFloat 4s ease-in-out infinite alternate 1.6s;
+  }
+  .hg-sparkle{
+    position:absolute;pointer-events:none;font-size:clamp(24px,3vw,36px);
+    animation:hgSparkle 1.8s ease-in-out infinite;
+  }
+  @keyframes hgFadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes hgFadeOut{to{opacity:0;visibility:hidden;}}
+  @keyframes hgRainbow{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  @keyframes hgPop{
+    0%{transform:scale(.15) rotate(-25deg);opacity:0;}
+    35%{transform:scale(1.28) rotate(6deg);opacity:1;}
+    55%{transform:scale(.94) rotate(-3deg);}
+    75%{transform:scale(1.08) rotate(1.5deg);}
+    100%{transform:scale(1) rotate(0);opacity:1;}
+  }
+  @keyframes hgFloat{
+    from{transform:translateY(-6px) scale(1);}
+    to{transform:translateY(6px) scale(1.02);}
+  }
+  @keyframes hgSwirl{
+    0%{transform:scale(1) rotate(0);}
+    100%{transform:scale(1.15) rotate(8deg);}
+  }
+  @keyframes hgRotate{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+  @keyframes hgSparkle{
+    0%,100%{opacity:0;transform:scale(.4) rotate(0deg);}
+    50%{opacity:1;transform:scale(1.2) rotate(180deg);}
+  }
+  .result-stats{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+    margin:22px 0;
+  }
+  .result-stat{
+    background:var(--bg-card);padding:16px 12px;border-radius:var(--radius-md);
+    border:1px solid rgba(148,163,184,.10);
+    box-shadow:var(--shadow-md);
+    transition:transform var(--transition);
+  }
+  .result-stat:hover{transform:translateY(-2px);}
+  .result-stat .l{font-size:.68rem;color:var(--text-on-dark-muted);text-transform:uppercase;letter-spacing:.12em;font-weight:600;}
+  .result-stat .v{font-family:'Segoe UI','Malgun Gothic',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text-on-dark);margin-top:6px;}
+  .result-stat .v.grade-c{color:var(--grade);}
+  .result-stat .v.acc-c{color:var(--accent-light);}
+  .badges-earned{
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0 20px;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--bg-card);padding:8px 14px;border-radius:100px;
+    font-size:.82rem;font-weight:700;
+    border:1px solid var(--accent);color:var(--accent-light);
+    box-shadow:0 0 16px rgba(245,158,11,.22), 0 4px 12px rgba(0,0,0,.3);
+    animation:badge-pop .5s cubic-bezier(.2,.7,.1,1.4) backwards;
+  }
+  .badge .ic{font-size:1.1rem;}
+  @keyframes badge-pop{from{transform:scale(.4) rotate(-10deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+  .result-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+  /* ---------- ANIMATIONS ---------- */
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-8px);}
+    40%{transform:translateX(8px);}
+    60%{transform:translateX(-6px);}
+    80%{transform:translateX(6px);}
+  }
+  @keyframes bounce-correct{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.15);}
+    100%{transform:scale(1);}
+  }
+  .shake{animation:shake .22s ease;}
+  .bounce-correct{animation:bounce-correct .32s ease;}
+
+  /* ---------- CANVAS (particles) ---------- */
+  #fxCanvas{
+    position:fixed;inset:0;pointer-events:none;z-index:50;
+  }
+
+  /* ---------- TOAST ---------- */
+  .toast-wrap{
+    position:fixed;top:88px;left:0;right:0;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    pointer-events:none;z-index:40;
+  }
+  .toast{
+    background:rgba(15,23,42,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    color:var(--accent-light);
+    padding:10px 18px;border-radius:100px;font-weight:700;font-size:.86rem;
+    letter-spacing:.02em;
+    border:1px solid rgba(245,158,11,.35);
+    box-shadow:0 8px 24px rgba(0,0,0,.4), 0 0 20px rgba(245,158,11,.15);
+    animation:toast-in .3s cubic-bezier(.4,0,.2,1), toast-out .45s cubic-bezier(.4,0,.2,1) 1.4s forwards;
+  }
+  .toast.streak{color:var(--accent-light);}
+  .toast.big{font-size:1.05rem;padding:14px 24px;border-color:rgba(16,185,129,.4);color:#a7f3d0;box-shadow:0 12px 32px rgba(0,0,0,.5), 0 0 24px rgba(16,185,129,.2);}
+  @keyframes toast-in{from{transform:translateY(-14px) scale(.9);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+  @keyframes toast-out{to{transform:translateY(-14px) scale(.9);opacity:0;}}
+
+  /* ---------- RAINBOW BURST ---------- */
+  .rainbow-overlay{
+    position:fixed;inset:0;pointer-events:none;z-index:45;
+    background:linear-gradient(135deg,
+      rgba(255,0,128,.0), rgba(255,255,0,.0), rgba(0,255,128,.0), rgba(0,128,255,.0), rgba(255,0,255,.0));
+    animation:rainbow 1.5s ease;
+  }
+  @keyframes rainbow{
+    0%{background:linear-gradient(135deg, rgba(255,0,128,.0), rgba(255,255,0,.0));}
+    25%{background:linear-gradient(135deg, rgba(255,0,128,.35), rgba(255,255,0,.30));}
+    50%{background:linear-gradient(135deg, rgba(0,255,128,.30), rgba(0,128,255,.30));}
+    75%{background:linear-gradient(135deg, rgba(255,0,255,.30), rgba(255,128,0,.30));}
+    100%{background:linear-gradient(135deg, rgba(0,0,0,0), rgba(0,0,0,0));}
+  }
+
+  /* ---------- HIDE ---------- */
+  .hidden{display:none !important;}
+
+  /* ---------- MOBILE TUNING ---------- */
+  @media (max-width:380px){
+    .face.front .word{font-size:54px;}
+    .quiz-prompt .qword{font-size:30px;}
+    .home h1{font-size:26px;}
+  }
+
+  /* ---------- TIMER ---------- */
+  .timer-pill{
+    background:rgba(148,163,184,.08);
+    padding:6px 10px;border-radius:var(--radius-sm);
+    border:1px solid rgba(148,163,184,.12);
+    color:var(--text-on-dark-muted);font-size:.72rem;
+    font-variant-numeric:tabular-nums;
+  }
+  .timer-pill b{color:var(--text-on-dark);font-weight:700;}
+</style>
+</head>
+<body>
+
+<canvas id="fxCanvas"></canvas>
+
+<header class="topbar">
+  <div class="topbar-row">
+    <div class="grade-badge">고2 <span class="chap">· Lv.9</span></div>
+    <div class="stats">
+      <span class="stat-pill timer-pill" id="timerPill"><b id="timerVal">00:00</b></span>
+      <span class="stat-pill">XP <b id="xpVal">0</b></span>
+      <span class="stat-pill">🔥 <b id="streakVal">0</b></span>
+      <button class="icon-btn" id="sfxBtn" title="사운드 토글">🔊</button>
+      <button class="icon-btn" id="cbBtn" title="색약 모드">🎨</button>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="dots" id="dots"></div>
+    <div class="pbar"><div class="pbar-fill" id="pbarFill"></div></div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ====================================================================
+   단어의 추억 — 고2 Lv.9  (단일 파일 학습 앱)
+   ==================================================================== */
+
+/* ---------- DATA (embedded) ---------- */
+const DATA = {
+  grade: "고2",
+  chapter: { id:"고2-L09", title:"고2 Lv.9", index:9, totalCount:70 },
+  gradeColor: "#ef4444",
+  newWords: [
+    {"id":"w01194","w":"competent","pos":["adj"],"ph":"/ˈkɒmpɪtənt/","cefr":"B2","kr":["유능한","능숙한"],"ex":[{"en":"She is a highly competent engineer with years of experience.","ko":"그녀는 수년간의 경험을 가진 매우 유능한 엔지니어이다."}],"mnemonic":{"soundHint":"컴피턴트 → competence의 형용사","story":"competence(능력)가 있는 competent '유능한'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"capable","ko":"유능한","reason":"동의어 — 유의"},{"w":"skilled","ko":"숙련된","reason":"동의어 — 유의"},{"w":"incompetent","ko":"무능한","reason":"반의어 — 정반대"}],"collocBest":[{"en":"highly competent","ko":"매우 유능한"},{"en":"competent staff","ko":"유능한 직원"}]},"nuance":{"koSimple":"맡은 일을 능숙하게 처리하는 사람을 뜻해요.","whenToUse":"직원·전문가의 실력을 인정할 때 써요."},"krDetail":[{"ko":"유능한","explain":"일을 잘 해내는"},{"ko":"능숙한","explain":"솜씨 있게 다루는"}],"usageExamples":[{"en":"We need a competent person to handle the accounts.","ko":"우리는 회계를 맡을 유능한 사람이 필요하다."},{"en":"He is competent enough to manage the project alone.","ko":"그는 그 프로젝트를 혼자 맡을 만큼 능숙하다."}],"grammarNote":"'competent at/in + 분야(~에 능숙한)' 형태로 쓴다. 반의어는 incompetent, 명사형은 competence다.","grammarQuiz":[{"sentence":"She is a highly competent engineer _____ has years of experience.","ko":"그녀는 수년간의 경험을 가진 매우 유능한 엔지니어이다.","answer":"who","hint":"주격 관계대명사 (사람)"}]},
+    {"id":"w01195","w":"competitive","pos":["adj"],"ph":"/kəmˈpetɪtɪv/","cefr":"B2","kr":["경쟁적인","경쟁력 있는"],"ex":[{"en":"It is a highly competitive market.","ko":"그것은 매우 경쟁적인 시장이다."}],"mnemonic":{"soundHint":"컴페티티브 → compete + itive","story":"compete(경쟁)하는 성격이 competitive '경쟁적인'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"rivalrous","ko":"경쟁하는","reason":"동의어 — 유의"},{"w":"aggressive","ko":"공격적인","reason":"관련어 — 유의"},{"w":"cooperative","ko":"협력적인","reason":"반의어 — 대비"}],"collocBest":[{"en":"competitive market","ko":"경쟁 시장"},{"en":"competitive edge","ko":"경쟁 우위"}]},"nuance":{"koSimple":"경쟁이 치열하거나 경쟁력이 있는 걸 뜻해요.","whenToUse":"시장·성격·가격을 평가할 때 자주 써요."},"krDetail":[{"ko":"경쟁적인","explain":"서로 이기려 다투는"},{"ko":"경쟁력 있는","explain":"남에게 뒤지지 않는"}],"usageExamples":[{"en":"She has a very competitive personality in sports.","ko":"그녀는 운동에서 매우 경쟁적인 성격을 지녔다."},{"en":"The store offers competitive prices on electronics.","ko":"그 가게는 전자제품을 경쟁력 있는 가격에 판다."}],"grammarNote":"사람에게는 '지기 싫어하는', 가격·제품에는 '경쟁력 있는'이라는 뜻으로 쓰인다. 명사형은 competition, 부사형은 competitively다.","grammarQuiz":[{"sentence":"It is the technology sector _____ has become the most competitive market.","ko":"가장 경쟁이 치열한 시장이 된 것은 바로 기술 부문이다.","answer":"that","hint":"It is ~ that 강조구문"}]},
+    {"id":"w01196","w":"compile","pos":["v"],"ph":"/kəmˈpaɪl/","cefr":"B2","kr":["편집하다","컴파일하다","모으다"],"ex":[{"en":"She compiled a list of all the resources needed.","ko":"그녀는 필요한 모든 자원의 목록을 편집했다."}],"mnemonic":{"soundHint":"컴파일 → 컴+파일 모으기","story":"컴퓨터 파일들을 모아 정리하는 compile '편집하다, 모으다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"gather","ko":"모으다","reason":"동의어 — 유의"},{"w":"assemble","ko":"모으다","reason":"동의어 — 유의"},{"w":"scatter","ko":"흩뜨리다","reason":"반의어 — 대비"}],"collocBest":[{"en":"compile a list","ko":"목록을 작성하다"},{"en":"compile data","ko":"데이터를 모으다"}]},"nuance":{"koSimple":"여러 자료를 모아 하나로 정리하는 걸 뜻해요.","whenToUse":"목록·자료집·프로그램을 만들 때 써요."},"krDetail":[{"ko":"편집하다","explain":"자료를 모아 정리해 만들다"},{"ko":"컴파일하다","explain":"코드를 실행 파일로 바꾸다"},{"ko":"모으다","explain":"여기저기서 그러모으다"}],"usageExamples":[{"en":"The researcher compiled data from hundreds of surveys.","ko":"그 연구원은 수백 건의 설문에서 자료를 모았다."},{"en":"They compiled a report on the region's wildlife.","ko":"그들은 그 지역의 야생동물에 관한 보고서를 편집했다."}],"grammarNote":"여러 자료를 모아 하나로 만드는 것을 뜻하며 report, list, data 같은 명사와 자주 어울린다. 명사형은 compilation이다.","grammarQuiz":[{"sentence":"A list of all the resources needed _____ (compile) by her yesterday.","ko":"필요한 모든 자원 목록이 어제 그녀에 의해 편집되었다.","answer":"was compiled","hint":"과거 수동태 (be + p.p.)"}]},
+    {"id":"w01200","w":"complement","pos":["n","v"],"ph":"/ˈkɒmplɪment/","cefr":"B2","kr":["보완","보완하다","보충하다"],"ex":[{"en":"The new software complements the existing hardware perfectly.","ko":"새 소프트웨어는 기존 하드웨어를 완벽하게 보완한다."}],"mnemonic":{"soundHint":"컴플리먼트 → complete + ment","story":"complete(완전)하게 만드는 complement '보완'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"supplement","ko":"보충하다","reason":"동의어 — 유의"},{"w":"complete","ko":"완성하다","reason":"관련어"},{"w":"compliment","ko":"칭찬","reason":"혼동 주의 — 철자"}],"collocBest":[{"en":"perfectly complement","ko":"완벽하게 보완하다"},{"en":"complement each other","ko":"서로 보완하다"}]},"nuance":{"koSimple":"부족한 부분을 채워 서로 잘 어울리게 해요.","whenToUse":"음식·색상·능력이 서로 보완될 때 써요."},"krDetail":[{"ko":"보완","explain":"부족한 부분을 채워 줌"},{"ko":"보완하다","explain":"서로 부족함을 채워 주다"},{"ko":"보충하다","explain":"모자란 것을 더해 주다"}],"usageExamples":[{"en":"The wine is a perfect complement to the meal.","ko":"그 와인은 식사에 완벽한 보완이 된다."},{"en":"Her calm nature complements his energetic style.","ko":"그녀의 차분함은 그의 활기찬 스타일을 보완해 준다."}],"grammarNote":"발음이 같은 compliment(칭찬)와 뜻이 전혀 다르니 주의한다. '서로 잘 어울려 보완한다'는 의미로 쓰인다.","grammarQuiz":[{"sentence":"The new software, _____ (design) recently, complements the existing hardware perfectly.","ko":"최근에 설계된 새 소프트웨어는 기존 하드웨어를 완벽하게 보완한다.","answer":"designed","hint":"분사구문 (수동)"}]},
+    {"id":"w01202","w":"complex","pos":["adj","n"],"ph":"/ˈkɒmpleks/","cefr":"B2","kr":["복잡한","복합체"],"ex":[{"en":"This is a complex problem.","ko":"이것은 복잡한 문제이다."}],"mnemonic":{"soundHint":"컴플렉스 → 콤플렉스(복잡한 심리)","story":"'콤플렉스' = 뒤엉킨 마음, complex '복잡한'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"complicated","ko":"복잡한","reason":"동의어 — 유의"},{"w":"intricate","ko":"뒤얽힌","reason":"동의어 — 유의"},{"w":"simple","ko":"단순한","reason":"반의어 — 정반대"}],"collocBest":[{"en":"complex problem","ko":"복잡한 문제"},{"en":"apartment complex","ko":"아파트 단지"}]},"nuance":{"koSimple":"여러 요소가 얽혀 이해하기 어려운 걸 뜻해요.","whenToUse":"문제·감정·시스템이 복잡할 때 자주 써요."},"krDetail":[{"ko":"복잡한","explain":"여러 요소가 얽힌"},{"ko":"복합체","explain":"여러 부분이 모인 것"}],"usageExamples":[{"en":"The human brain is an extremely complex organ.","ko":"인간의 뇌는 극도로 복잡한 기관이다."},{"en":"They moved into a new apartment complex downtown.","ko":"그들은 시내의 새 아파트 단지로 이사했다."}],"grammarNote":"형용사 '복잡한' 외에 명사로 '단지(건물군)'나 '콤플렉스(심리)'를 뜻한다. 명사형 complexity는 '복잡성'이다.","grammarQuiz":[{"sentence":"If I had more time, I _____ (solve) this complex problem.","ko":"시간이 더 있다면, 나는 이 복잡한 문제를 해결할 텐데.","answer":"would solve","hint":"가정법 과거 (would + 동사원형)"}]},
+    {"id":"w01203","w":"compliance","pos":["n"],"ph":"/kəmˈplaɪəns/","cefr":"B2","kr":["준수","순응","동조"],"ex":[{"en":"All employees must ensure compliance with the company's safety regulations.","ko":"모든 직원은 회사의 안전 규정 준수를 보장해야 한다."}],"mnemonic":{"soundHint":"컴플라이언스 → comply + ance","story":"comply(준수)하는 상태가 compliance '준수, 순응'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"obedience","ko":"복종","reason":"동의어 — 유의"},{"w":"conformity","ko":"순응","reason":"동의어 — 유의"},{"w":"defiance","ko":"반항","reason":"반의어 — 정반대"}],"collocBest":[{"en":"in compliance with","ko":"~을 준수하여"},{"en":"ensure compliance","ko":"준수를 보장하다"}]},"nuance":{"koSimple":"규칙이나 명령을 잘 따르는 상태를 뜻해요.","whenToUse":"법규·회사 방침 준수를 말할 때 써요."},"krDetail":[{"ko":"준수","explain":"규칙을 지킴"},{"ko":"순응","explain":"요구에 따름"},{"ko":"동조","explain":"시키는 대로 맞춤"}],"usageExamples":[{"en":"The factory was closed for failing to ensure compliance.","ko":"그 공장은 규정 준수를 지키지 못해 폐쇄되었다."},{"en":"Compliance with the new law is mandatory.","ko":"새 법의 준수는 의무 사항이다."}],"grammarNote":"'compliance with + 규정(~의 준수)' 형태로 쓰는 불가산명사다. 동사형은 comply, 반의어는 noncompliance다.","grammarQuiz":[{"sentence":"All employees must ensure compliance with the safety regulations _____ have been established.","ko":"모든 직원은 제정된 안전 규정 준수를 보장해야 한다.","answer":"that","hint":"주격 관계대명사"}]},
+    {"id":"w01204","w":"complicate","pos":["v"],"ph":"/ˈkɒmplɪkeɪt/","cefr":"B2","kr":["복잡하게 하다"],"ex":[{"en":"Don't complicate things unnecessarily.","ko":"불필요하게 복잡하게 만들지 마라."}],"mnemonic":{"soundHint":"컴플리케이트 → complex + ate","story":"complex(복잡)하게 만드는 complicate '복잡하게 하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"entangle","ko":"얽히게 하다","reason":"동의어 — 유의"},{"w":"confuse","ko":"혼란시키다","reason":"동의어 — 유의"},{"w":"simplify","ko":"단순화하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"complicate matters","ko":"일을 복잡하게 만들다"},{"en":"further complicate","ko":"더 복잡하게 하다"}]},"nuance":{"koSimple":"일을 더 어렵고 복잡하게 만드는 걸 뜻해요.","whenToUse":"상황이 얽히거나 꼬였을 때 자주 써요."},"krDetail":[{"ko":"복잡하게 하다","explain":"일을 더 얽히게 만들다"}],"usageExamples":[{"en":"Adding too many rules will only complicate the process.","ko":"규칙을 너무 많이 더하면 과정만 복잡하게 할 뿐이다."},{"en":"His sudden illness complicated our travel plans.","ko":"그의 갑작스러운 병이 우리 여행 계획을 복잡하게 만들었다."}],"grammarNote":"타동사로 '일·상황을 더 어렵게 만들다'라는 뜻이다. 형용사형 complicated는 '복잡한', 명사형은 complication이다.","grammarQuiz":[{"sentence":"Things should not _____ (complicate) unnecessarily.","ko":"일은 불필요하게 복잡해져서는 안 된다.","answer":"be complicated","hint":"조동사 + 수동태 (should be p.p.)"}]},
+    {"id":"w01205","w":"comply","pos":["v"],"ph":"/kəmˈplaɪ/","cefr":"B2","kr":["따르다","준수하다"],"ex":[{"en":"You must comply with the rules.","ko":"규칙을 따라야 한다."}],"mnemonic":{"soundHint":"컴플라이 → 콤+플라이(따라 날다)","story":"규칙을 따라 날듯 comply '따르다, 준수하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"obey","ko":"복종하다","reason":"동의어 — 유의"},{"w":"follow","ko":"따르다","reason":"동의어 — 유의"},{"w":"disobey","ko":"거역하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"comply with rules","ko":"규칙을 준수하다"},{"en":"fail to comply","ko":"준수하지 않다"}]},"nuance":{"koSimple":"정해진 규칙이나 요청에 따르는 걸 뜻해요.","whenToUse":"법·규정·지시를 지킬 때 자주 써요."},"krDetail":[{"ko":"따르다","explain":"규칙대로 하다"},{"ko":"준수하다","explain":"지키며 지시에 응하다"}],"usageExamples":[{"en":"All companies must comply with safety standards.","ko":"모든 회사는 안전 기준을 준수해야 한다."},{"en":"He refused to comply with the officer's request.","ko":"그는 경관의 요구에 따르기를 거부했다."}],"grammarNote":"반드시 'comply with + 규칙(~을 준수하다)' 형태로 자동사로 쓴다. 명사형은 compliance, 형용사형은 compliant다.","grammarQuiz":[{"sentence":"The rules must _____ (comply) with by all members.","ko":"규칙은 모든 회원에 의해 준수되어야 한다.","answer":"be complied","hint":"조동사 + 수동태 (must be p.p.)"}]},
+    {"id":"w01206","w":"component","pos":["n"],"ph":"/kəmˈpoʊnənt/","cefr":"B2","kr":["구성 요소","부품"],"ex":[{"en":"Each component plays a vital role.","ko":"각 구성 요소는 중요한 역할을 한다."}],"mnemonic":{"soundHint":"컴포넌트 → 컴 + 부품","story":"컴퓨터를 이루는 부품 하나하나가 component '구성 요소'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"part","ko":"부분","reason":"동의어 — 유의"},{"w":"element","ko":"요소","reason":"동의어 — 유의"},{"w":"whole","ko":"전체","reason":"반의어 — 대비"}],"collocBest":[{"en":"key component","ko":"핵심 구성 요소"},{"en":"essential component","ko":"필수 부품"}]},"nuance":{"koSimple":"전체를 이루는 하나의 부품이나 요소예요.","whenToUse":"기계·시스템·이론의 구성 요소를 말할 때 써요."},"krDetail":[{"ko":"구성 요소","explain":"전체를 이루는 한 부분"},{"ko":"부품","explain":"기계를 이루는 낱개 조각"}],"usageExamples":[{"en":"Memory is a key component of any computer.","ko":"메모리는 모든 컴퓨터의 핵심 구성 요소다."},{"en":"The factory produces components for cars.","ko":"그 공장은 자동차 부품을 생산한다."}],"grammarNote":"가산명사로 'a key/major component(핵심·주요 구성 요소)'처럼 형용사와 결합한다. 형용사로도 쓰여 component parts(구성 부품)를 만든다.","grammarQuiz":[{"sentence":"Each component plays a vital role _____ cannot be ignored.","ko":"각 구성 요소는 무시할 수 없는 중요한 역할을 한다.","answer":"that","hint":"주격 관계대명사"}]},
+    {"id":"w01207","w":"compose","pos":["v"],"ph":"/kəmˈpoʊz/","cefr":"B2","kr":["작곡하다","구성하다"],"ex":[{"en":"She composed a beautiful song.","ko":"그녀는 아름다운 노래를 작곡했다."}],"mnemonic":{"soundHint":"컴포즈 → 컴+포즈(모으다)","story":"음표를 함께(com) 포즈시켜 compose '작곡하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"create","ko":"창작하다","reason":"동의어 — 유의"},{"w":"construct","ko":"구성하다","reason":"동의어 — 유의"},{"w":"dismantle","ko":"해체하다","reason":"반의어 — 대비"}],"collocBest":[{"en":"compose a song","ko":"노래를 작곡하다"},{"en":"be composed of","ko":"~로 구성되다"}]},"nuance":{"koSimple":"글·음악을 짓거나 무언가를 구성하는 걸 뜻해요.","whenToUse":"작곡·작문·구성 요소를 말할 때 자주 써요."},"krDetail":[{"ko":"작곡하다","explain":"곡을 만들다"},{"ko":"구성하다","explain":"여러 부분으로 이루다"}],"usageExamples":[{"en":"Mozart composed his first symphony as a child.","ko":"모차르트는 어릴 때 첫 교향곡을 작곡했다."},{"en":"Water is composed of hydrogen and oxygen.","ko":"물은 수소와 산소로 구성되어 있다."}],"grammarNote":"'be composed of + 구성물(~로 구성되다)' 수동 구문이 매우 흔하다. 명사형 composition은 '작곡·구성·작문'을 뜻한다.","grammarQuiz":[{"sentence":"A beautiful song _____ (compose) by her last year.","ko":"아름다운 노래가 작년에 그녀에 의해 작곡되었다.","answer":"was composed","hint":"과거 수동태 (be + p.p.)"},{"sentence":"It was she _____ composed the beautiful song.","ko":"그 아름다운 노래를 작곡한 것은 바로 그녀였다.","answer":"who","hint":"It was ~ who 강조구문 (사람)"}]},
+    {"id":"w01209","w":"comprehend","pos":["v"],"ph":"/ˌkɑmprɪˈhɛnd/","cefr":"B2","kr":["이해하다","파악하다"],"ex":[{"en":"It was difficult to comprehend the scale of the disaster.","ko":"재난의 규모를 이해하기 어려웠다."}],"mnemonic":{"soundHint":"컴프리헨드 → 콤+prehend(잡다)","story":"완전히(com) 붙잡아(prehend) 이해하는 comprehend '이해하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"understand","ko":"이해하다","reason":"동의어 — 유의"},{"w":"grasp","ko":"파악하다","reason":"동의어 — 유의"},{"w":"misunderstand","ko":"오해하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"fully comprehend","ko":"완전히 이해하다"},{"en":"comprehend the meaning","ko":"의미를 파악하다"}]},"nuance":{"koSimple":"내용을 깊이 있게 이해하고 파악하는 거예요.","whenToUse":"어려운 개념·상황을 파악할 때 자주 써요."},"krDetail":[{"ko":"이해하다","explain":"뜻을 온전히 알아듣다"},{"ko":"파악하다","explain":"핵심을 알아채다"}],"usageExamples":[{"en":"Young children cannot fully comprehend the concept of death.","ko":"어린아이들은 죽음의 개념을 완전히 이해하지 못한다."},{"en":"I struggled to comprehend why she had made such a decision.","ko":"나는 그녀가 왜 그런 결정을 내렸는지 이해하기 어려웠다."}],"grammarNote":"comprehend는 understand보다 격식체이며, 주로 복잡한 개념이나 규모를 '완전히 이해하다'라는 뜻으로 쓴다.","grammarQuiz":[{"sentence":"It was difficult _____ (comprehend) the scale of the disaster.","ko":"재난의 규모를 이해하기 어려웠다.","answer":"to comprehend","hint":"It ~ to부정사 (진주어)"}]},
+    {"id":"w01210","w":"comprehensible","pos":["adj"],"ph":"/ˌkɒmprɪˈhensɪbəl/","cefr":"B2","kr":["이해할 수 있는","알기 쉬운"],"ex":[{"en":"The instructions should be written in a comprehensible way for all users.","ko":"지시 사항은 모든 사용자가 이해할 수 있는 방식으로 작성되어야 한다."}],"mnemonic":{"soundHint":"컴프리헨서블 → comprehend + ible","story":"comprehend(이해)할 수 있는 comprehensible '이해할 수 있는'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"understandable","ko":"이해할 수 있는","reason":"동의어 — 유의"},{"w":"clear","ko":"명확한","reason":"동의어 — 유의"},{"w":"incomprehensible","ko":"이해할 수 없는","reason":"반의어 — 정반대"}],"collocBest":[{"en":"easily comprehensible","ko":"쉽게 이해할 수 있는"},{"en":"comprehensible language","ko":"이해하기 쉬운 언어"}]},"nuance":{"koSimple":"누구나 알아듣기 쉽게 만든 상태를 뜻해요.","whenToUse":"설명·문서가 이해하기 쉬울 때 써요."},"krDetail":[{"ko":"이해할 수 있는","explain":"알아들을 만한"},{"ko":"알기 쉬운","explain":"쉽게 파악되는"}],"usageExamples":[{"en":"The professor made the difficult theory comprehensible to beginners.","ko":"교수는 어려운 이론을 초보자도 이해할 수 있게 설명했다."},{"en":"Her handwriting is barely comprehensible.","ko":"그녀의 글씨는 거의 알아보기 어렵다."}],"grammarNote":"반의어는 incomprehensible(이해할 수 없는)이며, 'comprehensible to+사람' 형태로 '~에게 이해되는'을 나타낸다.","grammarQuiz":[{"sentence":"The instructions should _____ (write) in a comprehensible way for all users.","ko":"지시 사항은 모든 사용자가 이해할 수 있는 방식으로 작성되어야 한다.","answer":"be written","hint":"조동사 + 수동태 (should be p.p.)"}]},
+    {"id":"w01211","w":"comprehension","pos":["n"],"ph":"/ˌkɑmprɪˈhɛnʃən/","cefr":"B2","kr":["이해","독해","파악"],"ex":[{"en":"Reading comprehension is a key skill.","ko":"독해는 핵심 능력이다."}],"mnemonic":{"soundHint":"컴프리헨션 → comprehend + ion","story":"comprehend(이해)의 명사형 comprehension '이해, 독해'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"understanding","ko":"이해","reason":"동의어 — 유의"},{"w":"grasp","ko":"파악","reason":"동의어 — 유의"},{"w":"confusion","ko":"혼란","reason":"반의어 — 대비"}],"collocBest":[{"en":"reading comprehension","ko":"독해력"},{"en":"beyond comprehension","ko":"이해할 수 없는"}]},"nuance":{"koSimple":"내용을 알아듣고 파악하는 이해력을 뜻해요.","whenToUse":"독해력·듣기 이해력을 말할 때 자주 써요."},"krDetail":[{"ko":"이해","explain":"알아듣는 능력"},{"ko":"독해","explain":"글을 읽고 이해함"},{"ko":"파악","explain":"핵심을 잡음"}],"usageExamples":[{"en":"The test measures listening comprehension as well as speaking.","ko":"그 시험은 말하기뿐 아니라 듣기 이해력도 측정한다."},{"en":"The math problem was completely beyond his comprehension.","ko":"그 수학 문제는 그의 이해를 완전히 넘어섰다."}],"grammarNote":"'reading/listening comprehension'처럼 앞에 기능어를 붙여 '독해력·청해력'을 나타내는 불가산명사로 자주 쓴다.","grammarQuiz":[{"sentence":"Reading comprehension is a key skill _____ every student needs.","ko":"독해는 모든 학생이 필요로 하는 핵심 능력이다.","answer":"that","hint":"목적격 관계대명사"}]},
+    {"id":"w01213","w":"compromise","pos":["n","v"],"ph":"/ˈkɒmprəmaɪz/","cefr":"B2","kr":["타협","타협하다"],"ex":[{"en":"We reached a compromise.","ko":"우리는 타협점에 도달했다."}],"mnemonic":{"soundHint":"컴프라마이즈 → com(함께) + promise","story":"함께(com) 약속(promise)하는 compromise '타협, 타협하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"concession","ko":"양보","reason":"동의어 — 유의"},{"w":"settle","ko":"타협하다","reason":"동의어 — 유의"},{"w":"agreement","ko":"합의","reason":"관련어"}],"collocBest":[{"en":"reach a compromise","ko":"타협에 이르다"},{"en":"reasonable compromise","ko":"합리적 타협"}]},"nuance":{"koSimple":"양쪽이 서로 조금씩 양보해서 맞추는 거예요.","whenToUse":"협상·의견 조율·타협점을 말할 때 써요."},"krDetail":[{"ko":"타협","explain":"서로 양보한 합의"},{"ko":"타협하다","explain":"서로 양보하다"}],"usageExamples":[{"en":"After hours of debate, they finally reached a compromise.","ko":"몇 시간의 논쟁 끝에 그들은 마침내 타협에 이르렀다."},{"en":"Neither side was willing to compromise on the price.","ko":"어느 쪽도 가격에 대해 타협하려 하지 않았다."}],"grammarNote":"동사로 'compromise on+쟁점' 형태로 쓰며, 'reach a compromise(타협에 이르다)'가 자주 쓰이는 연어이다.","grammarQuiz":[{"sentence":"If they had listened to each other, they _____ (reach) a compromise sooner.","ko":"그들이 서로의 말을 들었더라면, 더 빨리 타협에 이르렀을 것이다.","answer":"would have reached","hint":"가정법 과거완료 (would have p.p.)"}]},
+    {"id":"w01214","w":"compulsory","pos":["adj"],"ph":"/kəmˈpʌlsəri/","cefr":"B2","kr":["의무적인","강제적인"],"ex":[{"en":"Voting is compulsory in some countries.","ko":"일부 국가에서는 투표가 의무적이다."}],"mnemonic":{"soundHint":"컴펄서리 → compel + sory","story":"compel(강요)당하는 compulsory '의무적인, 강제적인'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"mandatory","ko":"의무적인","reason":"동의어 — 유의"},{"w":"obligatory","ko":"의무적인","reason":"동의어 — 격식체"},{"w":"optional","ko":"선택적인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"compulsory education","ko":"의무 교육"},{"en":"compulsory attendance","ko":"강제 출석"}]},"nuance":{"koSimple":"반드시 해야 하는 의무적인 것을 뜻해요.","whenToUse":"교육·복무·투표 의무를 말할 때 써요."},"krDetail":[{"ko":"의무적인","explain":"반드시 해야 하는"},{"ko":"강제적인","explain":"억지로 시키는"}],"usageExamples":[{"en":"Wearing a seatbelt is compulsory in this country.","ko":"이 나라에서는 안전벨트 착용이 의무이다."},{"en":"Military service is compulsory for all young men here.","ko":"이곳에서는 모든 젊은 남성에게 병역이 의무이다."}],"grammarNote":"반의어는 optional/voluntary(선택적인)이며, 'compulsory education(의무 교육)'처럼 명사 앞에서 자주 쓴다.","grammarQuiz":[{"sentence":"Voting has _____ (be) compulsory in some countries for decades.","ko":"일부 국가에서는 수십 년 동안 투표가 의무적이었다.","answer":"been","hint":"현재완료 (have been)"}]},
+    {"id":"w01216","w":"conceal","pos":["v"],"ph":"/kənˈsiːl/","cefr":"B2","kr":["숨기다","감추다"],"ex":[{"en":"He tried to conceal his disappointment.","ko":"그는 자신의 실망을 숨기려 했다."}],"mnemonic":{"soundHint":"컨실 → 컨실러(가리는 화장품)","story":"컨실러로 흠집을 가리듯 conceal '숨기다, 감추다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"hide","ko":"숨기다","reason":"동의어 — 유의"},{"w":"disguise","ko":"위장하다","reason":"동의어 — 유의"},{"w":"reveal","ko":"드러내다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conceal the truth","ko":"진실을 숨기다"},{"en":"conceal emotions","ko":"감정을 감추다"}]},"nuance":{"koSimple":"눈에 띄지 않게 숨기거나 감추는 걸 뜻해요.","whenToUse":"감정·물건·사실을 숨길 때 자주 써요."},"krDetail":[{"ko":"숨기다","explain":"보이지 않게 하다"},{"ko":"감추다","explain":"드러내지 않다"}],"usageExamples":[{"en":"She could not conceal her surprise when she heard the news.","ko":"그녀는 그 소식을 듣고 놀라움을 감추지 못했다."},{"en":"The thief concealed the stolen jewels under the floorboards.","ko":"도둑은 훔친 보석을 마룻바닥 밑에 숨겼다."}],"grammarNote":"'conceal A from B(B에게서 A를 숨기다)' 형태로 쓰며, hide보다 격식체이다.","grammarQuiz":[{"sentence":"He tried _____ (conceal) his disappointment from his friends.","ko":"그는 친구들에게서 실망을 숨기려 했다.","answer":"to conceal","hint":"try + to부정사"},{"sentence":"The truth cannot _____ (conceal) forever.","ko":"진실은 영원히 숨겨질 수 없다.","answer":"be concealed","hint":"조동사 + 수동태 (cannot be p.p.)"}]},
+    {"id":"w01219","w":"conceive","pos":["v"],"ph":"/kənˈsiːv/","cefr":"B2","kr":["생각해내다","상상하다","임신하다"],"ex":[{"en":"She conceived a brilliant plan.","ko":"그녀는 훌륭한 계획을 생각해냈다."}],"mnemonic":{"soundHint":"컨시브 → 콘(생각) + 세이브","story":"머릿속에 생각을 저장하듯 conceive '생각해내다, 임신하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"imagine","ko":"상상하다","reason":"동의어 — 유의"},{"w":"devise","ko":"고안하다","reason":"동의어 — 유의"},{"w":"conception","ko":"구상","reason":"관련어 — 파생"}],"collocBest":[{"en":"conceive a plan","ko":"계획을 생각해내다"},{"en":"conceive an idea","ko":"아이디어를 떠올리다"}]},"nuance":{"koSimple":"머릿속에 새로운 생각을 떠올려 만드는 거예요.","whenToUse":"계획·아이디어를 구상할 때 자주 써요."},"krDetail":[{"ko":"생각해내다","explain":"아이디어를 떠올리다"},{"ko":"상상하다","explain":"머릿속에 그리다"},{"ko":"임신하다","explain":"아이를 배다"}],"usageExamples":[{"en":"It is hard to conceive of a world without the internet.","ko":"인터넷이 없는 세상은 상상하기 어렵다."},{"en":"The architect conceived a bold new design for the museum.","ko":"그 건축가는 박물관을 위한 대담한 새 설계를 구상했다."}],"grammarNote":"'conceive of+명사(~을 상상하다)' 형태로 자주 쓰며, 명사형은 concept 또는 conception이다.","grammarQuiz":[{"sentence":"The brilliant plan was _____ (conceive) by her overnight.","ko":"그 훌륭한 계획은 하룻밤 사이에 그녀에 의해 구상되었다.","answer":"conceived","hint":"수동태 (be + p.p.)"}]},
+    {"id":"w01223","w":"conceptual","pos":["adj"],"ph":"/kənˈsɛptʃuəl/","cefr":"B2","kr":["개념적인","개념의"],"ex":[{"en":"The conceptual framework helps understand the theory.","ko":"개념적 틀은 이론을 이해하는 데 도움이 된다."}],"mnemonic":{"soundHint":"컨셉추얼 → 컨셉의","story":"'컨셉' 하면 개념! conceptual '개념적인'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"abstract","ko":"추상적인","reason":"동의어 — 유의"},{"w":"theoretical","ko":"이론적인","reason":"동의어 — 유의"},{"w":"concrete","ko":"구체적인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conceptual framework","ko":"개념적 틀"},{"en":"conceptual model","ko":"개념 모델"}]},"nuance":{"koSimple":"실제보다 생각·개념 차원에 관한 걸 뜻해요.","whenToUse":"이론적 틀·추상적 개념을 말할 때 써요."},"krDetail":[{"ko":"개념적인","explain":"생각·이론상의"},{"ko":"개념의","explain":"개념에 관한"}],"usageExamples":[{"en":"The project is still at the conceptual stage.","ko":"그 프로젝트는 아직 개념 단계에 있다."},{"en":"There is a conceptual difference between the two theories.","ko":"그 두 이론 사이에는 개념적인 차이가 있다."}],"grammarNote":"명사 concept의 형용사형으로, 'conceptual framework(개념적 틀)'처럼 추상적 사고를 수식할 때 쓴다.","grammarQuiz":[{"sentence":"The conceptual framework helps students _____ (understand) the theory.","ko":"개념적 틀은 학생들이 이론을 이해하도록 돕는다.","answer":"understand","hint":"help + 목적어 + 동사원형 (5형식)"}]},
+    {"id":"w01225","w":"concession","pos":["n"],"ph":"/kənˈsɛʃən/","cefr":"B2","kr":["양보","허가","특허"],"ex":[{"en":"Both sides made concessions during the talks.","ko":"양측은 회담 동안 양보를 했다."}],"mnemonic":{"soundHint":"컨세션 → concede + sion","story":"concede(양보)의 명사형 concession '양보, 허가'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"compromise","ko":"타협","reason":"동의어 — 유의"},{"w":"yielding","ko":"양보","reason":"동의어 — 유의"},{"w":"demand","ko":"요구","reason":"반의어 — 대비"}],"collocBest":[{"en":"make a concession","ko":"양보하다"},{"en":"major concession","ko":"큰 양보"}]},"nuance":{"koSimple":"의견 다툼에서 상대에게 물러나 주는 걸 뜻해요.","whenToUse":"협상·타협에서 양보를 언급할 때 써요."},"krDetail":[{"ko":"양보","explain":"한 발 물러섬"},{"ko":"허가","explain":"권리를 내줌"},{"ko":"특허","explain":"독점 영업권"}],"usageExamples":[{"en":"The company made a concession by lowering the price.","ko":"그 회사는 가격을 낮춰 양보했다."},{"en":"The government granted mining concessions to foreign firms.","ko":"정부는 외국 기업에 채굴권을 허가했다."}],"grammarNote":"'make a concession(양보하다)'이 자주 쓰이는 연어이며, 동사 concede(인정하다·양보하다)의 명사형이다.","grammarQuiz":[{"sentence":"Both sides made concessions _____ (reach) a peaceful agreement.","ko":"양측은 평화로운 합의에 도달하기 위해 양보를 했다.","answer":"to reach","hint":"부사적 용법 to부정사 (목적)"}]},
+    {"id":"w01226","w":"concise","pos":["adj"],"ph":"/kənˈsaɪs/","cefr":"B2","kr":["간결한","간명한"],"ex":[{"en":"Please keep your answers concise and to the point.","ko":"답변을 간결하고 요점에 맞게 유지하세요."}],"mnemonic":{"soundHint":"컨사이스 → 컨+사이즈(딱 맞게)","story":"딱 맞는 사이즈로 짧게 줄여 concise '간결한'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"brief","ko":"간결한","reason":"동의어 — 유의"},{"w":"succinct","ko":"간결한","reason":"동의어 — 격식체"},{"w":"wordy","ko":"장황한","reason":"반의어 — 정반대"}],"collocBest":[{"en":"concise answer","ko":"간결한 답변"},{"en":"clear and concise","ko":"명확하고 간결한"}]},"nuance":{"koSimple":"군더더기 없이 짧고 요점만 담긴 걸 뜻해요.","whenToUse":"글·발표·답변이 간결할 때 자주 써요."},"krDetail":[{"ko":"간결한","explain":"짧고 명확한"},{"ko":"간명한","explain":"간단하고 분명한"}],"usageExamples":[{"en":"A good summary should be clear and concise.","ko":"좋은 요약은 명확하고 간결해야 한다."},{"en":"He gave a concise explanation of the rules.","ko":"그는 규칙을 간결하게 설명했다."}],"grammarNote":"'clear and concise'라는 짝으로 자주 쓰이며, 부사형은 concisely이다.","grammarQuiz":[{"sentence":"Answers should _____ (keep) concise and to the point.","ko":"답변은 간결하고 요점에 맞게 유지되어야 한다.","answer":"be kept","hint":"조동사 + 수동태 (should be p.p.)"}]},
+    {"id":"w01227","w":"concisely","pos":["adv"],"ph":"/kənˈsaɪsli/","cefr":"B2","kr":["간결하게","간략하게","요약하여"],"ex":[{"en":"The speaker explained the complex concept concisely in just two minutes.","ko":"연사는 복잡한 개념을 불과 2분 만에 간결하게 설명했다."}],"mnemonic":{"soundHint":"컨사이슬리 → concise + ly","story":"concise(간결)의 부사형 concisely '간결하게'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"succinctly","ko":"간결하게","reason":"동의어 — 격식체"},{"w":"briefly","ko":"간단히","reason":"동의어 — 유사"},{"w":"verbosely","ko":"장황하게","reason":"반의어 — 정반대"}],"collocBest":[{"en":"explain concisely","ko":"간결하게 설명하다"},{"en":"write concisely","ko":"간명하게 쓰다"}]},"nuance":{"koSimple":"길게 늘어놓지 않고 요점만 담아 말하는 거예요.","whenToUse":"짧게 핵심만 전달할 때 자주 써요."},"krDetail":[{"ko":"간결하게","explain":"짧고 명확하게"},{"ko":"간략하게","explain":"간단히"},{"ko":"요약하여","explain":"줄여서"}],"usageExamples":[{"en":"Please state your opinion concisely.","ko":"당신의 의견을 간결하게 말해 주세요."},{"en":"The report concisely summarizes the main findings.","ko":"그 보고서는 주요 결과를 간결하게 요약한다."}],"grammarNote":"형용사 concise의 부사형으로, write·explain·state 같은 동사를 수식해 '간결하게'를 나타낸다.","grammarQuiz":[{"sentence":"The speaker explained the complex concept concisely, _____ (help) everyone understand.","ko":"연사는 복잡한 개념을 간결하게 설명하여 모두가 이해하도록 도왔다.","answer":"helping","hint":"분사구문 (능동, 결과)"}]},
+    {"id":"w01229","w":"conclude","pos":["v"],"ph":"/kənˈkluːd/","cefr":"B2","kr":["결론 짓다","마치다"],"ex":[{"en":"We can conclude from the data.","ko":"데이터로부터 결론을 내릴 수 있다."}],"mnemonic":{"soundHint":"컨클루드 → 콘(함께) + close(닫다)","story":"이야기를 닫듯 마무리 짓는 conclude '결론 짓다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"deduce","ko":"추론하다","reason":"동의어 — 결론내다"},{"w":"finalize","ko":"마무리하다","reason":"동의어 — 끝맺다"},{"w":"commence","ko":"시작하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conclude from evidence","ko":"증거로부터 결론짓다"},{"en":"conclude the meeting","ko":"회의를 마치다"}]},"nuance":{"koSimple":"논의·글을 마무리하며 결론을 내리는 거예요.","whenToUse":"보고서·연설을 끝맺을 때 자주 써요."},"krDetail":[{"ko":"결론 짓다","explain":"판단을 내리다"},{"ko":"마치다","explain":"끝을 맺다"}],"usageExamples":[{"en":"The researchers concluded that the drug was safe.","ko":"연구진은 그 약이 안전하다고 결론지었다."},{"en":"She concluded her speech with a powerful quote.","ko":"그녀는 강렬한 인용구로 연설을 마쳤다."}],"grammarNote":"'conclude that+절(~라고 결론짓다)' 형태로 쓰며, 명사형은 conclusion이다.","grammarQuiz":[{"sentence":"It can _____ (conclude) from the data that the trend is rising.","ko":"데이터로부터 그 추세가 상승하고 있다고 결론지어질 수 있다.","answer":"be concluded","hint":"조동사 + 수동태 (can be p.p.)"}]},
+    {"id":"w01231","w":"concrete","pos":["adj","n"],"ph":"/ˈkɒŋkriːt/","cefr":"B2","kr":["구체적인","콘크리트"],"ex":[{"en":"Give me concrete examples.","ko":"구체적인 예시를 주세요."}],"mnemonic":{"soundHint":"콘크리트 → 콘크리트 건물","story":"'콘크리트'처럼 손에 잡히는 concrete '구체적인'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"specific","ko":"구체적인","reason":"동의어 — 명확한"},{"w":"tangible","ko":"유형의","reason":"동의어 — 만질 수 있는"},{"w":"abstract","ko":"추상적인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"concrete example","ko":"구체적인 예"},{"en":"concrete evidence","ko":"확실한 증거"}]},"nuance":{"koSimple":"막연하지 않고 구체적이고 실질적인 걸 뜻해요.","whenToUse":"증거·계획·예시를 요구할 때 자주 써요."},"krDetail":[{"ko":"구체적인","explain":"분명하고 실제적인"},{"ko":"콘크리트","explain":"건축용 굳힌 재료"}],"usageExamples":[{"en":"We need concrete evidence before making an accusation.","ko":"고발하기 전에 구체적인 증거가 필요하다."},{"en":"The bridge is made of steel and concrete.","ko":"그 다리는 강철과 콘크리트로 만들어졌다."}],"grammarNote":"형용사 '구체적인'은 abstract(추상적인)의 반의어이며, 'concrete evidence/example'로 자주 쓴다.","grammarQuiz":[{"sentence":"The teacher wants students _____ (give) concrete examples in the essay.","ko":"선생님은 학생들이 에세이에 구체적인 예시를 제시하기를 원한다.","answer":"to give","hint":"want + 목적어 + to부정사 (5형식)"}]},
+    {"id":"w01233","w":"condemn","pos":["v"],"ph":"/kənˈdɛm/","cefr":"B2","kr":["비난하다","규탄하다","선고하다"],"ex":[{"en":"The world community condemned the attack.","ko":"세계 공동체는 그 공격을 규탄했다."}],"mnemonic":{"soundHint":"컨뎀 → 큰 뎀(damn)","story":"'뎀!' 하며 크게 비난하는 condemn '비난하다, 규탄하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"denounce","ko":"규탄하다","reason":"동의어 — 강한 비난"},{"w":"criticize","ko":"비판하다","reason":"동의어 — 유사"},{"w":"praise","ko":"칭찬하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"strongly condemn","ko":"강력히 규탄하다"},{"en":"condemn the attack","ko":"공격을 비난하다"}]},"nuance":{"koSimple":"잘못을 강하게 비난하거나 규탄하는 걸 뜻해요.","whenToUse":"범죄·부당 행위를 공개 비판할 때 써요."},"krDetail":[{"ko":"비난하다","explain":"잘못을 꾸짖다"},{"ko":"규탄하다","explain":"강하게 나무라다"},{"ko":"선고하다","explain":"형벌을 내리다"}],"usageExamples":[{"en":"Leaders around the world condemned the terrorist attack.","ko":"전 세계 지도자들이 그 테러 공격을 규탄했다."},{"en":"The prisoner was condemned to death for his crimes.","ko":"그 죄수는 자신의 범죄로 사형을 선고받았다."}],"grammarNote":"'condemn A for B(B 때문에 A를 비난하다)'와 'be condemned to(~을 선고받다)' 형태로 쓴다.","grammarQuiz":[{"sentence":"The attack _____ (condemn) by the world community immediately.","ko":"그 공격은 세계 공동체에 의해 즉시 규탄받았다.","answer":"was condemned","hint":"과거 수동태 (be + p.p.)"}]},
+    {"id":"w01235","w":"condemnation","pos":["n"],"ph":"/ˌkɑndɛmˈneɪʃən/","cefr":"B2","kr":["비난","규탄","유죄 선고"],"ex":[{"en":"His actions met with widespread condemnation.","ko":"그의 행동은 광범위한 비난을 받았다."}],"mnemonic":{"soundHint":"컨뎀네이션 → condemn + ation","story":"condemn(비난)의 명사형 condemnation '비난, 규탄'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"denunciation","ko":"규탄","reason":"동의어 — 격식체"},{"w":"criticism","ko":"비판","reason":"동의어 — 유사"},{"w":"praise","ko":"칭찬","reason":"반의어 — 정반대"}],"collocBest":[{"en":"widespread condemnation","ko":"광범위한 비난"},{"en":"public condemnation","ko":"대중의 규탄"}]},"nuance":{"koSimple":"잘못에 대한 강한 비난이나 규탄을 뜻해요.","whenToUse":"국제 사회·여론의 규탄을 언급할 때 써요."},"krDetail":[{"ko":"비난","explain":"잘못을 꾸짖음"},{"ko":"규탄","explain":"강한 나무람"},{"ko":"유죄 선고","explain":"죄가 있다는 판결"}],"usageExamples":[{"en":"The bombing drew international condemnation.","ko":"그 폭격은 국제적인 규탄을 불러일으켰다."},{"en":"There was widespread condemnation of the new policy.","ko":"그 새 정책에 대한 광범위한 비난이 있었다."}],"grammarNote":"동사 condemn의 명사형으로, 'draw/face condemnation(규탄을 받다)'이 자주 쓰이는 연어이다.","grammarQuiz":[{"sentence":"His actions were met with widespread condemnation _____ shocked him.","ko":"그의 행동은 그를 놀라게 한 광범위한 비난에 부딪혔다.","answer":"that","hint":"주격 관계대명사"}]},
+    {"id":"w01237","w":"conditional","pos":["adj"],"ph":"/kənˈdɪʃənl/","cefr":"B2","kr":["조건부의","조건적인"],"ex":[{"en":"The offer is conditional on passing the test.","ko":"그 제안은 시험 합격을 조건으로 한다."}],"mnemonic":{"soundHint":"컨디셔널 → condition + al","story":"condition(조건)이 붙은 conditional '조건부의'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"contingent","ko":"조건부의","reason":"동의어 — 격식체"},{"w":"provisional","ko":"잠정적인","reason":"동의어 — 유사"},{"w":"unconditional","ko":"무조건적인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conditional offer","ko":"조건부 제안"},{"en":"conditional on","ko":"~을 조건으로 하는"}]},"nuance":{"koSimple":"어떤 조건이 충족돼야 성립하는 걸 뜻해요.","whenToUse":"합격·계약이 조건부일 때 자주 써요."},"krDetail":[{"ko":"조건부의","explain":"조건이 붙은"},{"ko":"조건적인","explain":"조건에 따르는"}],"usageExamples":[{"en":"Their approval was conditional on further testing.","ko":"그들의 승인은 추가 검사를 조건으로 했다."},{"en":"He received a conditional offer from the university.","ko":"그는 대학으로부터 조건부 합격을 받았다."}],"grammarNote":"'conditional on+명사(~을 조건으로 하는)' 형태로 쓰며, 반의어는 unconditional(무조건의)이다.","grammarQuiz":[{"sentence":"The offer is conditional on _____ (pass) the entrance test.","ko":"그 제안은 입학 시험 합격을 조건으로 한다.","answer":"passing","hint":"전치사 + 동명사 (on -ing)"}]},
+    {"id":"w01239","w":"conduct","pos":["v","n"],"ph":"/kənˈdʌkt/","cefr":"B2","kr":["수행하다","행동"],"ex":[{"en":"Conduct the experiment carefully.","ko":"실험을 신중하게 수행해라."}],"mnemonic":{"soundHint":"컨덕트 → 콘 + duct(이끌다)","story":"함께(con) 이끌어(duct) 수행하는 conduct '수행하다, 행동'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"carry out","ko":"수행하다","reason":"동의어 — 실행"},{"w":"behavior","ko":"행동","reason":"동의어 — 명사형"},{"w":"manage","ko":"관리하다","reason":"유의어 — 관련"}],"collocBest":[{"en":"conduct research","ko":"연구를 수행하다"},{"en":"code of conduct","ko":"행동 강령"}]},"nuance":{"koSimple":"일이나 실험을 진행하거나 처신을 뜻해요.","whenToUse":"연구·조사·행실을 말할 때 자주 써요."},"krDetail":[{"ko":"수행하다","explain":"일을 실행하다"},{"ko":"행동","explain":"사람의 처신"}],"usageExamples":[{"en":"The university will conduct a survey of its students.","ko":"그 대학은 학생들을 대상으로 설문을 실시할 것이다."},{"en":"His conduct during the meeting was highly professional.","ko":"회의 중 그의 행동은 매우 전문적이었다."}],"grammarNote":"동사(conDUCT)와 명사(CONduct)의 강세 위치가 다르며, 'conduct research/a survey'로 자주 쓴다.","grammarQuiz":[{"sentence":"The experiment must _____ (conduct) carefully to get accurate results.","ko":"정확한 결과를 얻기 위해 실험은 신중하게 수행되어야 한다.","answer":"be conducted","hint":"조동사 + 수동태 (must be p.p.)"}]},
+    {"id":"w01242","w":"confess","pos":["v"],"ph":"/kənˈfes/","cefr":"B2","kr":["고백하다","자백하다"],"ex":[{"en":"He confessed to the crime.","ko":"그는 범행을 자백했다."}],"mnemonic":{"soundHint":"컨페스 → 컨 + fess(말하다)","story":"함께(con) 말해(fess)버리는 confess '고백하다, 자백하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"admit","ko":"인정하다","reason":"동의어 — 시인"},{"w":"disclose","ko":"드러내다","reason":"유의어 — 밝히다"},{"w":"deny","ko":"부인하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"confess to the crime","ko":"범행을 자백하다"},{"en":"confess honestly","ko":"솔직히 고백하다"}]},"nuance":{"koSimple":"숨겼던 사실·잘못을 솔직히 털어놓는 거예요.","whenToUse":"자백·고백을 표현할 때 자주 써요."},"krDetail":[{"ko":"고백하다","explain":"속마음을 털어놓다"},{"ko":"자백하다","explain":"죄를 스스로 밝히다"}],"usageExamples":[{"en":"She confessed that she had forgotten his birthday.","ko":"그녀는 그의 생일을 잊어버렸다고 고백했다."},{"en":"After hours of questioning, the suspect confessed to the crime.","ko":"몇 시간의 심문 끝에 용의자는 범행을 자백했다."}],"grammarNote":"'confess to+명사/동명사(~을 자백하다)'와 'confess that+절' 형태로 쓰며, 명사형은 confession이다.","grammarQuiz":[{"sentence":"He has finally _____ (confess) to the crime after weeks of denial.","ko":"그는 수 주 간의 부인 끝에 마침내 범행을 자백했다.","answer":"confessed","hint":"현재완료 (have p.p.)"}]},
+    {"id":"w01243","w":"confide","pos":["v"],"ph":"/kənˈfaɪd/","cefr":"B2","kr":["털어놓다","신뢰하다"],"ex":[{"en":"She confided her secret to her best friend.","ko":"그녀는 가장 친한 친구에게 비밀을 털어놓았다."}],"mnemonic":{"soundHint":"컨파이드 → 콘 + fide(믿다)","story":"믿음(fide)을 갖고 털어놓는 confide '털어놓다, 신뢰하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"trust","ko":"신뢰하다","reason":"동의어 — 믿다"},{"w":"disclose","ko":"털어놓다","reason":"동의어 — 밝히다"},{"w":"conceal","ko":"숨기다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"confide in a friend","ko":"친구에게 털어놓다"},{"en":"confide a secret","ko":"비밀을 털어놓다"}]},"nuance":{"koSimple":"믿는 사람에게 속마음을 조용히 털어놓는 거예요.","whenToUse":"비밀·고민을 친한 이에게 말할 때 써요."},"krDetail":[{"ko":"털어놓다","explain":"비밀을 말하다"},{"ko":"신뢰하다","explain":"믿고 맡기다"}],"usageExamples":[{"en":"He confided his fears to his older brother.","ko":"그는 자신의 두려움을 형에게 털어놓았다."},{"en":"She had no one to confide in after moving to the city.","ko":"그녀는 도시로 이사한 후 속마음을 털어놓을 사람이 없었다."}],"grammarNote":"'confide in+사람(~에게 속마음을 털어놓다)' 형태로 쓰며, confident(자신감 있는)와 혼동하지 않도록 주의한다.","grammarQuiz":[{"sentence":"She confided her secret to her best friend, _____ (trust) her completely.","ko":"그녀는 자신을 완전히 신뢰하며 가장 친한 친구에게 비밀을 털어놓았다.","answer":"trusting","hint":"분사구문 (능동)"}]},
+    {"id":"w01246","w":"confidential","pos":["adj"],"ph":"/ˌkɑnfɪˈdɛnʃəl/","cefr":"B2","kr":["기밀의","비밀의"],"ex":[{"en":"This information is strictly confidential.","ko":"이 정보는 철저히 기밀이다."}],"mnemonic":{"soundHint":"컨피덴셜 → confide + ential","story":"confide(믿고 털어놓은)한 confidential '기밀의'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"secret","ko":"비밀의","reason":"동의어 — 유사"},{"w":"private","ko":"사적인","reason":"유의어 — 관련"},{"w":"public","ko":"공개적인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"confidential information","ko":"기밀 정보"},{"en":"strictly confidential","ko":"철저히 비밀인"}]},"nuance":{"koSimple":"외부에 알려지면 안 되는 비밀 정보를 뜻해요.","whenToUse":"기밀문서·개인정보를 다룰 때 자주 써요."},"krDetail":[{"ko":"기밀의","explain":"남에게 알리면 안 되는"},{"ko":"비밀의","explain":"숨겨야 하는"}],"usageExamples":[{"en":"All medical records are kept strictly confidential.","ko":"모든 의료 기록은 철저히 기밀로 유지된다."},{"en":"Please do not share this confidential document with anyone.","ko":"이 기밀 문서를 누구와도 공유하지 마세요."}],"grammarNote":"'strictly confidential(극비의)'로 자주 쓰이며, confident(자신 있는)와 철자·의미가 다름에 유의한다.","grammarQuiz":[{"sentence":"This information _____ (regard) as strictly confidential by the company.","ko":"이 정보는 회사에 의해 철저히 기밀로 간주된다.","answer":"is regarded","hint":"수동태 (be + p.p.)"}]},
+    {"id":"w01253","w":"conflict","pos":["n","v"],"ph":"/ˈkɒnflɪkt/","cefr":"B2","kr":["갈등","충돌"],"ex":[{"en":"They resolved the conflict peacefully.","ko":"그들은 갈등을 평화롭게 해결했다."}],"mnemonic":{"soundHint":"컨플릭트 → 콘 + flict(치다)","story":"서로 함께(con) 치고받는(flict) conflict '갈등, 충돌'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"clash","ko":"충돌","reason":"동의어 — 유사"},{"w":"dispute","ko":"분쟁","reason":"동의어 — 다툼"},{"w":"harmony","ko":"조화","reason":"반의어 — 정반대"}],"collocBest":[{"en":"resolve conflict","ko":"갈등을 해결하다"},{"en":"armed conflict","ko":"무력 충돌"}]},"nuance":{"koSimple":"의견·이해가 부딪혀 생기는 갈등을 뜻해요.","whenToUse":"싸움·이해충돌·전쟁을 말할 때 자주 써요."},"krDetail":[{"ko":"갈등","explain":"서로 부딪치는 대립"},{"ko":"충돌","explain":"맞부딪침"}],"usageExamples":[{"en":"There is often conflict between work and family life.","ko":"일과 가정생활 사이에는 흔히 갈등이 있다."},{"en":"His statement conflicts with the earlier report.","ko":"그의 진술은 앞선 보고와 상충한다."}],"grammarNote":"동사로 'conflict with(~와 상충하다)' 형태로 쓰며, 명사(CONflict)와 동사(conFLICT)의 강세가 다르다.","grammarQuiz":[{"sentence":"The conflict _____ (resolve) peacefully by both parties.","ko":"그 갈등은 양측에 의해 평화롭게 해결되었다.","answer":"was resolved","hint":"과거 수동태 (be + p.p.)"}]},
+    {"id":"w01254","w":"conform","pos":["v"],"ph":"/kənˈfɔrm/","cefr":"B2","kr":["따르다","순응하다","일치하다"],"ex":[{"en":"Students are expected to conform to school rules.","ko":"학생들은 학교 규칙을 따를 것으로 기대된다."}],"mnemonic":{"soundHint":"컨폼 → con + form(형태)","story":"같은 형태(form)에 맞추는 conform '따르다, 순응하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"comply","ko":"준수하다","reason":"동의어 — 따르다"},{"w":"obey","ko":"복종하다","reason":"유의어 — 관련"},{"w":"rebel","ko":"반항하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conform to standards","ko":"기준에 부합하다"},{"en":"conform to rules","ko":"규칙을 따르다"}]},"nuance":{"koSimple":"기준이나 규범에 맞춰 따라가는 걸 뜻해요.","whenToUse":"규칙·관습·기대에 맞출 때 자주 써요."},"krDetail":[{"ko":"따르다","explain":"규칙대로 하다"},{"ko":"순응하다","explain":"맞춰 따르다"},{"ko":"일치하다","explain":"들어맞다"}],"usageExamples":[{"en":"New employees must conform to the company's dress code.","ko":"신입 사원들은 회사의 복장 규정을 따라야 한다."},{"en":"The product must conform to safety standards.","ko":"그 제품은 안전 기준에 부합해야 한다."}],"grammarNote":"'conform to+명사(~에 순응하다/부합하다)' 형태로 쓰며, 명사형은 conformity이다.","grammarQuiz":[{"sentence":"Students are expected _____ (conform) to school rules at all times.","ko":"학생들은 항상 학교 규칙을 따를 것으로 기대된다.","answer":"to conform","hint":"expect + 목적어 + to부정사 (5형식 수동)"}]},
+    {"id":"w01255","w":"conformity","pos":["n"],"ph":"/kənˈfɔrməti/","cefr":"B2","kr":["순응","일치","적합"],"ex":[{"en":"Social conformity can be both positive and negative.","ko":"사회적 순응은 긍정적이기도 하고 부정적이기도 하다."}],"mnemonic":{"soundHint":"컨포미티 → conform + ity","story":"conform(순응)의 명사형 conformity '순응, 일치'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"compliance","ko":"준수","reason":"동의어 — 유사"},{"w":"obedience","ko":"복종","reason":"유의어 — 관련"},{"w":"rebellion","ko":"반항","reason":"반의어 — 정반대"}],"collocBest":[{"en":"social conformity","ko":"사회적 순응"},{"en":"in conformity with","ko":"~에 부합하여"}]},"nuance":{"koSimple":"집단의 기준에 스스로 맞추는 순응 태도예요.","whenToUse":"사회 순응·기준 부합을 말할 때 써요."},"krDetail":[{"ko":"순응","explain":"따라 맞춤"},{"ko":"일치","explain":"서로 들어맞음"},{"ko":"적합","explain":"기준에 맞음"}],"usageExamples":[{"en":"Society often pressures people into conformity.","ko":"사회는 흔히 사람들에게 순응을 강요한다."},{"en":"The building was constructed in conformity with the regulations.","ko":"그 건물은 규정에 맞게 지어졌다."}],"grammarNote":"'in conformity with(~에 따라)' 형태로 쓰이며, 반의어는 nonconformity(비순응)이다.","grammarQuiz":[{"sentence":"Social conformity can be both positive and negative, _____ (depend) on the situation.","ko":"사회적 순응은 상황에 따라 긍정적일 수도 부정적일 수도 있다.","answer":"depending","hint":"분사구문 (능동)"}]},
+    {"id":"w01256","w":"confront","pos":["v"],"ph":"/kənˈfrʌnt/","cefr":"B2","kr":["맞서다","직면하다"],"ex":[{"en":"She confronted her fears directly.","ko":"그녀는 두려움에 직접 맞섰다."}],"mnemonic":{"soundHint":"컨프런트 → con + front(앞)","story":"함께(con) 앞(front)에 서서 confront '맞서다, 직면하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"face","ko":"직면하다","reason":"동의어 — 유사"},{"w":"challenge","ko":"맞서다","reason":"유의어 — 관련"},{"w":"avoid","ko":"피하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"confront the problem","ko":"문제에 맞서다"},{"en":"confront fears","ko":"두려움에 직면하다"}]},"nuance":{"koSimple":"피하지 않고 정면으로 마주 서는 걸 뜻해요.","whenToUse":"문제·두려움·상대와 맞설 때 자주 써요."},"krDetail":[{"ko":"맞서다","explain":"정면으로 대들다"},{"ko":"직면하다","explain":"마주 대하다"}],"usageExamples":[{"en":"She decided to confront her boss about the unfair treatment.","ko":"그녀는 부당한 대우에 대해 상사에게 맞서기로 했다."},{"en":"The country is confronted with a serious economic crisis.","ko":"그 나라는 심각한 경제 위기에 직면해 있다."}],"grammarNote":"'confront A about B'와 수동형 'be confronted with(~에 직면하다)' 형태로 쓰며, 명사형은 confrontation이다.","grammarQuiz":[{"sentence":"It was her courage _____ helped her confront her fears.","ko":"그녀가 두려움에 맞설 수 있게 한 것은 바로 그녀의 용기였다.","answer":"that","hint":"It was ~ that 강조구문"}]},
+    {"id":"w01257","w":"confrontation","pos":["n"],"ph":"/ˌkɑnfrʌnˈteɪʃən/","cefr":"B2","kr":["대결","충돌","맞닥뜨림"],"ex":[{"en":"The confrontation between them was intense.","ko":"그들 사이의 대결은 격렬했다."}],"mnemonic":{"soundHint":"컨프런테이션 → confront + ation","story":"confront(맞섬)의 명사형 confrontation '대결, 충돌'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"clash","ko":"충돌","reason":"동의어 — 유사"},{"w":"conflict","ko":"갈등","reason":"유의어 — 관련"},{"w":"reconciliation","ko":"화해","reason":"반의어 — 정반대"}],"collocBest":[{"en":"direct confrontation","ko":"직접적 대결"},{"en":"avoid confrontation","ko":"충돌을 피하다"}]},"nuance":{"koSimple":"양쪽이 팽팽하게 맞부딪치는 대결 상황이에요.","whenToUse":"갈등·논쟁·군사 대치를 말할 때 써요."},"krDetail":[{"ko":"대결","explain":"정면으로 겨룸"},{"ko":"충돌","explain":"부딪침"},{"ko":"맞닥뜨림","explain":"마주침"}],"usageExamples":[{"en":"The protest led to a violent confrontation with the police.","ko":"그 시위는 경찰과의 격렬한 충돌로 이어졌다."},{"en":"He tried to avoid a direct confrontation with his rival.","ko":"그는 경쟁자와의 직접적인 대결을 피하려 했다."}],"grammarNote":"동사 confront의 명사형으로, 'confrontation with(~와의 충돌)' 형태로 자주 쓴다.","grammarQuiz":[{"sentence":"The confrontation between them was so intense that they refused _____ (speak) again.","ko":"그들 사이의 대결이 너무 격렬해서 다시는 말하기를 거부했다.","answer":"to speak","hint":"refuse + to부정사"}]},
+    {"id":"w01260","w":"congregation","pos":["n"],"ph":"/ˌkɒŋɡrɪˈɡeɪʃən/","cefr":"B2","kr":["신도들","회중"],"ex":[{"en":"The congregation gathered for Sunday morning service.","ko":"신도들은 일요일 아침 예배를 위해 모였다."}],"mnemonic":{"soundHint":"콩그리게이션 → con + gregate(무리)","story":"함께(con) 무리(gregate)로 모인 congregation '신도들, 회중'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"assembly","ko":"집회","reason":"동의어 — 모임"},{"w":"gathering","ko":"모임","reason":"동의어 — 유사"},{"w":"flock","ko":"신도 무리","reason":"관련어 — 교회"}],"collocBest":[{"en":"large congregation","ko":"많은 신도"},{"en":"address the congregation","ko":"신도들에게 연설하다"}]},"nuance":{"koSimple":"예배에 모인 신도들의 무리를 가리켜요.","whenToUse":"교회·성당 예배 참석자를 말할 때 써요."},"krDetail":[{"ko":"신도들","explain":"예배 온 신자들"},{"ko":"회중","explain":"모인 사람들"}],"usageExamples":[{"en":"The priest addressed the congregation after the sermon.","ko":"신부는 설교 후 신도들에게 말했다."},{"en":"A large congregation attended the Christmas service.","ko":"많은 신도들이 성탄절 예배에 참석했다."}],"grammarNote":"교회에 모인 신자 집단을 뜻하는 집합명사로, 동사 congregate(모이다)의 명사형이다.","grammarQuiz":[{"sentence":"The congregation gathered for Sunday service, _____ (sing) hymns together.","ko":"신도들은 함께 찬송가를 부르며 일요일 예배를 위해 모였다.","answer":"singing","hint":"분사구문 (능동, 부대상황)"}]},
+    {"id":"w01261","w":"congress","pos":["n"],"ph":"/ˈkɒŋɡrəs/","cefr":"B2","kr":["의회","국회"],"ex":[{"en":"Congress passed the new law.","ko":"의회가 새 법안을 통과시켰다."}],"mnemonic":{"soundHint":"콩그레스 → 콩+그레스(모임)","story":"미국 국회, 함께 모이는 congress '의회, 국회'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"parliament","ko":"의회","reason":"동의어 — 영국식"},{"w":"legislature","ko":"입법부","reason":"유의어 — 관련"},{"w":"assembly","ko":"의회","reason":"유의어 — 유사"}],"collocBest":[{"en":"pass through congress","ko":"의회를 통과하다"},{"en":"member of congress","ko":"국회의원"}]},"nuance":{"koSimple":"국가의 법을 만드는 의회 조직을 뜻해요.","whenToUse":"미국 등 입법 기관을 언급할 때 써요."},"krDetail":[{"ko":"의회","explain":"법을 만드는 기관"},{"ko":"국회","explain":"국가 입법 기관"}],"usageExamples":[{"en":"The bill was approved by Congress last week.","ko":"그 법안은 지난주 의회에서 승인되었다."},{"en":"An international congress on climate change was held in Paris.","ko":"기후 변화에 관한 국제 회의가 파리에서 열렸다."}],"grammarNote":"미국 입법부를 뜻할 때는 대문자 Congress로 쓰며, 형용사형은 congressional이다.","grammarQuiz":[{"sentence":"The new law _____ (pass) by Congress last week.","ko":"새 법안은 지난주 의회에 의해 통과되었다.","answer":"was passed","hint":"과거 수동태 (be + p.p.)"}]},
+    {"id":"w01262","w":"congressional","pos":["adj"],"ph":"/kənˈɡrɛʃənl/","cefr":"B2","kr":["의회의","국회의"],"ex":[{"en":"A congressional hearing was held on the matter.","ko":"그 문제에 대한 의회 청문회가 열렸다."}],"mnemonic":{"soundHint":"콩그레셔널 → congress + ional","story":"congress(의회)의 형용사 congressional '의회의'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"parliamentary","ko":"의회의","reason":"동의어 — 영국식"},{"w":"legislative","ko":"입법의","reason":"유의어 — 관련"},{"w":"congress","ko":"의회","reason":"관련어 — 어원"}],"collocBest":[{"en":"congressional hearing","ko":"의회 청문회"},{"en":"congressional approval","ko":"의회 승인"}]},"nuance":{"koSimple":"의회와 관련된 업무·활동을 뜻하는 말이에요.","whenToUse":"청문회·의원 조사를 말할 때 자주 써요."},"krDetail":[{"ko":"의회의","explain":"국회에 관한"},{"ko":"국회의","explain":"입법 기관의"}],"usageExamples":[{"en":"The scandal triggered a congressional investigation.","ko":"그 스캔들은 의회 조사를 촉발했다."},{"en":"She won a seat in the congressional election.","ko":"그녀는 의회 선거에서 의석을 얻었다."}],"grammarNote":"명사 congress의 형용사형으로, 'congressional election/hearing'처럼 명사 앞에서 쓴다.","grammarQuiz":[{"sentence":"A congressional hearing _____ (hold) on the matter yesterday.","ko":"그 문제에 대한 의회 청문회가 어제 열렸다.","answer":"was held","hint":"과거 수동태 (be + p.p.)"}]},
+    {"id":"w01267","w":"conquer","pos":["v"],"ph":"/ˈkɑŋkər/","cefr":"B2","kr":["정복하다","이기다","극복하다"],"ex":[{"en":"She conquered her fear of heights.","ko":"그녀는 고소공포증을 극복했다."}],"mnemonic":{"soundHint":"컨커 → 콩+커!(크게 이김)","story":"'컹커!' 하고 크게 이겨 conquer '정복하다, 극복하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"defeat","ko":"물리치다","reason":"동의어 — 이기다"},{"w":"overcome","ko":"극복하다","reason":"유의어 — 관련"},{"w":"surrender","ko":"항복하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conquer fear","ko":"두려움을 극복하다"},{"en":"conquer territory","ko":"영토를 정복하다"}]},"nuance":{"koSimple":"싸움에서 이기거나 어려움을 극복하는 거예요.","whenToUse":"영토 정복·두려움 극복을 말할 때 써요."},"krDetail":[{"ko":"정복하다","explain":"무력으로 차지하다"},{"ko":"이기다","explain":"싸워 물리치다"},{"ko":"극복하다","explain":"어려움을 이겨내다"}],"usageExamples":[{"en":"The Romans conquered much of Europe.","ko":"로마인들은 유럽의 많은 부분을 정복했다."},{"en":"It took years for him to conquer his addiction.","ko":"그가 중독을 극복하는 데는 여러 해가 걸렸다."}],"grammarNote":"명사형은 conquest이며, fear·addiction 같은 추상적 대상에 쓰면 '극복하다'의 의미가 된다.","grammarQuiz":[{"sentence":"She has finally _____ (conquer) her fear of heights.","ko":"그녀는 마침내 고소공포증을 극복했다.","answer":"conquered","hint":"현재완료 (have p.p.)"}]},
+    {"id":"w01268","w":"conquest","pos":["n"],"ph":"/ˈkɑŋkwɛst/","cefr":"B2","kr":["정복","극복"],"ex":[{"en":"The conquest of new territories changed history.","ko":"새 영토의 정복이 역사를 바꾸었다."}],"mnemonic":{"soundHint":"컹퀘스트 → conquer + st","story":"conquer(정복)의 명사형 conquest '정복, 극복'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"triumph","ko":"승리","reason":"동의어 — 유사"},{"w":"victory","ko":"승리","reason":"유의어 — 관련"},{"w":"defeat","ko":"패배","reason":"반의어 — 정반대"}],"collocBest":[{"en":"military conquest","ko":"군사적 정복"},{"en":"Norman conquest","ko":"노르만 정복"}]},"nuance":{"koSimple":"싸워서 얻은 정복이나 성취를 뜻하는 말이에요.","whenToUse":"역사적 정복·업적을 언급할 때 써요."},"krDetail":[{"ko":"정복","explain":"무력으로 차지함"},{"ko":"극복","explain":"이겨냄"}],"usageExamples":[{"en":"The Norman conquest of England began in 1066.","ko":"노르만족의 잉글랜드 정복은 1066년에 시작되었다."},{"en":"The conquest of disease remains a major goal of science.","ko":"질병의 극복은 여전히 과학의 주요 목표이다."}],"grammarNote":"동사 conquer의 명사형으로, 'the conquest of+대상(~의 정복/극복)' 형태로 쓴다.","grammarQuiz":[{"sentence":"The conquest of new territories, _____ (change) history, took centuries.","ko":"역사를 바꾼 새 영토의 정복은 수 세기가 걸렸다.","answer":"changing","hint":"분사구문 (능동)"}]},
+    {"id":"w01269","w":"conscience","pos":["n"],"ph":"/ˈkɒnʃəns/","cefr":"B2","kr":["양심","도덕심"],"ex":[{"en":"Her conscience told her to tell the truth.","ko":"그녀의 양심은 진실을 말하라고 했다."}],"mnemonic":{"soundHint":"컨션스 → con + science(지식)","story":"함께(con) 아는 지식(science), 내면의 conscience '양심'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"morality","ko":"도덕심","reason":"유의어 — 관련"},{"w":"scruple","ko":"양심의 가책","reason":"유의어 — 격식체"},{"w":"ethics","ko":"윤리","reason":"관련어 — 분야"}],"collocBest":[{"en":"guilty conscience","ko":"양심의 가책"},{"en":"clear conscience","ko":"깨끗한 양심"}]},"nuance":{"koSimple":"옳고 그름을 느끼게 하는 마음속 목소리예요.","whenToUse":"양심의 가책·도덕적 판단을 말할 때 써요."},"krDetail":[{"ko":"양심","explain":"옳고 그름의 마음"},{"ko":"도덕심","explain":"바르게 하려는 마음"}],"usageExamples":[{"en":"His guilty conscience kept him awake all night.","ko":"죄책감이 그를 밤새 잠 못 들게 했다."},{"en":"She refused to lie because of her conscience.","ko":"그녀는 양심 때문에 거짓말하기를 거부했다."}],"grammarNote":"conscious(의식하는)와 철자·의미가 다르며, 'a guilty conscience(죄책감)'로 자주 쓴다.","grammarQuiz":[{"sentence":"Her conscience told her _____ (tell) the truth to everyone.","ko":"그녀의 양심은 모두에게 진실을 말하라고 했다.","answer":"to tell","hint":"tell + 목적어 + to부정사 (5형식)"}]},
+    {"id":"w01272","w":"conscious","pos":["adj"],"ph":"/ˈkɒnʃəs/","cefr":"B2","kr":["의식하는","자각하는"],"ex":[{"en":"She was conscious of her mistake.","ko":"그녀는 자신의 실수를 의식했다."}],"mnemonic":{"soundHint":"컨셔스 → conscience 형용사","story":"conscience(양심)처럼 알고 있는 conscious '의식하는'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"aware","ko":"인식하는","reason":"동의어 — 유사"},{"w":"awake","ko":"깨어있는","reason":"유의어 — 혼동 주의"},{"w":"unconscious","ko":"무의식의","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conscious of","ko":"~을 의식하는"},{"en":"conscious decision","ko":"의식적 결정"}]},"nuance":{"koSimple":"어떤 사실을 스스로 알아차리고 있는 상태예요.","whenToUse":"실수·건강·환경을 인식할 때 자주 써요."},"krDetail":[{"ko":"의식하는","explain":"알아차리고 있는"},{"ko":"자각하는","explain":"스스로 느끼는"}],"usageExamples":[{"en":"He was conscious of being watched by strangers.","ko":"그는 낯선 사람들이 지켜보는 것을 의식했다."},{"en":"The patient remained conscious throughout the operation.","ko":"그 환자는 수술 내내 의식이 있었다."}],"grammarNote":"'be conscious of+명사(~을 의식하다)' 형태로 쓰며, conscience(양심)와 혼동하지 않도록 주의한다.","grammarQuiz":[{"sentence":"She was conscious of her mistake, _____ (feel) deeply embarrassed.","ko":"그녀는 자신의 실수를 의식했고, 깊이 당황했다.","answer":"feeling","hint":"분사구문 (능동, 부대상황)"}]},
+    {"id":"w01273","w":"consciously","pos":["adv"],"ph":"/ˈkɒnʃəsli/","cefr":"B2","kr":["의식적으로","고의로","알면서"],"ex":[{"en":"She consciously chose to focus on the positive aspects of her situation.","ko":"그녀는 의식적으로 자신의 상황의 긍정적인 면에 집중하기로 했다."}],"mnemonic":{"soundHint":"컨셔슬리 → conscious + ly","story":"conscious의 부사형 consciously '의식적으로'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"deliberately","ko":"고의로","reason":"동의어 — 유사"},{"w":"intentionally","ko":"의도적으로","reason":"동의어 — 유사"},{"w":"unconsciously","ko":"무의식적으로","reason":"반의어 — 정반대"}],"collocBest":[{"en":"consciously choose","ko":"의식적으로 선택하다"},{"en":"consciously avoid","ko":"의도적으로 피하다"}]},"nuance":{"koSimple":"무심코가 아니라 알면서 일부러 하는 거예요.","whenToUse":"의도적 선택·습관을 강조할 때 써요."},"krDetail":[{"ko":"의식적으로","explain":"일부러 알고서"},{"ko":"고의로","explain":"일부러"},{"ko":"알면서","explain":"알고도"}],"usageExamples":[{"en":"He consciously avoided mentioning the accident.","ko":"그는 의식적으로 그 사고를 언급하지 않았다."},{"en":"She never consciously tried to hurt anyone.","ko":"그녀는 결코 고의로 누군가를 해치려 하지 않았다."}],"grammarNote":"형용사 conscious의 부사형으로, 반의어는 unconsciously(무의식적으로)이다.","grammarQuiz":[{"sentence":"She consciously chose _____ (focus) on the positive aspects of her situation.","ko":"그녀는 의식적으로 자신의 상황의 긍정적인 면에 집중하기로 했다.","answer":"to focus","hint":"choose + to부정사"}]},
+    {"id":"w01274","w":"consciousness","pos":["n"],"ph":"/ˈkɑnʃəsnəs/","cefr":"B2","kr":["의식","자각"],"ex":[{"en":"She lost consciousness after the accident.","ko":"그녀는 사고 후 의식을 잃었다."}],"mnemonic":{"soundHint":"컨셔스니스 → conscious + ness","story":"conscious의 명사형 consciousness '의식, 자각'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"awareness","ko":"인식","reason":"동의어 — 유사"},{"w":"mind","ko":"정신","reason":"관련어 — 유사"},{"w":"unconsciousness","ko":"무의식","reason":"반의어 — 정반대"}],"collocBest":[{"en":"lose consciousness","ko":"의식을 잃다"},{"en":"regain consciousness","ko":"의식을 되찾다"}]},"nuance":{"koSimple":"깨어 있고 자각하는 정신 상태를 뜻해요.","whenToUse":"의식 상실·문제의식을 말할 때 자주 써요."},"krDetail":[{"ko":"의식","explain":"깨어 있는 상태"},{"ko":"자각","explain":"스스로 앎"}],"usageExamples":[{"en":"He slowly regained consciousness in the hospital.","ko":"그는 병원에서 서서히 의식을 되찾았다."},{"en":"The book raised public consciousness about climate change.","ko":"그 책은 기후 변화에 대한 대중의 인식을 높였다."}],"grammarNote":"'lose/regain consciousness(의식을 잃다/되찾다)'가 자주 쓰이는 연어인 불가산명사이다.","grammarQuiz":[{"sentence":"She _____ (lose) consciousness after the accident yesterday.","ko":"그녀는 어제 사고 후 의식을 잃었다.","answer":"lost","hint":"과거 시제 (lose-lost-lost)"}]},
+    {"id":"w01276","w":"consecutive","pos":["adj"],"ph":"/kənˈsɛkjətɪv/","cefr":"B2","kr":["연속적인","잇따른"],"ex":[{"en":"The team won three consecutive games.","ko":"그 팀은 세 경기 연속으로 이겼다."}],"mnemonic":{"soundHint":"컨세큐티브 → con + secut(따르다)","story":"함께(con) 따라오는(secut) consecutive '연속적인'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"successive","ko":"연속적인","reason":"동의어 — 유사"},{"w":"sequential","ko":"순차적인","reason":"유의어 — 관련"},{"w":"intermittent","ko":"간헐적인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"consecutive days","ko":"연속된 날들"},{"en":"three consecutive wins","ko":"3연승"}]},"nuance":{"koSimple":"쉬지 않고 계속 이어지는 상태를 뜻해요.","whenToUse":"연속 승리·연속 근무를 말할 때 써요."},"krDetail":[{"ko":"연속적인","explain":"끊이지 않고 이어지는"},{"ko":"잇따른","explain":"연달아 오는"}],"usageExamples":[{"en":"It rained for five consecutive days.","ko":"닷새 연속으로 비가 내렸다."},{"en":"She was absent for three consecutive lessons.","ko":"그녀는 세 번의 수업에 연속으로 결석했다."}],"grammarNote":"주로 '숫자+consecutive+복수명사' 형태로 '연속된 ~'를 나타내며, 부사형은 consecutively이다.","grammarQuiz":[{"sentence":"The team has _____ (win) three consecutive games this month.","ko":"그 팀은 이번 달에 세 경기 연속으로 이겼다.","answer":"won","hint":"현재완료 (have p.p., win-won-won)"}]},
+    {"id":"w01277","w":"consecutively","pos":["adv"],"ph":"/kənˈsekjʊtɪvli/","cefr":"B2","kr":["연속적으로","잇달아","차례로"],"ex":[{"en":"The team won the championship consecutively for three years.","ko":"팀은 3년 연속으로 챔피언십을 우승했다."}],"mnemonic":{"soundHint":"컨세큐티블리 → consecutive + ly","story":"consecutive의 부사형 consecutively '연속적으로'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"successively","ko":"연이어","reason":"동의어 — 유사"},{"w":"sequentially","ko":"순차적으로","reason":"유의어 — 관련"},{"w":"intermittently","ko":"간헐적으로","reason":"반의어 — 정반대"}],"collocBest":[{"en":"win consecutively","ko":"연달아 이기다"},{"en":"numbered consecutively","ko":"차례로 번호가 매겨진"}]},"nuance":{"koSimple":"중간에 끊기지 않고 연달아 이어지는 거예요.","whenToUse":"연속 우승·연달아 발생을 말할 때 써요."},"krDetail":[{"ko":"연속적으로","explain":"끊이지 않고"},{"ko":"잇달아","explain":"연달아"},{"ko":"차례로","explain":"순서대로"}],"usageExamples":[{"en":"The pages are numbered consecutively.","ko":"그 페이지들은 차례대로 번호가 매겨져 있다."},{"en":"He won the award three years consecutively.","ko":"그는 3년 연속으로 그 상을 받았다."}],"grammarNote":"형용사 consecutive의 부사형으로, 동사를 수식해 '연달아·차례로'를 나타낸다.","grammarQuiz":[{"sentence":"The team won the championship consecutively for three years, _____ (set) a new record.","ko":"팀은 3년 연속 챔피언십을 우승하여 새 기록을 세웠다.","answer":"setting","hint":"분사구문 (능동, 결과)"}]},
+    {"id":"w01279","w":"consent","pos":["n","v"],"ph":"/kənˈsɛnt/","cefr":"B2","kr":["동의","허락"],"ex":[{"en":"She gave her consent willingly.","ko":"그녀는 기꺼이 동의했다."}],"mnemonic":{"soundHint":"컨센트 → con + sent(느끼다)","story":"함께(con) 같은 마음(sent)이 되어 consent '동의, 허락'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"approval","ko":"승인","reason":"동의어 — 유사"},{"w":"permission","ko":"허락","reason":"동의어 — 유사"},{"w":"refusal","ko":"거절","reason":"반의어 — 정반대"}],"collocBest":[{"en":"give consent","ko":"동의하다"},{"en":"informed consent","ko":"충분한 설명에 의한 동의"}]},"nuance":{"koSimple":"어떤 일에 대해 공식적으로 허락하는 거예요.","whenToUse":"동의서·개인정보 활용에 자주 써요."},"krDetail":[{"ko":"동의","explain":"뜻을 같이함"},{"ko":"허락","explain":"해도 좋다고 함"}],"usageExamples":[{"en":"You need written consent from your parents.","ko":"부모의 서면 동의가 필요하다."},{"en":"He consented to the interview after some hesitation.","ko":"그는 약간 망설인 후 인터뷰에 동의했다."}],"grammarNote":"동사로 'consent to+명사(~에 동의하다)' 형태로 쓰며, 'informed consent(사전 동의)'가 자주 쓰이는 표현이다.","grammarQuiz":[{"sentence":"Her consent was given _____ (allow) the surgery to proceed.","ko":"그녀의 동의는 수술이 진행되도록 하기 위해 주어졌다.","answer":"to allow","hint":"부사적 용법 to부정사 (목적)"}]},
+    {"id":"w01280","w":"consequence","pos":["n"],"ph":"/ˈkɒnsɪkwəns/","cefr":"B2","kr":["결과","영향"],"ex":[{"en":"Actions have serious consequences.","ko":"행동에는 심각한 결과가 따른다."}],"mnemonic":{"soundHint":"컨시퀀스 → con + sequ(따르다)","story":"따라오는(sequ) 것이 consequence '결과, 영향'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"result","ko":"결과","reason":"동의어 — 유사"},{"w":"outcome","ko":"결과","reason":"동의어 — 유사"},{"w":"cause","ko":"원인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"serious consequence","ko":"심각한 결과"},{"en":"face the consequences","ko":"결과에 직면하다"}]},"nuance":{"koSimple":"어떤 행동 뒤에 따라오는 결과를 뜻해요.","whenToUse":"인과관계·후폭풍을 이야기할 때 써요."},"krDetail":[{"ko":"결과","explain":"일이 빚어낸 끝"},{"ko":"영향","explain":"미치는 여파"}],"usageExamples":[{"en":"He didn't think about the consequences of his actions.","ko":"그는 자기 행동의 결과를 생각하지 않았다."},{"en":"The decision had far-reaching consequences for the economy.","ko":"그 결정은 경제에 광범위한 영향을 미쳤다."}],"grammarNote":"'as a consequence of(~의 결과로)'로 자주 쓰이며, 주로 부정적인 결과를 가리킨다.","grammarQuiz":[{"sentence":"Actions have serious consequences _____ cannot be ignored.","ko":"행동에는 무시할 수 없는 심각한 결과가 따른다.","answer":"that","hint":"주격 관계대명사"}]},
+    {"id":"w01281","w":"consequently","pos":["adv"],"ph":"/ˈkɑnsɪkwəntli/","cefr":"B2","kr":["결과적으로","따라서"],"ex":[{"en":"He was late; consequently, he missed the bus.","ko":"그는 늦었고 결과적으로 버스를 놓쳤다."}],"mnemonic":{"soundHint":"컨시퀀틀리 → consequence + ly","story":"consequence의 부사형 consequently '결과적으로'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"therefore","ko":"그러므로","reason":"동의어 — 유사"},{"w":"thus","ko":"따라서","reason":"동의어 — 격식체"},{"w":"accordingly","ko":"그에 따라","reason":"유의어 — 관련"}],"collocBest":[{"en":"consequently affected","ko":"결과적으로 영향받은"},{"en":"consequently delayed","ko":"결과적으로 지연된"}]},"nuance":{"koSimple":"앞의 상황으로 인해 이러한 결과가 됐다는 뜻이에요.","whenToUse":"원인과 결과를 연결할 때 자주 써요."},"krDetail":[{"ko":"결과적으로","explain":"그 결과로"},{"ko":"따라서","explain":"그러므로"}],"usageExamples":[{"en":"She missed the deadline; consequently, her application was rejected.","ko":"그녀는 마감을 놓쳤고, 따라서 지원서가 거절되었다."},{"en":"Sales dropped, and consequently profits fell.","ko":"매출이 줄었고, 결과적으로 이익도 감소했다."}],"grammarNote":"원인과 결과를 잇는 접속부사로, 흔히 세미콜론이나 콤마와 함께 문두·문중에 쓴다.","grammarQuiz":[{"sentence":"He was late; consequently, he _____ (miss) the bus.","ko":"그는 늦었고, 결과적으로 버스를 놓쳤다.","answer":"missed","hint":"과거 시제"}]},
+    {"id":"w01283","w":"conservative","pos":["adj","n"],"ph":"/kənˈsɜːvətɪv/","cefr":"B2","kr":["보수적인","보수주의자"],"ex":[{"en":"He holds very conservative views.","ko":"그는 매우 보수적인 견해를 가지고 있다."}],"mnemonic":{"soundHint":"컨서버티브 → conserve + ative","story":"conserve(보존)하려는 성격이 conservative '보수적인'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"traditional","ko":"전통적인","reason":"유의어 — 관련"},{"w":"cautious","ko":"신중한","reason":"유의어 — 관련"},{"w":"progressive","ko":"진보적인","reason":"반의어 — 정반대"}],"collocBest":[{"en":"conservative views","ko":"보수적 견해"},{"en":"conservative estimate","ko":"보수적 추정"}]},"nuance":{"koSimple":"변화보다 전통을 지키려는 성향을 뜻해요.","whenToUse":"정치 성향·태도·추정치를 말할 때 써요."},"krDetail":[{"ko":"보수적인","explain":"변화를 꺼리는"},{"ko":"보수주의자","explain":"전통을 지키려는 사람"}],"usageExamples":[{"en":"My grandparents have quite conservative attitudes.","ko":"우리 조부모님은 상당히 보수적인 태도를 지니고 계신다."},{"en":"As a conservative, he opposed the reform.","ko":"보수주의자로서 그는 그 개혁에 반대했다."}],"grammarNote":"반의어는 liberal/progressive(진보적인)이며, 'a conservative estimate(조심스러운 추정)'처럼 '신중한'의 뜻도 있다.","grammarQuiz":[{"sentence":"He holds very conservative views _____ often surprise his colleagues.","ko":"그는 종종 동료들을 놀라게 하는 매우 보수적인 견해를 가지고 있다.","answer":"that","hint":"주격 관계대명사"}]},
+    {"id":"w01286","w":"considerable","pos":["adj"],"ph":"/kənˈsɪdərəbl/","cefr":"B2","kr":["상당한","꽤 많은"],"ex":[{"en":"There was considerable interest in it.","ko":"그것에 대한 관심이 상당했다."}],"mnemonic":{"soundHint":"컨시더러블 → consider + able","story":"consider(고려)할 만한 양의 considerable '상당한'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"substantial","ko":"상당한","reason":"동의어 — 유사"},{"w":"significant","ko":"상당한","reason":"동의어 — 유사"},{"w":"negligible","ko":"미미한","reason":"반의어 — 정반대"}],"collocBest":[{"en":"considerable amount","ko":"상당한 양"},{"en":"considerable interest","ko":"상당한 관심"}]},"nuance":{"koSimple":"무시하기 어려울 만큼 상당히 많은 걸 뜻해요.","whenToUse":"금액·관심·차이가 클 때 자주 써요."},"krDetail":[{"ko":"상당한","explain":"꽤 큰 정도의"},{"ko":"꽤 많은","explain":"적지 않은"}],"usageExamples":[{"en":"The project required a considerable amount of money.","ko":"그 프로젝트는 상당한 액수의 돈을 필요로 했다."},{"en":"She has considerable experience in teaching.","ko":"그녀는 상당한 교직 경험을 지니고 있다."}],"grammarNote":"considerate(사려 깊은)와 혼동하지 말아야 하며, 부사형 considerably는 '상당히'를 뜻한다.","grammarQuiz":[{"sentence":"There was considerable interest in the project, _____ (attract) many investors.","ko":"프로젝트에 상당한 관심이 있어서 많은 투자자를 끌어들였다.","answer":"attracting","hint":"분사구문 (능동, 결과)"}]},
+    {"id":"w01289","w":"consistency","pos":["n"],"ph":"/kənˈsɪstənsi/","cefr":"B2","kr":["일관성","꾸준함"],"ex":[{"en":"Consistency is key to success.","ko":"일관성은 성공의 열쇠이다."}],"mnemonic":{"soundHint":"컨시스턴시 → consist + ency","story":"계속(consist) 이어지는 consistency '일관성, 꾸준함'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"steadiness","ko":"꾸준함","reason":"동의어 — 유사"},{"w":"uniformity","ko":"균일성","reason":"유의어 — 관련"},{"w":"inconsistency","ko":"비일관성","reason":"반의어 — 정반대"}],"collocBest":[{"en":"maintain consistency","ko":"일관성을 유지하다"},{"en":"lack of consistency","ko":"일관성의 부족"}]},"nuance":{"koSimple":"흐트러지지 않고 꾸준히 유지되는 상태예요.","whenToUse":"학습·품질·성과의 꾸준함을 말할 때 써요."},"krDetail":[{"ko":"일관성","explain":"한결같은 성질"},{"ko":"꾸준함","explain":"변함없이 계속함"}],"usageExamples":[{"en":"There is a lack of consistency in his arguments.","ko":"그의 주장에는 일관성이 부족하다."},{"en":"Consistency in training leads to better results.","ko":"훈련의 꾸준함이 더 나은 결과로 이어진다."}],"grammarNote":"형용사 consistent의 명사형으로, 반의어는 inconsistency(불일치)이다.","grammarQuiz":[{"sentence":"Consistency is the key _____ (achieve) success in any field.","ko":"일관성은 어떤 분야에서든 성공을 이루는 열쇠이다.","answer":"to achieve","hint":"형용사적 용법 to부정사"}]},
+    {"id":"w01290","w":"consistent","pos":["adj"],"ph":"/kənˈsɪstənt/","cefr":"B2","kr":["일관된","한결같은"],"ex":[{"en":"Her work is always consistent.","ko":"그녀의 작업은 항상 일관적이다."}],"mnemonic":{"soundHint":"컨시스턴트 → consist + ent","story":"계속(consist) 이어지는 consistent '일관된'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"steady","ko":"꾸준한","reason":"유의어 — 관련"},{"w":"uniform","ko":"균일한","reason":"유의어 — 관련"},{"w":"inconsistent","ko":"일관성 없는","reason":"반의어 — 정반대"}],"collocBest":[{"en":"consistent with","ko":"~와 일치하는"},{"en":"consistent performance","ko":"일관된 성과"}]},"nuance":{"koSimple":"어긋남 없이 늘 같은 태도를 유지하는 거예요.","whenToUse":"성적·품질·태도가 일정할 때 써요."},"krDetail":[{"ko":"일관된","explain":"처음부터 끝까지 같은"},{"ko":"한결같은","explain":"변함없는"}],"usageExamples":[{"en":"Her results have been consistent all season.","ko":"그녀의 성적은 시즌 내내 한결같았다."},{"en":"His story was not consistent with the facts.","ko":"그의 이야기는 사실과 일치하지 않았다."}],"grammarNote":"'consistent with(~와 일치하는)' 형태로 쓰며, 반의어는 inconsistent(모순되는)이다.","grammarQuiz":[{"sentence":"Her work has always _____ (be) consistent throughout the years.","ko":"그녀의 작업은 수년 동안 항상 일관적이었다.","answer":"been","hint":"현재완료 (have been)"}]},
+    {"id":"w01291","w":"consistently","pos":["adv"],"ph":"/kənˈsɪstəntli/","cefr":"B2","kr":["일관되게","꾸준히"],"ex":[{"en":"He consistently performs well in tests.","ko":"그는 시험에서 꾸준히 좋은 성과를 낸다."}],"mnemonic":{"soundHint":"컨시스턴틀리 → consistent + ly","story":"consistent의 부사형 consistently '일관되게'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"steadily","ko":"꾸준히","reason":"동의어 — 유사"},{"w":"regularly","ko":"규칙적으로","reason":"유의어 — 관련"},{"w":"erratically","ko":"불규칙하게","reason":"반의어 — 정반대"}],"collocBest":[{"en":"consistently perform","ko":"꾸준히 수행하다"},{"en":"consistently high","ko":"꾸준히 높은"}]},"nuance":{"koSimple":"들쭉날쭉 없이 꾸준한 태도로 하는 거예요.","whenToUse":"꾸준한 성과·습관을 강조할 때 써요."},"krDetail":[{"ko":"일관되게","explain":"한결같이"},{"ko":"꾸준히","explain":"변함없이"}],"usageExamples":[{"en":"The company has consistently produced high-quality products.","ko":"그 회사는 꾸준히 고품질 제품을 만들어 왔다."},{"en":"He consistently arrives early to work.","ko":"그는 한결같이 일찍 출근한다."}],"grammarNote":"형용사 consistent의 부사형으로, 현재완료와 함께 '꾸준히 ~해 왔다'를 나타낼 때 자주 쓴다.","grammarQuiz":[{"sentence":"He consistently performs well in tests, _____ (impress) his teachers.","ko":"그는 시험에서 꾸준히 좋은 성과를 내며 선생님들에게 감명을 준다.","answer":"impressing","hint":"분사구문 (능동, 결과)"}]},
+    {"id":"w01294","w":"conspiracy","pos":["n"],"ph":"/kənˈspɪrəsi/","cefr":"B2","kr":["음모","공모"],"ex":[{"en":"The investigation revealed a conspiracy to defraud investors.","ko":"수사는 투자자들을 사기 치려는 음모를 드러냈다."}],"mnemonic":{"soundHint":"컨스피러시 → con + spir(숨쉬다)","story":"함께(con) 같은 숨(spir)을 쉬며 꾸미는 conspiracy '음모, 공모'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"plot","ko":"음모","reason":"동의어 — 유사"},{"w":"scheme","ko":"계략","reason":"동의어 — 유사"},{"w":"collusion","ko":"공모","reason":"유의어 — 격식체"}],"collocBest":[{"en":"conspiracy theory","ko":"음모론"},{"en":"uncover a conspiracy","ko":"음모를 밝혀내다"}]},"nuance":{"koSimple":"몰래 꾸미는 나쁜 계획이나 공모를 뜻해요.","whenToUse":"범죄 모의·음모론을 말할 때 자주 써요."},"krDetail":[{"ko":"음모","explain":"몰래 꾸민 계획"},{"ko":"공모","explain":"함께 꾸밈"}],"usageExamples":[{"en":"They were accused of a conspiracy to overthrow the government.","ko":"그들은 정부를 전복하려는 음모 혐의로 기소되었다."},{"en":"Many people still believe in various conspiracy theories.","ko":"많은 사람들이 여전히 다양한 음모론을 믿는다."}],"grammarNote":"'conspiracy to+동사원형(~하려는 음모)'와 'conspiracy theory(음모론)'로 자주 쓴다.","grammarQuiz":[{"sentence":"The investigation revealed a conspiracy _____ was designed to defraud investors.","ko":"수사는 투자자들을 사기 치기 위해 설계된 음모를 드러냈다.","answer":"that","hint":"주격 관계대명사"}]},
+    {"id":"w01072","w":"chronic","pos":["adj"],"ph":"/ˈkrɒnɪk/","cefr":"B2","kr":["만성적인","장기적인"],"ex":[{"en":"She suffers from chronic back pain that limits her movement.","ko":"그녀는 움직임을 제한하는 만성 허리 통증을 앓고 있다."}],"mnemonic":{"soundHint":"크로닉 → 크(오래) + 로닉(늙은)","story":"오랫동안 낫지 않는 만성 허리 통증이 그녀의 움직임을 제한한다.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"persistent","ko":"지속적인","reason":"동의어 — 끈질긴"},{"w":"long-term","ko":"장기적인","reason":"동의어 — 오래된"},{"w":"acute","ko":"급성의","reason":"반의어 — 정반대"}],"collocBest":[{"en":"chronic pain","ko":"만성 통증"},{"en":"a chronic illness","ko":"만성 질환"}]},"nuance":{"koSimple":"오래 지속되며 잘 낫지 않는 상태를 말해.","whenToUse":"지병·만성 실업 같은 장기 문제에 써."},"krDetail":[{"ko":"만성적인","explain":"오래 계속되는 병의"},{"ko":"장기적인","explain":"오랫동안 이어지는"}],"usageExamples":[{"en":"The region faces a chronic shortage of clean water.","ko":"그 지역은 깨끗한 물의 만성적인 부족에 직면해 있다."},{"en":"Chronic stress can seriously damage your health.","ko":"만성적인 스트레스는 건강을 심각하게 해칠 수 있다."}],"grammarNote":"주로 병이나 문제에 쓰이는 형용사로 반대말은 acute(급성의)이다. chronic illness(만성 질환)처럼 명사를 수식하며 부사형은 chronically이다.","grammarQuiz":[{"sentence":"Back pain that is _____ requires long-term medical care.","ko":"만성적인 허리 통증은 장기적인 의료 관리가 필요하다.","answer":"chronic","hint":"관계사 (that)"}]},
+    {"id":"w00446","w":"backfire","pos":["v"],"ph":"/ˈbækˌfaɪər/","cefr":"B2","kr":["역효과를 내다","빗나가다"],"ex":[{"en":"The plan backfired badly.","ko":"계획이 심하게 역효과를 냈다."}],"mnemonic":{"soundHint":"백파이어 → 뒤(back)로 불(fire) 튐","story":"뒤로 불이 튀어 역효과가 남","hintConfidence":3},"pairs":{"buddyWords":[{"w":"misfire","ko":"빗나가다","reason":"동의어 — 실패 뜻"},{"w":"boomerang","ko":"역효과 나다","reason":"동의어 — 되돌아옴"},{"w":"succeed","ko":"성공하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"the plan backfired","ko":"계획이 역효과를 냈다"},{"en":"backfire badly","ko":"심하게 역효과를 내다"}]},"nuance":{"koSimple":"의도와 반대로 나쁘게 튄다는 뜻이에요.","whenToUse":"계획이 역효과를 낼 때 비유적으로 써요."},"krDetail":[{"ko":"역효과를 내다","explain":"거꾸로 나쁜 결과를 내다"},{"ko":"빗나가다","explain":"뜻대로 되지 않다"}],"usageExamples":[{"en":"His attempt to impress the boss completely backfired.","ko":"상사에게 잘 보이려던 그의 시도는 완전히 역효과를 냈다."},{"en":"The strict new rules backfired and lowered staff morale.","ko":"그 엄격한 새 규칙은 역효과를 내어 직원 사기를 떨어뜨렸다."}],"grammarNote":"계획·전략이 주어로 와서 '역효과를 내다'라는 자동사로 쓴다. 원래는 자동차 엔진의 '역화'를 뜻한다.","grammarQuiz":[{"sentence":"The plan _____ backfired badly on him.","ko":"그 계획은 그에게 심하게 역효과를 냈다.","answer":"has","hint":"현재완료"},{"sentence":"If he had listened, his plan _____ backfired.","ko":"그가 들었다면 그의 계획은 역효과를 내지 않았을 것이다.","answer":"wouldn't have","hint":"가정법 과거완료"}]},
+    {"id":"w00419","w":"avenue","pos":["n"],"ph":"/ˈævənjuː/","cefr":"B2","kr":["대로","방법","수단"],"ex":[{"en":"They walked down the main avenue in the city.","ko":"그들은 도시의 주요 대로를 따라 걸었다."}],"mnemonic":{"soundHint":"애비뉴 → 애비(아버지)의 뉴(새로운) 길","story":"애비가 새로 개척한 넓은 대로","hintConfidence":2},"pairs":{"buddyWords":[{"w":"boulevard","ko":"대로","reason":"동의어 — 넓은 길"},{"w":"pathway","ko":"방법, 경로","reason":"동의어 — 수단 뜻"},{"w":"means","ko":"수단","reason":"동의어 — 방법 뜻"}],"collocBest":[{"en":"explore new avenues","ko":"새로운 방법을 모색하다"},{"en":"a tree-lined avenue","ko":"나무가 늘어선 대로"}]},"nuance":{"koSimple":"큰 대로 또는 문제 해결의 길을 뜻해요.","whenToUse":"큰길이나 새로운 방법·수단을 말할 때 써요."},"krDetail":[{"ko":"대로","explain":"크고 넓은 길"},{"ko":"방법","explain":"일을 이루는 길"},{"ko":"수단","explain":"목적을 위한 도구"}],"usageExamples":[{"en":"We must explore every possible avenue before giving up.","ko":"우리는 포기하기 전에 가능한 모든 방법을 찾아봐야 한다."},{"en":"The gallery stands on a wide, tree-lined avenue.","ko":"그 미술관은 나무가 늘어선 넓은 대로에 서 있다."}],"grammarNote":"비유적으로 an avenue to/for(~에 이르는 길)처럼 '가능성·방법'을 뜻한다. 주소에서는 Ave.로 줄인다.","grammarQuiz":[{"sentence":"The avenue _____ we walked down was full of shops.","ko":"우리가 걸어 내려간 그 대로는 상점들로 가득했다.","answer":"which","hint":"관계대명사 목적격"},{"sentence":"Down the avenue _____ the parade with music.","ko":"대로를 따라 음악과 함께 퍼레이드가 왔다.","answer":"came","hint":"도치 구문"}]},
+    {"id":"w00381","w":"astonish","pos":["v"],"ph":"/əˈstɒnɪʃ/","cefr":"B2","kr":["깜짝 놀라게 하다","경악시키다"],"ex":[{"en":"The results astonished everyone.","ko":"결과는 모두를 깜짝 놀라게 했다."}],"mnemonic":{"soundHint":"어스토니시 → '아! 스톤(stone, 돌)' 되게 놀라","story":"라틴 tonare(천둥) → 천둥 맞아 굳은 듯 놀라다.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"amaze","ko":"놀라게 하다","reason":"동의어 — 거의 같음"},{"w":"astound","ko":"경악시키다","reason":"동의어 — 격식체"},{"w":"bore","ko":"지루하게 하다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"astonish everyone","ko":"모두를 놀라게 하다"},{"en":"utterly astonish","ko":"완전히 경악시키다"}]},"nuance":{"koSimple":"예상을 완전히 벗어난 일로 상대를 아주 크게 놀라게 하는 행위","whenToUse":"믿기 어려울 만큼 놀라운 결과·소식을 강조하고 싶을 때 쓴다"},"krDetail":[{"ko":"깜짝 놀라게 하다","explain":"몹시 놀라게 만들다"},{"ko":"경악시키다","explain":"충격받아 놀라게 하다"}],"usageExamples":[{"en":"It astonished me how quickly the children learned the song.","ko":"아이들이 그 노래를 얼마나 빨리 배우는지가 나를 깜짝 놀라게 했다."},{"en":"We were astonished by the sheer size of the new stadium.","ko":"우리는 그 새 경기장의 엄청난 크기에 깜짝 놀랐다."}],"grammarNote":"사람이 주어면 be astonished at/by, 놀라움을 일으키는 대상은 astonishing으로 쓰는 감정동사이다.","grammarQuiz":[{"sentence":"Everyone in the audience _____ astonished by the surprising results.","ko":"청중의 모든 사람이 놀라운 결과에 깜짝 놀랐다.","answer":"was","hint":"수동태 be + p.p. (감정 동사)"}]},
+    {"id":"w00580","w":"beforehand","pos":["adv"],"ph":"/bɪˈfɔːrhænd/","cefr":"B2","kr":["미리","사전에"],"ex":[{"en":"Prepare your materials beforehand.","ko":"자료를 미리 준비해라."}],"mnemonic":{"soundHint":"비포핸드 → 손(hand) 앞(before)에","story":"손에 닿기 전에, 즉 미리","hintConfidence":3},"pairs":{"buddyWords":[{"w":"in advance","ko":"미리, 사전에","reason":"동의어 — 핵심"},{"w":"previously","ko":"이전에","reason":"동의어 — 앞서"},{"w":"afterward","ko":"나중에","reason":"반의어 — 정반대"}],"collocBest":[{"en":"arrange beforehand","ko":"미리 준비하다"},{"en":"know beforehand","ko":"사전에 알다"}]},"nuance":{"koSimple":"어떤 일이 벌어지기 전에 미리라는 뜻이에요.","whenToUse":"준비·통보 시점을 강조할 때 써요."},"krDetail":[{"ko":"미리","explain":"일 있기 전에"},{"ko":"사전에","explain":"앞서서 먼저"}],"usageExamples":[{"en":"If you let me know beforehand, I can reserve a table for us.","ko":"미리 알려주면 우리 자리를 예약해 둘게."},{"en":"The speakers were given the questions beforehand so they could prepare.","ko":"연사들은 준비할 수 있도록 사전에 질문을 받았다."}],"grammarNote":"beforehand는 '미리, 사전에'를 뜻하는 부사로 보통 문장 뒤나 끝에 온다. in advance와 바꿔 쓸 수 있다.","grammarQuiz":[{"sentence":"The materials should _____ prepared beforehand.","ko":"자료는 미리 준비되어야 한다.","answer":"be","hint":"수동태 조동사"},{"sentence":"Had she known beforehand, she _____ have prepared better.","ko":"그녀가 미리 알았더라면 더 잘 준비했을 것이다.","answer":"would","hint":"가정법 도치"}]},
+    {"id":"w01178","w":"commotion","pos":["n"],"ph":"/kəˈmoʊʃən/","cefr":"B2","kr":["소동","소란","혼란"],"ex":[{"en":"A commotion broke out in the street when the accident occurred.","ko":"사고가 발생했을 때 거리에서 소동이 일어났다."}],"mnemonic":{"soundHint":"커모션 → com + motion","story":"함께(com) 움직이니(motion) commotion '소동, 소란'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"disturbance","ko":"소란","reason":"동의어 — 유의"},{"w":"uproar","ko":"소동","reason":"동의어 — 유의"},{"w":"calm","ko":"고요","reason":"반의어 — 정반대"}],"collocBest":[{"en":"cause a commotion","ko":"소동을 일으키다"},{"en":"sudden commotion","ko":"갑작스러운 소란"}]},"nuance":{"koSimple":"시끄럽고 어수선한 소동을 가리키는 말이에요.","whenToUse":"거리·행사장에서 소란이 일 때 자주 써요."},"krDetail":[{"ko":"소동","explain":"시끄럽게 벌어지는 난리"},{"ko":"소란","explain":"떠들썩한 어수선함"},{"ko":"혼란","explain":"어지럽고 어수선한 상태"}],"usageExamples":[{"en":"The sudden alarm caused a commotion in the office.","ko":"갑작스러운 경보가 사무실에 소동을 일으켰다."},{"en":"We heard a commotion coming from the next room.","ko":"우리는 옆방에서 소란이 나는 것을 들었다."}],"grammarNote":"'cause/create a commotion(소동을 일으키다)' 형태로 자주 쓰이며 주로 단수로 쓰는 가산명사다.","grammarQuiz":[{"sentence":"A commotion broke out in the street when the accident _____ (occur).","ko":"사고가 발생했을 때 거리에서 소동이 일어났다.","answer":"occurred","hint":"과거 시제"}]},
+    {"id":"w00601","w":"belligerent","pos":["adj","n"],"ph":"/bəˈlɪdʒərənt/","cefr":"B2","kr":["호전적인","싸움을 좋아하는","교전 중인"],"ex":[{"en":"The belligerent nations signed a ceasefire agreement.","ko":"교전 중인 국가들이 휴전 협정에 서명했다."}],"mnemonic":{"soundHint":"벨리저런트 → 벨리(배)로 저(들이)런트","story":"배로 밀며 호전적으로 덤빔","hintConfidence":1},"pairs":{"buddyWords":[{"w":"aggressive","ko":"공격적인","reason":"동의어 — 공세"},{"w":"hostile","ko":"적대적인","reason":"동의어 — 적의"},{"w":"peaceful","ko":"평화로운","reason":"반의어 — 정반대"}],"collocBest":[{"en":"a belligerent attitude","ko":"호전적인 태도"},{"en":"belligerent nations","ko":"교전 중인 국가들"}]},"nuance":{"koSimple":"싸움을 즐기는 공격적인 태도예요.","whenToUse":"적대적 태도나 교전국을 말할 때 써요."},"krDetail":[{"ko":"호전적인","explain":"공격적인 태도의"},{"ko":"싸움을 좋아하는","explain":"다투길 즐기는"},{"ko":"교전 중인","explain":"전쟁을 벌이는"}],"usageExamples":[{"en":"The customer became belligerent when his refund was refused.","ko":"그 손님은 환불이 거절되자 공격적으로 변했다."},{"en":"The talks aimed to end the conflict between the two belligerent states.","ko":"그 회담은 교전 중인 두 국가 간 분쟁을 끝내려는 것이었다."}],"grammarNote":"belligerent는 형용사로 '호전적인, 공격적인' 태도를 나타내고, 명사로는 '교전국·교전 당사자'를 뜻한다. 주로 격식 있는 문어에서 쓴다.","grammarQuiz":[{"sentence":"A ceasefire agreement _____ signed by the belligerent nations.","ko":"휴전 협정이 교전 중인 국가들에 의해 서명되었다.","answer":"was","hint":"수동태 과거"},{"sentence":"The countries _____ were belligerent finally reached peace.","ko":"교전 중이던 그 국가들은 마침내 평화에 도달했다.","answer":"which","hint":"관계대명사 주격"}]},
+    {"id":"w01104","w":"clearance","pos":["n"],"ph":"/ˈklɪərəns/","cefr":"B2","kr":["허가","통관","처분"],"ex":[{"en":"You need security clearance to enter this facility.","ko":"이 시설에 들어가려면 보안 허가가 필요하다."}],"mnemonic":{"soundHint":"클리어런스 → clear + ance","story":"clear(맑게 통과) 상태가 clearance '허가, 통관'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"permission","ko":"허가","reason":"동의어 — 유의"},{"w":"approval","ko":"승인","reason":"동의어 — 유의"},{"w":"prohibition","ko":"금지","reason":"반의어 — 정반대"}],"collocBest":[{"en":"security clearance","ko":"보안 허가"},{"en":"clearance sale","ko":"재고 정리 세일"}]},"nuance":{"koSimple":"공식적인 허가나 통관 절차를 뜻하는 말이에요.","whenToUse":"보안 허가·세관 통과를 말할 때 써요."},"krDetail":[{"ko":"허가","explain":"무언가를 해도 된다는 승인"},{"ko":"통관","explain":"세관을 거쳐 물건이 통과됨"},{"ko":"처분","explain":"재고를 싸게 팔아 치움"}],"usageExamples":[{"en":"The pilot received clearance for takeoff from the tower.","ko":"조종사는 관제탑으로부터 이륙 허가를 받았다."},{"en":"The store is holding a clearance sale this weekend.","ko":"그 가게는 이번 주말에 재고 처분 세일을 연다."}],"grammarNote":"'security clearance(보안 허가)', 'clearance sale(재고 정리 세일)'처럼 명사 앞뒤로 결합하는 표현이 흔하다. 동사형은 clear이다.","grammarQuiz":[{"sentence":"You need security clearance _____ (enter) this facility.","ko":"이 시설에 들어가려면 보안 허가가 필요하다.","answer":"to enter","hint":"부사적 용법 to부정사 (목적)"}]},
+    {"id":"w00354","w":"artillery","pos":["n"],"ph":"/ɑːrˈtɪləri/","cefr":"B2","kr":["포병대","대포"],"ex":[{"en":"Heavy artillery was used during the siege.","ko":"포위 공격 중에 중포가 사용되었다."}],"mnemonic":{"soundHint":"아틸러리 → '아! 틸러(tiller, 조종)' 대포","story":"art(기술)로 만든 무기 → 대포·포병대.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"cannon","ko":"대포","reason":"관련어 — 대표 화기"},{"w":"weaponry","ko":"무기류","reason":"관련어 — 상위 개념"},{"w":"infantry","ko":"보병","reason":"대조 — 다른 병과"}],"collocBest":[{"en":"heavy artillery","ko":"중포"},{"en":"artillery fire","ko":"포격"}]},"nuance":{"koSimple":"대포처럼 큰 화기 무기 또는 그것을 다루는 군대의 부대","whenToUse":"전쟁·군사 작전에서 대구경 화기를 다룰 때 주로 사용한다"},"krDetail":[{"ko":"포병대","explain":"대포를 다루는 부대"},{"ko":"대포","explain":"큰 화기"}],"usageExamples":[{"en":"The enemy bombarded the city with heavy artillery.","ko":"적군은 대포로 그 도시를 맹폭했다."},{"en":"The artillery was positioned on the hill.","ko":"포병대는 언덕 위에 배치되었다."}],"grammarNote":"불가산명사로 '대포(집합)' 또는 '포병대'를 뜻해 복수형을 쓰지 않는다. 부대를 가리킬 때는 단수·복수 동사가 모두 가능하다.","grammarQuiz":[{"sentence":"Heavy artillery _____ used continuously during the long siege.","ko":"포위 공격 동안 중포가 지속적으로 사용되었다.","answer":"was","hint":"수동태 be + p.p."}]},
+    {"id":"w00432","w":"awe","pos":["n"],"ph":"/ɔː/","cefr":"B2","kr":["경외심","외경"],"ex":[{"en":"She gazed at the mountains with awe.","ko":"그녀는 경외심으로 산을 바라보았다."}],"mnemonic":{"soundHint":"오~ → 감탄사 '오~' 경외","story":"'오~' 감탄사가 곧 경외심의 표현","hintConfidence":3},"pairs":{"buddyWords":[{"w":"wonder","ko":"경탄","reason":"동의어 — 거의 같음"},{"w":"reverence","ko":"숭배, 경외","reason":"동의어 — 격식체"},{"w":"contempt","ko":"경멸","reason":"반의어 — 정반대"}],"collocBest":[{"en":"in awe of","ko":"~에 경외심을 느끼는"},{"en":"a sense of awe","ko":"경외감"}]},"nuance":{"koSimple":"엄청난 것 앞에서 벅찬 감동을 말해요.","whenToUse":"자연·위대함에 감탄할 때 문어체로 써요."},"krDetail":[{"ko":"경외심","explain":"우러르며 두려워함"},{"ko":"외경","explain":"공경하며 두려워함"}],"usageExamples":[{"en":"The visitors stood in awe before the ancient stone temple.","ko":"방문객들은 그 고대 석조 사원 앞에서 경외심에 잠겨 서 있었다."},{"en":"The sheer scale of the universe fills me with awe.","ko":"우주의 어마어마한 규모는 나를 경외심으로 채운다."}],"grammarNote":"in awe of(~에 경외심을 느끼는) 형태로 쓴다. 형용사 awesome, awful이 이 낱말에서 나왔다.","grammarQuiz":[{"sentence":"_____ at the mountains, she felt overwhelming awe.","ko":"산들을 응시하면서 그녀는 압도적인 경외심을 느꼈다.","answer":"Gazing","hint":"분사구문"},{"sentence":"The audience was left _____ in awe by the performance.","ko":"관객들은 그 공연에 경외심으로 남겨졌다.","answer":"standing","hint":"5형식 지각동사 분사"}]},
+    {"id":"w00532","w":"be bound to","pos":["v"],"ph":"/biː baʊnd tuː/","cefr":"B2","kr":["반드시 ~할 것이다","~할 의무가 있다"],"ex":[{"en":"He is bound to succeed eventually.","ko":"그는 결국 반드시 성공할 것이다."}],"mnemonic":{"soundHint":"비 바운드 투 → 묶여(bound) 있어 반드시","story":"묶여 있어 반드시 그렇게 될 것","hintConfidence":2},"pairs":{"buddyWords":[{"w":"certain to","ko":"반드시 할","reason":"동의어 — 확실"},{"w":"destined to","ko":"~할 운명인","reason":"동의어 — 예정"},{"w":"unlikely to","ko":"~할 것 같지 않은","reason":"반의어 — 정반대"}],"collocBest":[{"en":"bound to happen","ko":"반드시 일어날"},{"en":"bound to succeed","ko":"반드시 성공할"}]},"nuance":{"koSimple":"결과가 반드시 그렇게 될 거란 뜻이에요.","whenToUse":"확신에 찬 미래 예측에 자주 써요."},"krDetail":[{"ko":"반드시 ~할 것이다","explain":"틀림없이 그리 된다"},{"ko":"~할 의무가 있다","explain":"꼭 해야 한다"}],"usageExamples":[{"en":"If you keep practicing this hard, you are bound to improve.","ko":"이렇게 열심히 계속 연습하면 너는 반드시 나아질 것이다."},{"en":"Under the contract, they are bound to deliver the goods on time.","ko":"계약에 따라 그들은 제때 물품을 납품할 의무가 있다."}],"grammarNote":"be bound to + 동사원형은 '틀림없이 ~할 것이다'라는 강한 확신을 나타낸다. 문맥에 따라 법·계약상 '~할 의무가 있다'라는 뜻도 된다.","grammarQuiz":[{"sentence":"Hard work is bound _____ pay off eventually.","ko":"노력은 결국 반드시 결실을 맺을 것이다.","answer":"to","hint":"to부정사"},{"sentence":"If he keeps trying, he _____ bound to succeed.","ko":"그가 계속 노력한다면 그는 반드시 성공할 것이다.","answer":"is","hint":"수동태 be동사"}]},
+    {"id":"w00378","w":"assumption","pos":["n"],"ph":"/əˈsʌmpʃən/","cefr":"B2","kr":["가정","전제"],"ex":[{"en":"Don't make assumptions without checking facts.","ko":"사실을 확인하지 않고 가정하지 마세요."}],"mnemonic":{"soundHint":"어섬션 → 'assume(가정)'의 명사","story":"assume의 명사형, 확인 없이 하는 가정.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"presumption","ko":"추정","reason":"동의어 — 거의 같음"},{"w":"hypothesis","ko":"가설","reason":"동의어 — 전제 뜻"},{"w":"fact","ko":"사실","reason":"반의어 — 확실한 것"}],"collocBest":[{"en":"make an assumption","ko":"가정을 하다"},{"en":"basic assumption","ko":"기본 가정"}]},"nuance":{"koSimple":"당연하다고 여겨 논의나 판단의 밑바탕으로 삼는 기본 생각","whenToUse":"논리·연구의 전제나 근거 없이 세운 가정을 지칭할 때 자주 쓴다"},"krDetail":[{"ko":"가정","explain":"사실로 치고 세운 생각"},{"ko":"전제","explain":"논의의 바탕이 되는 조건"}],"usageExamples":[{"en":"Her argument rests on the assumption that people act rationally.","ko":"그녀의 주장은 사람들이 합리적으로 행동한다는 가정에 기대고 있다."},{"en":"We should question the basic assumptions behind this policy.","ko":"우리는 이 정책 뒤에 있는 기본 전제들을 의심해 봐야 한다."}],"grammarNote":"make an assumption(가정을 하다), on the assumption that(~라는 전제로) 형태의 연어로 자주 쓴다.","grammarQuiz":[{"sentence":"The assumption _____ he made about the market turned out to be wrong.","ko":"그가 시장에 대해 한 그 가정은 잘못된 것으로 판명되었다.","answer":"which","hint":"목적격 관계대명사"}]},
+    {"id":"w00673","w":"bizarre","pos":["adj"],"ph":"/bɪˈzɑːr/","cefr":"B2","kr":["기이한","이상한"],"ex":[{"en":"He had a bizarre habit.","ko":"그는 기이한 습관이 있었다."}],"mnemonic":{"soundHint":"비자르 → 비(非)+자르(다) 기묘함","story":"자르지 못할 만큼 기묘하고 이상함","hintConfidence":1},"pairs":{"buddyWords":[{"w":"strange","ko":"이상한","reason":"동의어 — 기본"},{"w":"weird","ko":"기묘한","reason":"동의어 — 구어"},{"w":"normal","ko":"정상적인, 평범한","reason":"반의어 — 정반대"}],"collocBest":[{"en":"bizarre behavior","ko":"기이한 행동"},{"en":"a bizarre incident","ko":"이상한 사건"}]},"nuance":{"koSimple":"평범함을 벗어나 이상하리만치 특이해요.","whenToUse":"기괴하고 낯선 상황을 묘사할 때 써요."},"krDetail":[{"ko":"기이한","explain":"매우 이상하고 특이한"},{"ko":"이상한","explain":"보통과 크게 다른"}],"usageExamples":[{"en":"The witnesses described a bizarre light moving across the sky.","ko":"목격자들은 하늘을 가로질러 움직이는 기이한 빛을 묘사했다."},{"en":"It seemed bizarre that no one had noticed the mistake.","ko":"아무도 그 실수를 알아채지 못했다는 것이 이상했다."}],"grammarNote":"bizarre는 strange보다 강한 '기이함'을 나타내는 형용사로, 발음이 비슷한 명사 bazaar(시장)와 철자를 혼동하지 않도록 주의한다.","grammarQuiz":[{"sentence":"The habit _____ he had was truly bizarre.","ko":"그가 가진 그 습관은 정말 기이했다.","answer":"which","hint":"관계대명사 목적격"},{"sentence":"It was a bizarre habit _____ everyone noticed.","ko":"모두가 알아차린 것은 바로 그 기이한 습관이었다.","answer":"that","hint":"It ~ that 강조구문"}]},
+    {"id":"w01182","w":"companion","pos":["n"],"ph":"/kəmˈpæniən/","cefr":"B2","kr":["동반자","동료"],"ex":[{"en":"Dogs are loyal companions.","ko":"개는 충실한 동반자이다."}],"mnemonic":{"soundHint":"컴패니언 → 컴퍼니 인","story":"회사(company)에서 함께하는 사람 companion '동반자'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"partner","ko":"동반자","reason":"동의어 — 유의"},{"w":"mate","ko":"친구","reason":"동의어 — 구어체"},{"w":"stranger","ko":"낯선 사람","reason":"반의어 — 대비"}],"collocBest":[{"en":"loyal companion","ko":"충실한 동반자"},{"en":"traveling companion","ko":"여행 동반자"}]},"nuance":{"koSimple":"함께 지내며 곁에 있어주는 동반자예요.","whenToUse":"친구·반려동물·여행 동행자를 말할 때 써요."},"krDetail":[{"ko":"동반자","explain":"함께 지내는 사람"},{"ko":"동료","explain":"같이 일하거나 다니는 벗"}],"usageExamples":[{"en":"A good book can be a wonderful travel companion.","ko":"좋은 책은 훌륭한 여행 동반자가 될 수 있다."},{"en":"She was his constant companion during the illness.","ko":"그녀는 그가 아플 때 늘 곁을 지킨 동반자였다."}],"grammarNote":"가산명사로 사람뿐 아니라 반려동물이나 물건에도 비유적으로 쓴다. 형용사형 companionable은 '친해지기 쉬운'을 뜻한다.","grammarQuiz":[{"sentence":"Dogs are the loyal companions _____ have lived with humans for millennia.","ko":"개는 수천 년 동안 인간과 함께 살아온 충실한 동반자이다.","answer":"that","hint":"주격 관계대명사 (복수 선행사)"}]},
+    {"id":"w00947","w":"camouflage","pos":["n","v"],"ph":"/ˈkæməflɑːʒ/","cefr":"B2","kr":["위장","위장하다"],"ex":[{"en":"Soldiers wore camouflage to blend into the forest.","ko":"병사들은 숲에 섞이기 위해 위장복을 입었다."}],"mnemonic":{"soundHint":"카모플라주 → 카모(camo) 무늬로 위장","story":"군인들이 카모(camo) 무늬 옷을 입고 숲의 나뭇잎 사이로 위장한다.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"disguise","ko":"변장하다","reason":"동의어 — 위장"},{"w":"conceal","ko":"숨기다","reason":"동의어 — 은폐"},{"w":"expose","ko":"드러내다","reason":"반의어 — 정반대"}],"collocBest":[{"en":"military camouflage","ko":"군용 위장"},{"en":"camouflage the truth","ko":"진실을 위장하다"}]},"nuance":{"koSimple":"주변과 섞여 눈에 안 띄게 감추는 것.","whenToUse":"군복·동물 보호색·감정 위장에 두루 써."},"krDetail":[{"ko":"위장","explain":"숨기려는 눈속임"},{"ko":"위장하다","explain":"감춰 안 보이게"}],"usageExamples":[{"en":"The chameleon uses camouflage to hide from predators.","ko":"카멜레온은 포식자로부터 숨기 위해 위장을 이용한다."},{"en":"The soldiers camouflaged their tents with leaves.","ko":"병사들은 나뭇잎으로 자기 텐트를 위장했다."}],"grammarNote":"명사(위장)와 동사(위장하다)로 모두 쓰이며 철자가 까다로우니 유의한다. 'camouflage A with/as B'(A를 B로 위장하다) 형태로 쓴다.","grammarQuiz":[{"sentence":"The soldiers wore special uniforms _____ into the forest.","ko":"병사들은 숲 속에 위장하기 위해 특수 군복을 입었다.","answer":"to camouflage","hint":"to부정사 (목적)"}]}
+  ],
+  reviewPolicy:{ leitnerBoxes:5 },
+  xpTable:{ correct:10, streakBonus:5, perfectChapter:200, firstClear:100 },
+  badges:[
+    {id:"first-step", name:"첫 발", icon:"🌱"},
+    {id:"streak-10", name:"연속 10", icon:"🔥"},
+    {id:"perfect", name:"무결점", icon:"💎"}
+  ]
+};
+
+/* ---------- DATA END ---------- */
+
+/* ---------- STORAGE ---------- */
+const KEY = "wdr-고2-L09";
+const SFX_KEY = "wdr-sfx-on";
+const CB_KEY = "wdr-cb-mode";
+const XP_GLOBAL_KEY = "wdr-xp-total";
+const MAXSTREAK_KEY = "wdr-maxstreak";
+
+const lsGet = (k,def)=>{ try{const v=localStorage.getItem(k);return v==null?def:JSON.parse(v);}catch(e){return def;} };
+const lsSet = (k,v)=>{ try{localStorage.setItem(k, JSON.stringify(v));}catch(e){} };
+
+/* ---------- STATE ---------- */
+const state = {
+  phase: "home",          // home | study | quiz | result
+  quizType: "basic",       // basic | advanced
+  cardIdx: 0,
+  cards: [...DATA.newWords],
+  retryQueue: [],         // 모름/애매 단어
+  flipped: false,
+  startTime: 0,
+  sessionElapsedBase: 0,  // 심화 재도전 시 이전 누적시간 (재도전 후 총합 계산용)
+  xp: 0,
+  streak: 0,
+  maxStreak: 0,
+  perChapterMaxStreak: 0,
+  wordStats: lsGet(KEY+":words", {}), // {id:{box,correctStreak,lastSeen}}
+  chapterCleared: lsGet(KEY+":cleared", false),
+  basicThresholdPassed: lsGet(KEY+":basic_90pct", false),  // 심화단계 해금 조건 (기본 90%+)
+  advancedCleared: lsGet(KEY+":cleared_adv", false),
+  perfectFlag: false,
+  // quiz
+  quizPool: [],
+  quizIdx: 0,
+  quizCorrect: 0,
+  quizWrongIds: new Set(),
+  quizWrongItems: [],     // 틀린 문제 원본(재도전용)
+  quizCurrent: null,
+  quizAnswered: false,
+  // sound
+  sfxOn: lsGet(SFX_KEY, true),
+  cbMode: lsGet(CB_KEY, false),
+  // total
+  xpTotal: lsGet(XP_GLOBAL_KEY, 0),
+  globalMaxStreak: lsGet(MAXSTREAK_KEY, 0),
+  // timer
+  tickHandle: null
+};
+
+/* ---------- WORD STATS HELPERS ---------- */
+function getWordStat(id){
+  return state.wordStats[id] || { box:1, correctStreak:0, lastSeen:null };
+}
+function setWordStat(id, patch){
+  state.wordStats[id] = { ...getWordStat(id), ...patch, lastSeen: Date.now() };
+  lsSet(KEY+":words", state.wordStats);
+}
+function promoteBox(id){
+  const s = getWordStat(id);
+  const nb = Math.min(s.box+1, DATA.reviewPolicy.leitnerBoxes);
+  setWordStat(id, { box:nb, correctStreak: s.correctStreak+1 });
+}
+function demoteBox(id){
+  const s = getWordStat(id);
+  setWordStat(id, { box:1, correctStreak:0 });
+}
+
+/* ============================================================
+   AUDIO (Web Audio API 합성, 즉석 톤 생성)
+   ============================================================ */
+let ac = null;
+function getAC(){
+  if(!ac){
+    try{ ac = new (window.AudioContext||window.webkitAudioContext)(); }
+    catch(e){ ac = null; }
+  }
+  // resume on user gesture
+  if(ac && ac.state === "suspended"){ try{ ac.resume(); }catch(e){} }
+  return ac;
+}
+function tone({type="sine", freq=440, dur=.15, vol=.18, atk=.005, dec=.05, slide=null, t0=0}){
+  const a = getAC(); if(!a || !state.sfxOn) return;
+  const t = a.currentTime + t0;
+  const o = a.createOscillator();
+  const g = a.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, t);
+  if(slide){ o.frequency.exponentialRampToValueAtTime(Math.max(slide,1), t+dur); }
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t+atk);
+  g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  o.connect(g); g.connect(a.destination);
+  o.start(t); o.stop(t+dur+.02);
+}
+function noise({dur=.04, vol=.12, t0=0, hp=null}){
+  const a = getAC(); if(!a || !state.sfxOn) return;
+  const t = a.currentTime + t0;
+  const buf = a.createBuffer(1, Math.floor(a.sampleRate*dur), a.sampleRate);
+  const data = buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i] = (Math.random()*2-1) * (1-i/data.length);
+  const src = a.createBufferSource(); src.buffer = buf;
+  const g = a.createGain();
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t+dur);
+  let node = src;
+  if(hp){
+    const f = a.createBiquadFilter(); f.type="highpass"; f.frequency.value=hp;
+    node.connect(f); f.connect(g);
+  } else {
+    node.connect(g);
+  }
+  g.connect(a.destination);
+  src.start(t); src.stop(t+dur);
+}
+
+const SFX = {
+  // jp-pachinko-hit: 1200Hz sine 100ms 빠른 감쇠
+  correct(){
+    tone({type:"sine", freq:1400, dur:.08, vol:.22, t0:0});
+    tone({type:"sine", freq:1800, dur:.06, vol:.16, t0:.04});
+  },
+  // jp-buzzer: 저음 square 150Hz 250ms
+  wrong(){
+    tone({type:"square", freq:160, dur:.18, vol:.18, t0:0});
+    tone({type:"square", freq:120, dur:.20, vol:.16, t0:.06});
+  },
+  // jp-slot-jackpot: 도-솔-도-미 차임 4단
+  levelUp(){
+    const notes = [523.25, 783.99, 1046.50, 1318.51]; // C5 G5 C6 E6
+    notes.forEach((f,i)=> tone({type:"sine", freq:f, dur:.22, vol:.22, t0:i*.13}));
+    tone({type:"triangle", freq:2093.00, dur:.4, vol:.18, t0:.55}); // 종소리 C7
+  },
+  // jp-chime-asc: 800→1000→1200 3단
+  streak(){
+    [880, 1100, 1320].forEach((f,i)=> tone({type:"sine", freq:f, dur:.12, vol:.18, t0:i*.07}));
+  },
+  // arcade-fireworks: noise 펑 + 떨어지는 sine
+  fireworks(){
+    noise({dur:.18, vol:.22, t0:0, hp:600});
+    for(let i=0;i<6;i++){
+      tone({type:"sine", freq:1500-i*180, dur:.10, vol:.10, t0:.05+i*.05});
+    }
+  },
+  // arcade-flip: 화이트 노이즈 30ms
+  cardFlip(){
+    noise({dur:.04, vol:.10, hp:2000});
+  },
+  // jp-coin-payout: 2000Hz square 8회 빠르게
+  coinDrop(){
+    for(let i=0;i<8;i++){
+      tone({type:"square", freq:1800+Math.random()*600, dur:.04, vol:.10, t0:i*.05});
+    }
+  },
+  // jp-slot-spin: 600Hz square 50ms × 8
+  spinReel(){
+    for(let i=0;i<8;i++){
+      tone({type:"square", freq:600, dur:.04, vol:.10, t0:i*.05});
+    }
+  },
+  // jp-bigwin: 도-미-솔-도-미-솔-도(고)-도(고) 8단
+  bigWin(){
+    const notes = [523.25,659.25,783.99,1046.50,1318.51,1567.98,2093.00,2637.02];
+    notes.forEach((f,i)=> tone({type:"sine", freq:f, dur:.18, vol:.22, t0:i*.10}));
+    tone({type:"triangle", freq:2637.02, dur:.6, vol:.20, t0:.85});
+    // coins
+    for(let i=0;i<14;i++){
+      tone({type:"square", freq:1800+Math.random()*800, dur:.04, vol:.08, t0:.8+i*.04});
+    }
+  },
+  type(){
+    tone({type:"square", freq:1500, dur:.02, vol:.05});
+  },
+  // ── 심화 90%+ 전용 : 명랑·화려·인상 깊은 팡파레 조합 ──
+  // 1) 브라스 팡파레 (C→F→G→C major 상승) 화음 4단
+  // 2) 크리스탈 아르페지오 8음 (C5→E7)
+  // 3) 종·코인·환호 노이즈
+  grandFanfare(){
+    // 1) 브라스 트라이애드 상승 (sawtooth = 브라스 느낌)
+    const chords = [
+      { t:0.00, notes:[261.63, 329.63, 392.00] },   // C major (C4 E4 G4)
+      { t:0.16, notes:[349.23, 440.00, 523.25] },   // F major (F4 A4 C5)
+      { t:0.32, notes:[392.00, 493.88, 587.33] },   // G major (G4 B4 D5)
+      { t:0.48, notes:[523.25, 659.25, 783.99] }    // C major 옥타브 (C5 E5 G5) — 절정
+    ];
+    chords.forEach(ch => {
+      ch.notes.forEach(f => {
+        tone({ type:"sawtooth", freq:f, dur:.22, vol:.12, atk:.008, t0:ch.t });
+        // 부드러운 sine 배음 살짝 얹기
+        tone({ type:"sine",     freq:f*2, dur:.20, vol:.05, t0:ch.t });
+      });
+    });
+    // 브라스 절정 뒤 강타 (C5 saw 길게)
+    tone({ type:"sawtooth", freq:523.25, dur:.35, vol:.14, t0:.48 });
+
+    // 2) 크리스탈 아르페지오 8음 (도미솔도 두 옥타브)
+    const arp = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00, 2637.02];
+    arp.forEach((f,i) => {
+      tone({ type:"sine",     freq:f, dur:.15, vol:.20, atk:.003, t0:.75 + i*.055 });
+      tone({ type:"triangle", freq:f*2, dur:.10, vol:.08, t0:.75 + i*.055 });
+    });
+
+    // 3) 절정 종소리 (E7 · G7 벨)
+    tone({ type:"triangle", freq:2637.02, dur:.65, vol:.20, t0:1.22 });
+    tone({ type:"sine",     freq:3135.96, dur:.45, vol:.14, t0:1.30 });
+    tone({ type:"triangle", freq:2093.00, dur:.55, vol:.16, t0:1.40 });
+
+    // 4) 코인·불꽃 노이즈 (환호 느낌)
+    for(let i=0;i<18;i++){
+      tone({ type:"square", freq:1900+Math.random()*900, dur:.035, vol:.06, t0:1.25 + i*.038 });
+    }
+    noise({ dur:.15, vol:.14, hp:800, t0:1.20 });
+  }
+};
+
+/* ============================================================
+   PARTICLES (Canvas)
+   ============================================================ */
+const fx = {
+  canvas:null, ctx:null, parts:[], running:false,
+  init(){
+    this.canvas = document.getElementById("fxCanvas");
+    this.ctx = this.canvas.getContext("2d");
+    this.resize();
+    window.addEventListener("resize", ()=>this.resize());
+  },
+  resize(){
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    this.canvas.width = window.innerWidth*dpr;
+    this.canvas.height = window.innerHeight*dpr;
+    this.canvas.style.width = window.innerWidth+"px";
+    this.canvas.style.height = window.innerHeight+"px";
+    this.ctx.setTransform(dpr,0,0,dpr,0,0);
+  },
+  spawn(kind, opts={}){
+    const W = window.innerWidth, H = window.innerHeight;
+    const cx = opts.cx ?? W/2, cy = opts.cy ?? H/2;
+    if(kind === "sparkle-small"){
+      for(let i=0;i<16;i++){
+        this.parts.push({
+          x:cx, y:cy, vx:(Math.random()-.5)*6, vy:(Math.random()-.5)*6-1,
+          g:.04, life:60, age:0, size:3+Math.random()*2,
+          color: ["#fbbf24","#10b981","#22d3ee"][i%3], shape:"star"
+        });
+      }
+    } else if(kind === "reel-spin-small"){
+      for(let i=0;i<28;i++){
+        this.parts.push({
+          x:cx+(Math.random()-.5)*40, y:cy+(Math.random()-.5)*30,
+          vx:(Math.random()-.5)*9, vy:-3-Math.random()*4,
+          g:.18, life:80, age:0, size:6,
+          color: ["#fbbf24","#fde68a","#fde047"][i%3], shape:"coin"
+        });
+      }
+    } else if(kind === "jackpot-flash" || kind === "jackpot-full"){
+      const n = kind === "jackpot-full" ? 90 : 60;
+      for(let i=0;i<n;i++){
+        this.parts.push({
+          x:cx+(Math.random()-.5)*60, y:H+20+Math.random()*40,
+          vx:(Math.random()-.5)*5, vy:-9-Math.random()*8,
+          g:.28, life:110, age:0, size:6+Math.random()*4,
+          color: ["#fbbf24","#fde68a","#10b981","#f59e0b","#22d3ee"][i%5], shape:"coin"
+        });
+      }
+    } else if(kind === "rainbow-burst"){
+      const colors = ["#f43f5e","#fbbf24","#10b981","#22d3ee","#a78bfa","#fde047","#fb7185"];
+      for(let i=0;i<80;i++){
+        const ang = Math.random()*Math.PI*2, sp = 4+Math.random()*8;
+        this.parts.push({
+          x:cx, y:cy, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp-2,
+          g:.18, life:100, age:0, size:5+Math.random()*4,
+          color: colors[i%colors.length], shape:"circle"
+        });
+      }
+      const ov = document.createElement("div");
+      ov.className = "rainbow-overlay";
+      document.body.appendChild(ov);
+      setTimeout(()=>ov.remove(), 1500);
+    } else if(kind === "fireworks-grand"){
+      for(let b=0;b<3;b++){
+        setTimeout(()=>{
+          const x = W*(.2+Math.random()*.6), y = H*(.2+Math.random()*.3);
+          const colors = ["#fbbf24","#10b981","#22d3ee","#f43f5e"];
+          for(let i=0;i<40;i++){
+            const ang = Math.random()*Math.PI*2, sp = 3+Math.random()*5;
+            this.parts.push({
+              x, y, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp,
+              g:.10, life:80, age:0, size:4+Math.random()*3,
+              color: colors[i%colors.length], shape:"circle"
+            });
+          }
+          SFX.fireworks();
+        }, b*450);
+      }
+    }
+    if(!this.running) this.loop();
+  },
+  loop(){
+    this.running = true;
+    const tick = ()=>{
+      const W = window.innerWidth, H = window.innerHeight;
+      this.ctx.clearRect(0,0,W,H);
+      this.parts = this.parts.filter(p => p.age < p.life);
+      for(const p of this.parts){
+        p.vy += p.g;
+        p.x += p.vx; p.y += p.vy;
+        p.age++;
+        const alpha = Math.max(0, 1 - p.age/p.life);
+        this.ctx.globalAlpha = alpha;
+        this.ctx.fillStyle = p.color;
+        if(p.shape === "coin"){
+          this.ctx.beginPath();
+          this.ctx.ellipse(p.x, p.y, p.size, p.size*0.6, p.age*.2, 0, Math.PI*2);
+          this.ctx.fill();
+          this.ctx.strokeStyle = "rgba(255,255,255,.5)";
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+        } else if(p.shape === "star"){
+          drawStar(this.ctx, p.x, p.y, 5, p.size*1.5, p.size*.7);
+          this.ctx.fill();
+        } else {
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+          this.ctx.fill();
+        }
+      }
+      this.ctx.globalAlpha = 1;
+      if(this.parts.length > 0) requestAnimationFrame(tick);
+      else this.running = false;
+    };
+    requestAnimationFrame(tick);
+  }
+};
+function drawStar(ctx, cx, cy, spikes, outer, inner){
+  ctx.beginPath();
+  let rot = Math.PI/2*3, x=cx, y=cy, step = Math.PI/spikes;
+  ctx.moveTo(cx, cy-outer);
+  for(let i=0;i<spikes;i++){
+    x = cx+Math.cos(rot)*outer; y = cy+Math.sin(rot)*outer; ctx.lineTo(x,y); rot += step;
+    x = cx+Math.cos(rot)*inner; y = cy+Math.sin(rot)*inner; ctx.lineTo(x,y); rot += step;
+  }
+  ctx.lineTo(cx, cy-outer);
+  ctx.closePath();
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function toast(msg, cls=""){
+  const wrap = document.getElementById("toastWrap");
+  const t = document.createElement("div");
+  t.className = "toast " + cls;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(()=>t.remove(), 1900);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+function renderHeader(){
+  document.getElementById("xpVal").textContent = state.xp;
+  document.getElementById("streakVal").textContent = state.streak;
+
+  // dots
+  const dots = document.getElementById("dots");
+  dots.innerHTML = "";
+  const total = DATA.chapter.totalCount;
+  for(let i=0;i<total;i++){
+    const d = document.createElement("div");
+    d.className = "dot";
+    if(state.phase === "study"){
+      if(i < state.cardIdx) d.classList.add("done");
+      else if(i === state.cardIdx) d.classList.add("current");
+    } else if(state.phase === "quiz" || state.phase === "result"){
+      d.classList.add("done");
+    }
+    dots.appendChild(d);
+  }
+  // pbar
+  let pct = 0;
+  if(state.phase === "study") pct = (state.cardIdx / total) * 60;
+  else if(state.phase === "quiz") pct = 60 + (state.quizIdx / 15) * 35;
+  else if(state.phase === "result") pct = 100;
+  document.getElementById("pbarFill").style.width = pct + "%";
+
+  // sfx
+  document.getElementById("sfxBtn").textContent = state.sfxOn ? "🔊" : "🔇";
+  document.getElementById("sfxBtn").classList.toggle("on", state.sfxOn);
+  document.getElementById("cbBtn").classList.toggle("on", state.cbMode);
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function fmtTime(ms){
+  const s = Math.floor(ms/1000);
+  const m = Math.floor(s/60), r = s%60;
+  return String(m).padStart(2,"0")+":"+String(r).padStart(2,"0");
+}
+function startTimer(){
+  if(state.tickHandle) clearInterval(state.tickHandle);
+  state.tickHandle = setInterval(()=>{
+    if(state.phase === "result"){ clearInterval(state.tickHandle); return; }
+    const el = Date.now() - state.startTime + (state.sessionElapsedBase || 0);
+    document.getElementById("timerVal").textContent = fmtTime(el);
+  }, 1000);
+}
+
+/* ============================================================
+   TTS — 여자 목소리 + 기존 대비 1.5배 느리게
+   ============================================================ */
+function pickFemaleVoice(){
+  const voices = window.speechSynthesis.getVoices();
+  if(!voices || !voices.length) return null;
+  const en = voices.filter(v => /^en/i.test(v.lang));
+  // 이름 기반 여성 보이스 매칭 (플랫폼별 표준 이름)
+  const femaleRe = /female|woman|zira|samantha|karen|susan|victoria|allison|kate|serena|tessa|moira|fiona|jenny|aria|nova|sara|linda|amy|libby|monica|paulina|catherine|nancy|natasha/i;
+  return en.find(v => femaleRe.test(v.name))
+      || voices.find(v => femaleRe.test(v.name))
+      || en[0]
+      || voices[0]
+      || null;
+}
+// 최초 로드 시 voices 캐시 (브라우저에 따라 비동기 로드)
+if("speechSynthesis" in window){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+function speak(word){
+  try{
+    if("speechSynthesis" in window){
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(word);
+      u.lang = "en-US";
+      u.rate = 0.6;   // 기존 .9 → 1.5배 느리게
+      u.pitch = 1.0;
+      const v = pickFemaleVoice();
+      if(v) u.voice = v;
+      window.speechSynthesis.speak(u);
+    }
+  }catch(e){}
+}
+
+/* ============================================================
+   HOME SCREEN
+   ============================================================ */
+function renderHome(){
+  state.phase = "home";
+  renderHeader();
+  const main = document.getElementById("main");
+  const studiedBefore = Object.keys(state.wordStats).length > 0;
+  main.innerHTML = `
+    <div class="home">
+      <span class="badge-mini">고2 · Lv.9</span>
+      <h1>단어의 <span class="accent">추억</span></h1>
+      <div class="sub">카드로 익히고 퀴즈로 굳히고,<br>심화단계로 완전히 내 것으로.</div>
+      <div class="lvl">Lv.${DATA.chapter.index}</div>
+
+      <div class="home-card">
+        <div class="row"><span>오늘의 단어 수</span><b>70개</b></div>
+        <div class="row"><span>기본 퀴즈</span><b>15문항</b></div>
+        <div class="row"><span>예상 소요</span><b>15~20분</b></div>
+        <div class="row"><span>기본 클리어</span><span>${state.chapterCleared ? "✅ 완료" : "—"}</span></div>
+        <div class="row"><span>심화 해금</span><span>${state.basicThresholdPassed ? "🔓 해금 (기본 90%+)" : "🔒 기본 90%+ 달성 필요"}</span></div>
+        <div class="row"><span>심화 클리어</span><span>${state.advancedCleared ? "🏆 완료" : "—"}</span></div>
+      </div>
+
+      <div class="stage-picker">
+        <button class="stage-btn basic" id="startBasicBtn">
+          <span class="ic">📚</span>
+          <span class="ttl">기본단계</span>
+          <span class="desc">카드 70장 → 미니퀴즈 15문항</span>
+        </button>
+        <button class="stage-btn advanced" id="startAdvancedBtn" ${state.basicThresholdPassed ? "" : "disabled"}>
+          <span class="ic">🎯</span>
+          <span class="ttl">심화단계</span>
+          <span class="desc">${state.basicThresholdPassed ? "콜로케이션 영작 + 예문 빈칸 채우기" : "🔒 기본단계 90% 이상 달성 후 해금"}</span>
+        </button>
+      </div>
+
+      <div style="color:var(--text-on-dark-muted);font-size:.82rem;margin-top:10px;line-height:1.6;text-align:center;letter-spacing:.02em;">
+        모름·애매 단어는 자동 재투입 🔁
+      </div>
+    </div>
+  `;
+  document.getElementById("startBasicBtn").addEventListener("click", ()=>{
+    getAC();
+    state.quizType = "basic";
+    startStudy();
+  });
+  const advBtn = document.getElementById("startAdvancedBtn");
+  advBtn.addEventListener("click", ()=>{
+    if(!state.basicThresholdPassed){
+      alert("기본단계에서 90% 이상 달성해야 심화단계가 해금됩니다.");
+      return;
+    }
+    getAC();
+    state.quizType = "advanced";
+    startAdvanced();
+  });
+}
+
+/* ============================================================
+   STUDY (CARDS)
+   ============================================================ */
+function startStudy(){
+  state.phase = "study";
+  state.cardIdx = 0;
+  state.cards = [...DATA.newWords];
+  state.retryQueue = [];
+  state.startTime = Date.now();
+  state.sessionElapsedBase = 0;
+  state.xp = 0;
+  state.streak = 0;
+  state.maxStreak = 0;
+  state.perChapterMaxStreak = 0;
+  startTimer();
+  renderCard();
+}
+
+function renderCard(){
+  state.flipped = false;
+  renderHeader();
+  if(state.cardIdx >= state.cards.length){
+    // 모든 카드 끝남 → 퀴즈로
+    startQuiz();
+    return;
+  }
+  const w = state.cards[state.cardIdx];
+  const main = document.getElementById("main");
+
+  const sound = w.mnemonic && w.mnemonic.soundHint;
+  const story = w.mnemonic && w.mnemonic.story;
+  const buddies = (w.pairs && w.pairs.buddyWords) || [];
+  const collocs = (w.pairs && w.pairs.collocBest) || [];
+  const ex = (w.ex && w.ex[0]) || null;
+  const koSimple = w.nuance && w.nuance.koSimple;
+  const whenToUse = w.nuance && w.nuance.whenToUse;
+  const krDetail = w.krDetail || null;
+  const usageExamples = w.usageExamples || null;
+  const grammarNote = w.grammarNote || null;
+
+  main.innerHTML = `
+    <div class="stage">
+      <div class="word-counter">단어 <b>${state.cardIdx+1}</b> / ${state.cards.length}${state.retryQueue.length?` <span style="color:var(--accent)">(재학습 ${state.retryQueue.length}개)</span>`:""}</div>
+
+      <div class="flipcard" id="flipcard">
+        <div class="face front">
+          <div class="cefr">${w.cefr || "A1"}</div>
+          <div class="pos-row">${(w.pos||[]).map(p=>`<span class="pos-tag">${p}</span>`).join("")}</div>
+          <div class="word">${escape(w.w)}</div>
+          <div class="ph">${escape(w.ph||"")}</div>
+          <button class="speak-btn" id="speakBtn">🔊 발음 듣기</button>
+          <div class="hint">탭하면 뒤집혀요 ↻</div>
+        </div>
+        <div class="face back">
+          <div class="top">
+            <div class="w">${escape(w.w)}</div>
+            <div class="ph">${escape(w.ph||"")}</div>
+          </div>
+          <div class="kr">${w.kr.map(k=>escape(k)).join('<span class="sep">·</span>')}</div>
+
+          ${sound ? `<div class="section sound">
+            <div class="label">🎵 소리 힌트</div>
+            <div class="body">${escape(sound)}</div>
+          </div>` : ""}
+
+          ${story ? `<div class="section story">
+            <div class="label">📖 어원 스토리</div>
+            <div class="body">${escape(story)}</div>
+          </div>` : ""}
+
+          ${(koSimple || whenToUse) ? `<div class="section nuance">
+            <div class="label">💡 뉘앙스</div>
+            ${koSimple ? `<div class="body ko-simple">${escape(koSimple)}</div>` : ""}
+            ${whenToUse ? `<div class="when-to-use">✎ ${escape(whenToUse)}</div>` : ""}
+          </div>` : ""}
+
+          ${buddies.length ? `<div class="section">
+            <div class="label">👯 단짝 단어</div>
+            <div class="buddy-list">
+              ${buddies.slice(0,3).map(b=>`
+                <div class="buddy-item">
+                  <span class="en">${escape(b.w)}</span>
+                  <span class="ko">${escape(b.ko||"")}</span>
+                  ${b.reason ? `<span class="why">↳ ${escape(b.reason)}</span>` : ""}
+                </div>
+              `).join("")}
+            </div>
+          </div>` : ""}
+
+          ${collocs.length ? `<div class="section">
+            <div class="label">💎 콜로케이션</div>
+            <div class="col-list">
+              ${collocs.slice(0,2).map(c=>`
+                <div class="col-item">
+                  <button type="button" class="speak-btn" data-speak="${escape(c.en)}" title="영어 듣기" aria-label="영어 듣기">🔊</button>
+                  <span class="en">${escape(c.en)}</span>
+                  <span class="ko">${escape(c.ko||"")}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>` : ""}
+
+          ${ex ? `<div class="section">
+            <div class="label">✏️ 예문</div>
+            <div class="ex-line">
+              <button type="button" class="speak-btn" data-speak="${escape(ex.en)}" title="예문 듣기" aria-label="예문 듣기">🔊</button>
+              <span class="en">${escape(ex.en)}</span>
+              <span class="ko">${escape(ex.ko||"")}</span>
+            </div>
+          </div>` : ""}
+
+          ${(krDetail && krDetail.length) ? `<div class="section hanja">
+            <div class="label">🈶 한자 풀이</div>
+            <div class="hanja-list">
+              ${krDetail.map(k=>`
+                <div class="hanja-item">
+                  <span class="ko-word">${escape(k.ko)}</span>
+                  <span class="arrow">→</span>
+                  <span class="explain">${escape(k.explain)}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>` : ""}
+
+          ${(usageExamples && usageExamples.length) ? `<div class="section usage">
+            <div class="label">🔀 사용방법</div>
+            <div class="usage-list">
+              ${usageExamples.map(u=>`
+                <div class="usage-item">
+                  <button type="button" class="speak-btn" data-speak="${escape(u.en)}" title="영어 듣기" aria-label="영어 듣기">🔊</button>
+                  <span class="en">${escape(u.en)}</span>
+                  <span class="ko">${escape(u.ko||"")}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>` : ""}
+
+          ${grammarNote ? `<div class="section grammar">
+            <div class="label">📌 문법 포인트</div>
+            <div class="body">${escape(grammarNote)}</div>
+          </div>` : ""}
+        </div>
+      </div>
+
+      <div class="grade-row" id="gradeRow">
+        <button class="grade-btn prev" data-nav="prev" ${state.cardIdx === 0 ? "disabled" : ""}><span class="ic">⬅️</span>Previous</button>
+        <button class="grade-btn home" data-nav="home"><span class="ic">🏠</span>Home</button>
+        <button class="grade-btn next" data-nav="next"><span class="ic">➡️</span>${state.cardIdx >= state.cards.length - 1 ? "Quiz" : "Next"}</button>
+      </div>
+      <div class="flip-hint">⌨️ Space로 뒤집기 · 1/2/3 = Previous / Home / Next</div>
+    </div>
+  `;
+
+  const card = document.getElementById("flipcard");
+  card.addEventListener("click", flipCard);
+  document.getElementById("speakBtn").addEventListener("click", (e)=>{
+    e.stopPropagation();
+    speak(w.w);
+  });
+  // 콜로케이션·예문 스피커 버튼 (뒷면)
+  card.querySelectorAll(".speak-btn[data-speak]").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      const t = btn.getAttribute("data-speak");
+      if(t) speak(t);
+    });
+  });
+  // nav buttons (Previous / Home / Next)
+  document.querySelectorAll(".grade-btn").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      if(btn.disabled) return;
+      navCard(btn.dataset.nav);
+    });
+  });
+}
+
+function flipCard(){
+  const card = document.getElementById("flipcard");
+  if(!card) return;
+  state.flipped = !state.flipped;
+  card.classList.toggle("flipped", state.flipped);
+  SFX.cardFlip();
+  if(state.flipped){
+    const w = state.cards[state.cardIdx];
+    speak(w.w);
+  }
+}
+
+function navCard(dir){
+  if(dir === "home"){
+    SFX.cardFlip();
+    renderHome();
+    return;
+  }
+  if(dir === "prev"){
+    if(state.cardIdx > 0){
+      state.cardIdx--;
+      SFX.cardFlip();
+      renderCard();
+    }
+    return;
+  }
+  // next
+  if(state.cardIdx >= state.cards.length - 1){
+    // 마지막 카드에서 Next → 미니퀴즈 진입
+    state.cardIdx = state.cards.length;
+    startQuiz();
+    return;
+  }
+  state.cardIdx++;
+  SFX.cardFlip();
+  renderCard();
+}
+
+function handleStreak(){
+  if(state.streak === 3){
+    toast("연속 3! ✨", "streak");
+    fx.spawn("sparkle-small");
+    SFX.streak();
+  } else if(state.streak === 5){
+    state.xp += DATA.xpTable.streakBonus;
+    toast("연속 5! 🎰", "streak");
+    fx.spawn("reel-spin-small");
+    SFX.spinReel();
+  } else if(state.streak === 10){
+    state.xp += DATA.xpTable.streakBonus * 2;
+    toast("연속 10!!! 🔥 잭팟", "big");
+    fx.spawn("jackpot-flash");
+    SFX.levelUp();
+  }
+}
+
+/* ============================================================
+   QUIZ (15문항)
+   ============================================================ */
+const QUIZ_MODES = ["meaning-mcq","word-mcq","spelling","listening"];
+
+function buildQuizPool(){
+  const pool = [];
+  const words = [...DATA.newWords];
+  // 셔플
+  const shuffled = shuffle(words).slice(0, 15);
+  // 모드 균등 분배 (대략)
+  const modeOrder = [
+    ...Array(5).fill("meaning-mcq"),
+    ...Array(5).fill("word-mcq"),
+    ...Array(3).fill("spelling"),
+    ...Array(2).fill("listening")
+  ];
+  shuffle(modeOrder);
+  shuffled.forEach((w,i)=>{
+    pool.push({ word:w, mode: modeOrder[i] });
+  });
+  return pool;
+}
+
+/* ============================================================
+   ADVANCED (심화단계)
+   ── 콜로케이션 영작 · 예문 빈칸 채우기
+   ============================================================ */
+function normalizeAnswer(s){
+  return String(s||"")
+    .toLowerCase()
+    .replace(/[.,!?;:"'`~]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+// 예문 en 을 알파벳 단어 + 사이 세그먼트로 파싱
+function parseSentence(s){
+  const tokens = [];
+  const re = /([A-Za-z']+)|([^A-Za-z']+)/g;
+  let m;
+  while((m = re.exec(s)) !== null){
+    if(m[1]) tokens.push({ word:true, text:m[1] });
+    else     tokens.push({ word:false, text:m[2] });
+  }
+  return tokens;
+}
+// 빈칸 두 개 후보 인덱스 뽑기 — [원단어 위치, 그 외 알파벳4자+ 중 랜덤]
+function pickBlanks(tokens, mainWord){
+  const wordIdxs = tokens.map((t,i)=>t.word ? i : -1).filter(i=>i>=0);
+  const mw = normalizeAnswer(mainWord);
+  const stop = new Set(["the","a","an","of","is","are","was","were","be","been","being","to","and","or","in","on","at","for","with","by","from","as","it","its","this","that","these","those","he","she","they","we","you","i","him","her","them","us","my","your","his","their","our","not","no","so","if","but"]);
+  const mainIdx = wordIdxs.find(i => normalizeAnswer(tokens[i].text) === mw);
+  const others = wordIdxs.filter(i => i !== mainIdx);
+  const strong = others.filter(i => tokens[i].text.length >= 4 && !stop.has(tokens[i].text.toLowerCase()));
+  const medium = others.filter(i => tokens[i].text.length >= 3 && !stop.has(tokens[i].text.toLowerCase()));
+  const anyOne = others;
+  shuffle(strong); shuffle(medium); shuffle(anyOne);
+  const picks = [];
+  if(mainIdx !== undefined) picks.push(mainIdx);
+  const secondPool = strong.length ? strong : medium.length ? medium : anyOne;
+  if(secondPool.length){
+    const sec = secondPool.find(i => i !== picks[0]);
+    if(sec !== undefined) picks.push(sec);
+  }
+  // main 없을 때 두 개 이상 뽑기
+  if(picks.length < 2){
+    const extra = anyOne.find(i => !picks.includes(i));
+    if(extra !== undefined) picks.push(extra);
+  }
+  return picks.slice(0,2).sort((a,b)=>a-b);
+}
+function buildAdvancedPool(){
+  const collocPool = [];
+  const clozePool  = [];
+  const grammarPool = [];
+  for(const w of DATA.newWords){
+    // (1) 콜로케이션 영작
+    if(w.pairs && w.pairs.collocBest){
+      for(const c of w.pairs.collocBest){
+        if(c && c.en && c.ko) collocPool.push({ word:w, mode:"colloc-write", colloc:c });
+      }
+    }
+    // (2) 예문 빈칸 채우기
+    if(w.ex && w.ex[0] && w.ex[0].en && w.ex[0].ko){
+      const tokens = parseSentence(w.ex[0].en);
+      const blankIdxs = pickBlanks(tokens, w.w);
+      if(blankIdxs.length >= 1){
+        clozePool.push({
+          word:w, mode:"cloze",
+          sentence:{ en:w.ex[0].en, ko:w.ex[0].ko },
+          tokens, blankIdxs
+        });
+      }
+    }
+    // (3) 문법 빈칸 채우기
+    if(Array.isArray(w.grammarQuiz)){
+      for(const q of w.grammarQuiz){
+        if(q && q.sentence && q.ko && q.answer){
+          grammarPool.push({ word:w, mode:"grammar-fill", quiz:q });
+        }
+      }
+    }
+  }
+  shuffle(collocPool); shuffle(clozePool); shuffle(grammarPool);
+  const TARGET = 20;
+  const picked = [];
+  // 문법 우선 (있으면 최대 8개 or pool의 절반)
+  const gTake = Math.min(grammarPool.length, Math.max(1, Math.min(8, Math.ceil(grammarPool.length / 2))));
+  picked.push(...grammarPool.slice(0, gTake));
+  // 나머지 자리는 콜로/예문 균등
+  const rest = TARGET - picked.length;
+  const cTake = Math.min(collocPool.length, Math.ceil(rest / 2));
+  const zTake = Math.min(clozePool.length, rest - cTake);
+  picked.push(...collocPool.slice(0, cTake));
+  picked.push(...clozePool.slice(0, zTake));
+  // 부족하면 남은 후보에서 보충
+  if(picked.length < TARGET){
+    const leftover = [
+      ...grammarPool.slice(gTake),
+      ...collocPool.slice(cTake),
+      ...clozePool.slice(zTake)
+    ];
+    shuffle(leftover);
+    picked.push(...leftover.slice(0, TARGET - picked.length));
+  }
+  shuffle(picked);
+  return picked.slice(0, TARGET);
+}
+function startAdvanced(){
+  state.phase = "quiz";
+  state.quizType = "advanced";
+  state.quizPool = buildAdvancedPool();
+  state.quizIdx = 0;
+  state.quizCorrect = 0;
+  state.quizWrongIds = new Set();
+  state.quizWrongItems = [];
+  state.startTime = Date.now();
+  state.sessionElapsedBase = 0;
+  state.xp = 0;
+  state.streak = 0;
+  state.maxStreak = 0;
+  state.perChapterMaxStreak = 0;
+  startTimer();
+  renderQuiz();
+}
+
+/* 기본 — 틀린 문제만 재도전 (시간 누적) */
+function startBasicRetryWrong(){
+  const wrongPool = shuffle([...state.quizWrongItems]);
+  if(!wrongPool.length){ renderHome(); return; }
+  state.phase = "quiz";
+  state.quizType = "basic";
+  state.quizPool = wrongPool;
+  state.quizIdx = 0;
+  state.quizCorrect = 0;
+  state.quizWrongIds = new Set();
+  state.quizWrongItems = [];
+  state.sessionElapsedBase = (state.sessionElapsedBase || 0) + (Date.now() - state.startTime);
+  state.startTime = Date.now();
+  state.xp = 0;
+  state.streak = 0;
+  state.maxStreak = 0;
+  state.perChapterMaxStreak = 0;
+  startTimer();
+  renderQuiz();
+}
+
+/* 심화 — 틀린 문제만 재도전 (시간은 리셋 없이 누적) */
+function startAdvancedRetryWrong(){
+  const wrongPool = shuffle([...state.quizWrongItems]);
+  if(!wrongPool.length){ renderHome(); return; }
+  state.phase = "quiz";
+  state.quizType = "advanced";
+  state.quizPool = wrongPool;
+  state.quizIdx = 0;
+  state.quizCorrect = 0;
+  state.quizWrongIds = new Set();
+  state.quizWrongItems = [];
+  // 이전 세션 경과시간 누적 → 새 startTime 설정
+  state.sessionElapsedBase = (state.sessionElapsedBase || 0) + (Date.now() - state.startTime);
+  state.startTime = Date.now();
+  state.xp = 0;
+  state.streak = 0;
+  state.maxStreak = 0;
+  state.perChapterMaxStreak = 0;
+  startTimer();
+  renderQuiz();
+}
+
+function startQuiz(){
+  state.phase = "quiz";
+  state.quizPool = buildQuizPool();
+  state.quizIdx = 0;
+  state.quizCorrect = 0;
+  state.quizWrongIds = new Set();
+  state.quizWrongItems = [];
+  renderQuiz();
+}
+
+function renderQuiz(){
+  if(state.quizIdx >= state.quizPool.length){
+    finishSession();
+    return;
+  }
+  state.quizAnswered = false;
+  state.quizCurrent = state.quizPool[state.quizIdx];
+  renderHeader();
+
+  const { word, mode } = state.quizCurrent;
+  const main = document.getElementById("main");
+
+  let modeLabel = ({
+    "meaning-mcq":"영→한 의미",
+    "word-mcq":"한→영 단어",
+    "spelling":"철자 입력",
+    "listening":"듣고 받아쓰기",
+    "colloc-write":"🎯 콜로케이션 영작",
+    "cloze":"🎯 예문 빈칸 채우기",
+    "grammar-fill":"📌 문법 서술형 빈칸"
+  })[mode] || mode;
+
+  let promptHTML = "";
+  let answerHTML = "";
+
+  if(mode === "meaning-mcq"){
+    const correct = word.kr[0];
+    const distractors = pickDistractors(word, "kr", 3);
+    const opts = shuffle([correct, ...distractors]);
+    promptHTML = `
+      <div class="quiz-prompt">
+        <div class="label">다음 단어의 뜻은?</div>
+        <div class="qword">${escape(word.w)}</div>
+        <div class="qph">${escape(word.ph||"")}</div>
+      </div>`;
+    answerHTML = `
+      <div class="choices" id="choices">
+        ${opts.map((o,i)=>`<button class="choice" data-v="${escape(o)}"><span class="idx">${i+1}</span><span>${escape(o)}</span></button>`).join("")}
+      </div>`;
+  } else if(mode === "word-mcq"){
+    const correct = word.w;
+    const distractors = pickDistractors(word, "w", 3);
+    const opts = shuffle([correct, ...distractors]);
+    promptHTML = `
+      <div class="quiz-prompt">
+        <div class="label">다음 뜻의 단어는?</div>
+        <div class="qkr">${escape(word.kr.join(" · "))}</div>
+      </div>`;
+    answerHTML = `
+      <div class="choices" id="choices">
+        ${opts.map((o,i)=>`<button class="choice" data-v="${escape(o)}"><span class="idx">${i+1}</span><span>${escape(o)}</span></button>`).join("")}
+      </div>`;
+  } else if(mode === "spelling"){
+    promptHTML = `
+      <div class="quiz-prompt">
+        <div class="label">뜻을 보고 영어 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
+        <div class="qkr">${escape(word.kr.join(" · "))}</div>
+        <div class="qph">${escape(word.ph||"")}</div>
+      </div>`;
+    answerHTML = `
+      <div class="input-box">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
+        <button class="submit-btn" id="submitBtn">제출</button>
+      </div>`;
+  } else if(mode === "listening"){
+    promptHTML = `
+      <div class="quiz-prompt">
+        <div class="label">발음을 듣고 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
+        <button class="lis-btn" id="lisBtn">🔊 다시 듣기</button>
+        <div class="qph">${escape(word.ph||"")}</div>
+      </div>`;
+    answerHTML = `
+      <div class="input-box">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
+        <button class="submit-btn" id="submitBtn">제출</button>
+      </div>`;
+  } else if(mode === "colloc-write"){
+    const c = state.quizCurrent.colloc;
+    promptHTML = `
+      <div class="quiz-prompt">
+        <div class="label">뜻에 맞는 <b>콜로케이션</b>을 영어로 쓰세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
+        <div class="qkr">${escape(c.ko)}</div>
+      </div>`;
+    answerHTML = `
+      <div class="input-box">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(c.en)}"></div>
+        <button class="submit-btn" id="submitBtn">제출</button>
+      </div>`;
+  } else if(mode === "cloze"){
+    const { tokens, blankIdxs, sentence } = state.quizCurrent;
+    const sentHTML = tokens.map((t, i) => {
+      const bIdx = blankIdxs.indexOf(i);
+      if(bIdx >= 0){
+        return `<span class="word-answer inline cloze-wa" data-blank-idx="${bIdx}" data-answer="${escape(t.text)}"></span>`;
+      }
+      return escape(t.text);
+    }).join("");
+    promptHTML = `
+      <div class="quiz-prompt cloze-prompt">
+        <div class="label">해석에 맞게 <b>${blankIdxs.length}개 빈칸</b>을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
+        <div class="qkr">${escape(sentence.ko)}</div>
+        <div class="cloze-sentence">${sentHTML}</div>
+      </div>`;
+    answerHTML = `
+      <div class="input-box only-btn">
+        <button class="submit-btn" id="submitBtn">제출</button>
+      </div>`;
+  } else if(mode === "grammar-fill"){
+    const { quiz } = state.quizCurrent;
+    const ansList = Array.isArray(quiz.answer) ? quiz.answer : [quiz.answer];
+    let blankSeq = 0;
+    const sentHTML = escape(quiz.sentence).replace(/_{3,}/g, () => {
+      const ans = ansList[blankSeq] ?? ansList[0];
+      const idx = blankSeq++;
+      return `<span class="word-answer inline cloze-wa" data-blank-idx="${idx}" data-answer="${escape(ans)}"></span>`;
+    });
+    promptHTML = `
+      <div class="quiz-prompt cloze-prompt grammar-prompt">
+        <div class="label">📌 <b>문법 포인트</b> — 해석에 맞게 빈칸을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
+        <div class="qkr">${escape(quiz.ko)}</div>
+        <div class="cloze-sentence">${sentHTML}</div>
+      </div>`;
+    answerHTML = `
+      <div class="input-box only-btn">
+        <button class="submit-btn" id="submitBtn">제출</button>
+      </div>`;
+  }
+
+  main.innerHTML = `
+    <div class="quiz-stage">
+      <div class="quiz-header">
+        <div class="quiz-num">문제 <b>${state.quizIdx+1}</b> / ${state.quizPool.length}</div>
+        <div class="quiz-mode">${modeLabel}</div>
+      </div>
+      <div class="quiz-card">
+        ${promptHTML}
+        ${answerHTML}
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </div>
+  `;
+
+  // wire
+  if(mode === "meaning-mcq" || mode === "word-mcq"){
+    document.querySelectorAll(".choice").forEach(btn=>{
+      btn.addEventListener("click", ()=> handleChoice(btn));
+    });
+  } else if(mode === "cloze" || mode === "grammar-fill"){
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    containers.forEach(c => renderWordAnswer(c, c.dataset.answer));
+    document.getElementById("submitBtn").addEventListener("click", handleSubmit);
+    const first = document.querySelector(".cloze-wa .rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
+  } else {
+    const container = document.getElementById("wordAnswer");
+    renderWordAnswer(container, container.dataset.answer);
+    document.getElementById("submitBtn").addEventListener("click", handleSubmit);
+    const first = container.querySelector(".rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
+    if(mode === "listening"){
+      setTimeout(()=>speak(word.w), 250);
+      document.getElementById("lisBtn").addEventListener("click", ()=>speak(word.w));
+    }
+  }
+}
+
+function pickDistractors(word, field, n){
+  const pool = DATA.newWords.filter(w=>w.id !== word.id);
+  shuffle(pool);
+  const seen = new Set();
+  const out = [];
+  for(const w of pool){
+    let v;
+    if(field === "kr") v = w.kr[0];
+    else if(field === "w") v = w.w;
+    if(!v || seen.has(v)) continue;
+    seen.add(v);
+    out.push(v);
+    if(out.length >= n) break;
+  }
+  return out;
+}
+
+function handleChoice(btn){
+  if(state.quizAnswered) return;
+  state.quizAnswered = true;
+  const { word, mode } = state.quizCurrent;
+  const picked = btn.dataset.v;
+  const correct = (mode === "meaning-mcq") ? word.kr[0] : word.w;
+  const isCorrect = picked === correct;
+
+  document.querySelectorAll(".choice").forEach(c=>{
+    if(c.dataset.v === correct) c.classList.add("correct");
+    else if(c === btn && !isCorrect) c.classList.add("wrong");
+    else c.classList.add("dimmed");
+  });
+
+  finishQuestion(isCorrect);
+}
+
+function handleSubmit(){
+  if(state.quizAnswered) return;
+  const { word, mode } = state.quizCurrent;
+
+  // ── 심화: 예문 빈칸 · 문법 빈칸 ────────────────────────
+  if(mode === "cloze" || mode === "grammar-fill"){
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    if(containers.some(anyWordEmpty)) return;
+    state.quizAnswered = true;
+    let allOk = true;
+    containers.forEach(function(c){
+      const guess = normalizeAnswer(collectWordAnswer(c));
+      const ans = normalizeAnswer(c.dataset.answer);
+      const okAll = guess === ans;
+      const perGroup = Array.from(c.querySelectorAll('.word-group')).map(function(g, i){
+        const w = (c.dataset.answer || '').split(/\s+/)[i] || '';
+        const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+        return normalizeAnswer(combined) === normalizeAnswer(w);
+      });
+      markWordAnswer(c, perGroup);
+      if(!okAll) allOk = false;
+    });
+    document.getElementById("submitBtn").disabled = true;
+    if(!allOk){
+      const answers = containers.map(function(c){ return `<b style="color:var(--grade)">${escape(c.dataset.answer)}</b>`; }).join(" , ");
+      document.getElementById("feedback").innerHTML = `정답: ${answers}`;
+    }
+    finishQuestion(allOk);
+    return;
+  }
+
+  // ── 기본/심화 단일 컨테이너: spelling / listening / colloc-write
+  const container = document.getElementById("wordAnswer");
+  if(!container) return;
+  if(anyWordEmpty(container)) return;
+  state.quizAnswered = true;
+  const correctAns = container.dataset.answer;
+  const guess = normalizeAnswer(collectWordAnswer(container));
+  const isCorrect = guess === normalizeAnswer(correctAns);
+  const perGroup = Array.from(container.querySelectorAll('.word-group')).map(function(g, i){
+    const w = (correctAns || '').split(/\s+/)[i] || '';
+    const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+    return normalizeAnswer(combined) === normalizeAnswer(w);
+  });
+  markWordAnswer(container, perGroup);
+  document.getElementById("submitBtn").disabled = true;
+  if(!isCorrect){
+    document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(correctAns)}</b>`;
+  }
+  finishQuestion(isCorrect);
+}
+
+function finishQuestion(isCorrect){
+  const { word } = state.quizCurrent;
+  const fb = document.getElementById("feedback");
+  if(isCorrect){
+    state.quizCorrect++;
+    state.streak++;
+    state.xp += DATA.xpTable.correct;
+    promoteBox(word.id);
+    SFX.correct();
+    fb.classList.add("ok");
+    fb.textContent = "정답! +" + DATA.xpTable.correct + " XP " + (state.cbMode ? "✓" : "");
+    document.querySelector(".quiz-card").classList.add("bounce-correct");
+    handleStreak();
+  } else {
+    state.streak = 0;
+    demoteBox(word.id);
+    state.quizWrongIds.add(word.id);
+    state.quizWrongItems.push(state.quizCurrent);
+    SFX.wrong();
+    fb.classList.add("bad");
+    if(!fb.textContent) fb.textContent = "오답! " + (state.cbMode ? "✕ " : "") + " 정답: " + word.w;
+    document.querySelector(".quiz-card").classList.add("shake");
+  }
+  state.maxStreak = Math.max(state.maxStreak, state.streak);
+  state.perChapterMaxStreak = Math.max(state.perChapterMaxStreak, state.streak);
+  renderHeader();
+
+  setTimeout(()=>{
+    state.quizIdx++;
+    renderQuiz();
+  }, isCorrect ? 900 : 1500);
+}
+
+/* ============================================================
+   RESULT
+   ============================================================ */
+function finishSession(){
+  state.phase = "result";
+  if(state.tickHandle) clearInterval(state.tickHandle);
+  const total = state.quizPool.length;
+  const correct = state.quizCorrect;
+  const pct = Math.round(correct / total * 100);
+  const isPerfect = correct === total;
+  const elapsed = Date.now() - state.startTime + (state.sessionElapsedBase || 0);
+
+  const isAdv = state.quizType === "advanced";
+  const clearFlag = isAdv ? "advancedCleared" : "chapterCleared";
+  const clearKey  = isAdv ? (KEY+":cleared_adv") : (KEY+":cleared");
+  const resultKey = isAdv ? (KEY+":lastResult_adv") : (KEY+":lastResult");
+
+  // chapter clear?
+  let bonusXP = 0;
+  const newCleared = !state[clearFlag];
+  if(newCleared){
+    bonusXP += DATA.xpTable.firstClear;
+    state[clearFlag] = true;
+    lsSet(clearKey, true);
+  }
+  // 기본단계 90%+ 달성 → 심화 잠금 해제 (한 번 해금되면 유지)
+  let newUnlock = false;
+  if(!isAdv && pct >= 90 && !state.basicThresholdPassed){
+    state.basicThresholdPassed = true;
+    lsSet(KEY+":basic_90pct", true);
+    newUnlock = true;
+  }
+  if(isPerfect){
+    bonusXP += DATA.xpTable.perfectChapter;
+    state.perfectFlag = true;
+  }
+  state.xp += bonusXP;
+  state.xpTotal += state.xp;
+  state.globalMaxStreak = Math.max(state.globalMaxStreak, state.maxStreak);
+  lsSet(XP_GLOBAL_KEY, state.xpTotal);
+  lsSet(MAXSTREAK_KEY, state.globalMaxStreak);
+  lsSet(resultKey, { date:Date.now(), correct, total, xp:state.xp, elapsed });
+
+  // badges
+  const earnedBadges = [];
+  if(newCleared) earnedBadges.push(DATA.badges.find(b=>b.id==="first-step"));
+  if(state.maxStreak >= 10) earnedBadges.push(DATA.badges.find(b=>b.id==="streak-10"));
+  if(isPerfect) earnedBadges.push(DATA.badges.find(b=>b.id==="perfect"));
+
+  renderHeader();
+
+  const main = document.getElementById("main");
+  const stageLbl = isAdv ? "심화단계" : "기본단계";
+  const passedM3 = (pct >= 60) && (DATA.grade === '중3');
+  const isHighGrade = ['고1','고2','수능'].includes(DATA.grade);
+  const highGradePerfect = isHighGrade && isAdv && isPerfect;
+  const highGradeMsg = highGradePerfect ? pickHGMessage() : null;
+  const title = highGradeMsg
+    ? `🏆 ${escape(highGradeMsg)}`
+    : passedM3
+      ? `💰 방금 당신의 미래 연봉이 10만원 더 올라갔슴돠!!`
+      : (isPerfect ? `🎊 ${stageLbl} 무결점 클리어!` : (pct >= 80 ? `🎉 ${stageLbl} 잘했어요!` : pct >= 60 ? `👍 ${stageLbl} 통과!` : "💪 다시 도전!"));
+
+  // 심화면 [🎯 심화 다시] + [🏠 홈으로]. 기본이면 [🔁 다시 보기] + (심화 해금 시) [🎯 심화 도전]
+  const canGoAdvanced = !isAdv && state.basicThresholdPassed;
+  const advGrand = isAdv && pct >= 90;   // 심화 90%+ 특별 축포
+  const unlockBanner = newUnlock
+    ? `<div style="margin:8px auto 6px;padding:10px 14px;border-radius:var(--radius-md);
+                   background:linear-gradient(135deg, rgba(168,85,247,.18), rgba(109,40,217,.10));
+                   border:1px solid rgba(168,85,247,.55);color:#e9d5ff;font-weight:700;font-size:.98rem;
+                   text-align:center;letter-spacing:.02em;">
+         🎯 90% 이상 달성 — <b style="color:#c4b5fd">심화단계 해금!</b>
+       </div>`
+    : "";
+  const grandBanner = advGrand
+    ? `<div class="grand-banner">
+         <div class="grand-line">🎆 당신이 <b>배곧 쵝오</b>! 🎆</div>
+         <div class="grand-sub">심화단계 ${pct}% — 지역 랭커 등극!</div>
+       </div>`
+    : "";
+  const hasWrong = state.quizWrongItems.length > 0;
+  const actionsHTML = isAdv
+    ? `<button class="start-btn" id="retryBtn">🔁 심화 다시</button>
+       ${hasWrong ? `<button class="start-btn wrong-only" id="retryWrongBtn">🔴 틀린문제만 (${state.quizWrongItems.length})</button>` : ""}
+       <button class="start-btn alt" id="homeBtn">🏠 Home</button>`
+    : `<button class="start-btn" id="retryBtn">🔁 다시 보기</button>
+       ${hasWrong ? `<button class="start-btn wrong-only" id="retryWrongBtn">🔴 틀린문제만 (${state.quizWrongItems.length})</button>` : ""}
+       ${canGoAdvanced ? `<button class="start-btn adv" id="goAdvBtn">🎯 심화단계 도전</button>` : ""}`;
+
+  main.innerHTML = `
+    <div class="result">
+      <h2>${title}</h2>
+      ${grandBanner}
+      <div class="score-big">${correct} / ${total}</div>
+      <div class="score-pct">정답률 ${pct}%</div>
+      <div class="score-time">⏱ 소요 시간 <b>${fmtTime(elapsed)}</b></div>
+
+      <div class="result-stats">
+        <div class="result-stat"><div class="l">획득 XP</div><div class="v grade-c">+${state.xp}</div></div>
+        <div class="result-stat"><div class="l">최대 연속</div><div class="v acc-c">${state.maxStreak} 🔥</div></div>
+        <div class="result-stat"><div class="l">풀이 시간</div><div class="v">${fmtTime(elapsed)}</div></div>
+        <div class="result-stat"><div class="l">누적 XP</div><div class="v">${state.xpTotal}</div></div>
+      </div>
+
+      ${earnedBadges.length ? `<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">획득 뱃지</div>
+        <div class="badges-earned">
+          ${earnedBadges.map((b,i)=>`<span class="badge" style="animation-delay:${i*.15}s"><span class="ic">${b.icon}</span>${escape(b.name)}</span>`).join("")}
+        </div>` : ""}
+
+      ${state.quizWrongIds.size ? `<div style="margin:10px 0 14px;color:var(--text-muted);font-size:13px;">
+        틀린 단어: <b style="color:var(--danger)">${[...state.quizWrongIds].map(id=>{
+          const w = DATA.newWords.find(x=>x.id===id); return w?escape(w.w):"";
+        }).filter(Boolean).join(", ")}</b>
+      </div>` : ""}
+
+      ${unlockBanner}
+
+      <div class="result-actions">
+        ${actionsHTML}
+      </div>
+    </div>
+  `;
+
+  // celebration
+  setTimeout(()=>{
+    if(highGradeMsg){
+      // 고등학교 심화 100% — 화면 오버레이 + 랜덤 메시지 + TTS + 폭죽 다량
+      showHighGradeCelebration(highGradeMsg);
+      SFX.grandFanfare();
+      fx.spawn("rainbow-burst");
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 350);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 800);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.bigWin(); }, 1400);
+      setTimeout(()=>{ fx.spawn("rainbow-burst"); SFX.streak(); }, 2100);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 2900);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 3700);
+      setTimeout(()=>{ SFX.grandFanfare(); }, 4500);
+      return;
+    }
+    if(advGrand){
+      // 심화 90%+ — 화려·명랑 팡파레 + 축포 다량 (배곧 쵝오!)
+      fx.spawn("rainbow-burst");
+      SFX.grandFanfare();                                          // 브라스 팡파레+아르페지오+종
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 300);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 700);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.streak(); }, 1300);
+      setTimeout(()=>{ fx.spawn("rainbow-burst"); SFX.fireworks(); }, 1900);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.bigWin(); }, 2500);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.coinDrop(); }, 3300);
+      setTimeout(()=>{ SFX.grandFanfare(); }, 4000);                // 마지막 대미 팡파레
+    } else if(isPerfect){
+      fx.spawn("rainbow-burst");
+      SFX.bigWin();
+      setTimeout(()=>fx.spawn("jackpot-full"), 600);
+      setTimeout(()=>SFX.coinDrop(), 700);
+    } else if(newCleared){
+      fx.spawn("jackpot-full");
+      SFX.levelUp();
+      setTimeout(()=>SFX.coinDrop(), 500);
+    } else if(pct >= 80){
+      fx.spawn("reel-spin-small");
+      SFX.spinReel();
+    }
+  }, 250);
+
+  document.getElementById("retryBtn").addEventListener("click", ()=>{
+    if(isAdv){ startAdvanced(); }
+    else{ renderHome(); }
+  });
+  const nextBtn = document.getElementById("nextBtn");
+  if(nextBtn) nextBtn.addEventListener("click", ()=>{
+    alert("Lv.2 미생성 — 시범 버전입니다.");
+  });
+  const goAdvBtn = document.getElementById("goAdvBtn");
+  if(goAdvBtn) goAdvBtn.addEventListener("click", ()=>{
+    state.quizType = "advanced";
+    startAdvanced();
+  });
+  const homeBtn = document.getElementById("homeBtn");
+  if(homeBtn) homeBtn.addEventListener("click", ()=> renderHome());
+  const retryWrongBtn = document.getElementById("retryWrongBtn");
+  if(retryWrongBtn){
+    retryWrongBtn.addEventListener("click", ()=>{
+      if(isAdv) startAdvancedRetryWrong();
+      else startBasicRetryWrong();
+    });
+  }
+}
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+/* 고등학교 심화 100% — 랜덤 축하 메시지 + 화면 오버레이 + TTS */
+const HG_MESSAGES = [
+  "당신의 노력에 경의를 표합니다!!",
+  "배곧 쵝오를 넘어서!!",
+  "이러다 연세대 가는거 아냐??",
+  "자꾸 이러면 서울대 들어간다.",
+  "왜 이렇게 잘 해?",
+  "커서 훌륭한 사람 되겠어!!",
+  "미래의 당신 집이 한 평 커졌어!!"
+];
+function pickHGMessage(){
+  return HG_MESSAGES[Math.floor(Math.random() * HG_MESSAGES.length)];
+}
+function showHighGradeCelebration(msg){
+  const old = document.querySelector('.hg-celebration');
+  if(old) old.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'hg-celebration';
+  const sparkles = ['✨','🎉','🎊','⭐','💫','🌟','🎆','🎇','💥']
+    .map((e,i)=>{
+      const x = 8 + Math.random()*84, y = 8 + Math.random()*84;
+      const d = (Math.random()*1.6).toFixed(2);
+      return `<span class="hg-sparkle" style="left:${x}%;top:${y}%;animation-delay:${d}s">${e}</span>`;
+    }).join('');
+  overlay.innerHTML = `<div class="hg-halo"></div>${sparkles}<div class="hg-msg">${escape(msg)}</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>overlay.remove(), 6100);
+  try{
+    if('speechSynthesis' in window){
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(msg);
+      u.lang = 'ko-KR'; u.rate = 0.98; u.pitch = 1.12; u.volume = 1;
+      const voices = speechSynthesis.getVoices();
+      const ko = voices.find(v => /^ko/i.test(v.lang));
+      if(ko) u.voice = ko;
+      setTimeout(()=>speechSynthesis.speak(u), 400);
+    }
+  }catch(e){}
+}
+
+/* 빈칸 힌트: 정답 문자열의 각 단어 첫 글자를 "a… b…" 형태로 반환
+   예: "appeared" → "a…"  ·  "in the absence of" → "i… t… a… o…"  ·  "feel bad" → "f… b…"  */
+function firstCharsHint(s){
+  return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'') + '…').join(' ');
+}
+/* 빈칸 프리필: 정답 각 단어의 첫 글자를 공백으로 이어붙여 반환 (인풋 value 로 채워둠)
+   예: "appeared" → "a"  ·  "in the absence of" → "i t a o"  ·  "feel bad" → "f b"  */
+function firstCharsPrefill(s){
+  return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'')).join(' ');
+}
+/* 인풋에 프리필된 첫 글자 잠금 + 커서 이동 훅 부착 */
+function attachPrefillGuard(inp){
+  const prefill = inp.dataset.prefill || '';
+  if(!prefill) return;
+  const moveCursorEnd = () => { try{ inp.setSelectionRange(inp.value.length, inp.value.length); }catch(e){} };
+  inp.addEventListener('focus', () => setTimeout(moveCursorEnd, 0));
+  inp.addEventListener('click', () => {
+    if(inp.selectionStart < prefill.length) moveCursorEnd();
+  });
+  inp.addEventListener('keydown', e => {
+    // 프리필 영역 보호: 첫 글자들을 지우거나 그 앞으로 이동하는 키 방지
+    const s = inp.selectionStart, e2 = inp.selectionEnd;
+    if(e.key === 'Backspace' && s <= prefill.length && s === e2){ e.preventDefault(); moveCursorEnd(); return; }
+    if(e.key === 'Delete'    && s <  prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+    if((e.key === 'ArrowLeft' || e.key === 'Home') && s <= prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+  });
+  inp.addEventListener('input', () => {
+    // 사용자 값이 프리필로 시작하지 않으면 프리필을 앞에 다시 붙임 (드래그·잘라내기 등 방지)
+    if(!inp.value.startsWith(prefill)){
+      inp.value = prefill + inp.value.replace(new RegExp('^' + prefill.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').slice(0,0)),'');
+      moveCursorEnd();
+    }
+  });
+}
+/* 프리필 인풋에서 사용자가 실제로 추가 입력한 부분이 있는지 (첫 글자만 남은 상태는 미제출) */
+function hasUserInput(inp){
+  const prefill = inp.dataset.prefill || '';
+  return (inp.value||'').trim().length > prefill.trim().length;
+}
+/* ============================================================
+   낱말박스 (자동완성 방어) — 각 단어당 [잠금 첫글자] + [빈 인풋]
+   ============================================================ */
+function renderWordAnswer(container, answer){
+  container.innerHTML = '';
+  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
+  words.forEach((word, wi) => {
+    const group = document.createElement('span');
+    const isSingle = word.length <= 1;
+    group.className = 'word-group' + (isSingle ? ' single-letter' : '');
+    group.dataset.first = isSingle ? '' : (word[0] || '');
+    group.dataset.full = word;
+    if(!isSingle){
+      const first = document.createElement('span');
+      first.className = 'first-letter';
+      first.textContent = word[0] || '';
+      group.appendChild(first);
+    }
+    const inp = document.createElement('input');
+    inp.className = 'rest-input';
+    inp.type = 'text';
+    inp.autocomplete = 'off';
+    inp.autocorrect = 'off';
+    inp.setAttribute('autocapitalize','off');
+    inp.spellcheck = false;
+    inp.inputMode = 'text';
+    inp.name = 'wa-' + Math.random().toString(36).slice(2,8);
+    inp.dataset.wi = wi;
+    inp.setAttribute('aria-label', (wi+1) + '번째 단어의 나머지 스펠링');
+    group.appendChild(inp);
+    container.appendChild(group);
+  });
+  wireWordInputs(container);
+}
+function wireWordInputs(container){
+  const inputs = Array.from(container.querySelectorAll('.rest-input'));
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      inp.value = (inp.value || '').toLowerCase().replace(/[^a-z'\-]/g,'');
+    });
+    inp.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+        else { e.preventDefault(); handleSubmit(); }
+      } else if(e.key === 'Tab' && !e.shiftKey){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+      } else if(e.key === 'Backspace' && !inp.value && i > 0){
+        e.preventDefault();
+        const prev = inputs[i-1];
+        prev.focus();
+        try{ prev.setSelectionRange(prev.value.length, prev.value.length); }catch(_e){}
+      }
+    });
+  });
+}
+function collectWordAnswer(container){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  return groups.map(function(g){
+    var inp = g.querySelector('.rest-input');
+    return (g.dataset.first || '') + (inp ? inp.value : '');
+  }).join(' ');
+}
+function anyWordEmpty(container){
+  return Array.from(container.querySelectorAll('.rest-input')).some(function(i){ return !i.value.trim(); });
+}
+function markWordAnswer(container, perGroupOk){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  groups.forEach(function(g, i){
+    g.classList.add(perGroupOk[i] ? 'correct' : 'wrong');
+    var inp = g.querySelector('.rest-input');
+    if(inp) inp.disabled = true;
+  });
+}
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+function escape(s){
+  if(s == null) return "";
+  return String(s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+/* ============================================================
+   GLOBAL EVENTS
+   ============================================================ */
+document.getElementById("sfxBtn").addEventListener("click", ()=>{
+  state.sfxOn = !state.sfxOn;
+  lsSet(SFX_KEY, state.sfxOn);
+  renderHeader();
+  if(state.sfxOn){ getAC(); SFX.streak(); }
+});
+document.getElementById("cbBtn").addEventListener("click", ()=>{
+  state.cbMode = !state.cbMode;
+  lsSet(CB_KEY, state.cbMode);
+  document.body.classList.toggle("cb-mode", state.cbMode);
+  renderHeader();
+});
+
+// keyboard
+document.addEventListener("keydown", e=>{
+  if(state.phase === "study"){
+    if(e.code === "Space"){ e.preventDefault(); flipCard(); }
+    else if(e.key === "1") navCard("prev");
+    else if(e.key === "2") navCard("home");
+    else if(e.key === "3") navCard("next");
+    else if(e.key === "ArrowLeft") navCard("prev");
+    else if(e.key === "ArrowRight") navCard("next");
+  } else if(state.phase === "quiz" && !state.quizAnswered){
+    const mode = state.quizCurrent && state.quizCurrent.mode;
+    if(mode === "meaning-mcq" || mode === "word-mcq"){
+      const n = parseInt(e.key, 10);
+      if(n >= 1 && n <= 4){
+        const btns = document.querySelectorAll(".choice");
+        if(btns[n-1]) handleChoice(btns[n-1]);
+      }
+    }
+  }
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function boot(){
+  fx.init();
+  if(state.cbMode) document.body.classList.add("cb-mode");
+  renderHome();
+}
+boot();
+</script>
+
+</body>
+</html>
