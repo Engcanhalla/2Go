@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Olym_112_13 - Vocab Practice</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Segoe UI","Malgun Gothic",sans-serif;background:#f5f6fa;color:#222;font-size:16px;line-height:1.8;padding:0;min-height:100vh;}
+.header{background:linear-gradient(135deg,#1a237e,#3949ab);color:#fff;padding:16px 20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.header h1{font-size:18px;font-weight:700;}
+.header .level-info{font-size:14px;opacity:.85;margin-top:4px;}
+.header .sentence-info{font-size:12px;opacity:.7;margin-top:2px;}
+.progress-bar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:8px;overflow:hidden;}
+.progress-fill{height:100%;background:#81c784;border-radius:3px;transition:width .3s;}
+.content{max-width:700px;margin:0 auto;padding:20px 16px;}
+.ref-toggle-row{text-align:right;margin-bottom:10px;}
+.btn-ref{background:#fff;border:2px solid #3949ab;color:#3949ab;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;}
+.ref-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:14px;color:#5d4037;}
+.ref-box strong{display:block;font-size:12px;color:#e65100;margin-bottom:4px;}
+.passage{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);line-height:2.5;font-size:16px;margin-bottom:16px;}
+.blank-select{display:inline-block;position:relative;}
+.blank-select select{appearance:none;-webkit-appearance:none;background:#e3f2fd;border:2px solid #90caf9;border-radius:6px;padding:4px 28px 4px 10px;font-size:15px;font-weight:600;color:#1565c0;cursor:pointer;min-width:100px;font-family:inherit;}
+.blank-select select:focus{border-color:#1565c0;outline:none;box-shadow:0 0 0 3px rgba(21,101,192,.15);}
+.blank-select.correct select{background:#c8e6c9;border-color:#66bb6a;color:#2e7d32;}
+.blank-select.wrong select{background:#ffcdd2;border-color:#ef5350;color:#c62828;animation:shake .3s;}
+.blank-input{display:inline-block;}
+.blank-input input{background:#e3f2fd;border:2px solid #90caf9;border-radius:6px;padding:4px 10px;font-size:15px;font-weight:600;color:#1565c0;font-family:inherit;width:auto;min-width:80px;}
+.blank-input input::placeholder{color:#90a4ae;font-weight:700;letter-spacing:2px;}
+.blank-input input:focus{border-color:#1565c0;outline:none;box-shadow:0 0 0 3px rgba(21,101,192,.15);}
+.blank-input.correct input{background:#c8e6c9;border-color:#66bb6a;color:#2e7d32;}
+.blank-input.wrong input{background:#ffcdd2;border-color:#ef5350;color:#c62828;animation:shake .3s;}
+.check-btn{font-size:12px;padding:4px 8px;margin-left:2px;border:1px solid #90caf9;border-radius:4px;background:#e3f2fd;cursor:pointer;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.retry-badge{display:inline-block;background:#fff3e0;color:#e65100;font-size:12px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;}
+.action-bar{text-align:center;padding:16px;position:sticky;bottom:0;background:#f5f6fa;}
+.btn{padding:12px 28px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;}
+.btn:active{transform:scale(.97);}
+.btn-retry{background:#f57c00;color:#fff;box-shadow:0 4px 12px rgba(245,124,0,.3);}
+.btn-next{background:#2e7d32;color:#fff;box-shadow:0 4px 12px rgba(46,125,50,.3);}
+.btn-outline2{background:#eee;color:#333;}
+.result-card{background:#fff;border-radius:12px;padding:24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.1);margin:10px 0;}
+.result-card h2{font-size:20px;margin-bottom:8px;color:#1a237e;}
+.result-card .score{font-size:48px;font-weight:800;margin:12px 0;}
+.result-card .score.pass{color:#2e7d32;}
+.result-card .score.fail{color:#c62828;}
+.result-card p{font-size:15px;color:#666;margin:4px 0;}
+.congrats{background:linear-gradient(135deg,#1a237e,#3949ab);color:#fff;border-radius:12px;padding:32px;text-align:center;margin:16px 0;}
+.congrats h2{font-size:22px;margin-bottom:10px;}
+.congrats .emoji{font-size:44px;margin-bottom:10px;}
+.congrats p{font-size:15px;opacity:.9;}
+.mode-selector{background:transparent;box-shadow:none;padding:0;}
+.mode-selector h2{font-size:18px;color:#1a237e;text-align:center;margin-bottom:16px;}
+.mode-grid{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.mode-card{background:#fff;border:2px solid #e0e0e0;border-radius:14px;padding:24px 20px;width:220px;text-align:center;cursor:pointer;transition:.15s;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.mode-card:hover{border-color:#3949ab;transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1);}
+.mode-icon{font-size:36px;margin-bottom:8px;}
+.mode-title{font-size:16px;font-weight:700;color:#1a237e;margin-bottom:6px;}
+.mode-desc{font-size:13px;color:#777;margin-bottom:10px;}
+.mode-status{font-size:12px;color:#2e7d32;font-weight:700;}
+.back-btn{background:none;border:none;color:#3949ab;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px;padding:0;}
+.level-selector{text-align:center;margin:10px 0;}
+.level-btn{padding:14px 24px;margin:6px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;min-width:140px;}
+.level-btn.easy-btn{background:#e8f5e9;color:#2e7d32;border:2px solid #a5d6a7;}
+.level-btn.med-btn{background:#fff3e0;color:#e65100;border:2px solid #ffcc80;}
+.level-btn.hard-btn{background:#fce4ec;color:#c62828;border:2px solid #ef9a9a;}
+.level-btn.locked{opacity:.4;cursor:not-allowed;}
+.level-btn.done::after{content:"\2713";margin-left:6px;}
+</style></head><body>
+<div class="header" id="header">
+<h1 id="headerTitle">Olym_112_13</h1>
+<div class="level-info" id="levelInfo"></div>
+<div class="sentence-info" id="sentenceInfo"></div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+<div class="content" id="content"></div>
+<div class="action-bar" id="actionBar"></div>
+<script>
+var DATA={"sentences":[{"en":{"words":[{"t":"It's","c":"It's","tr":""},{"t":"hard","c":"hard","tr":""},{"t":"to","c":"to","tr":""},{"t":"pay","c":"pay","tr":""},{"t":"more","c":"more","tr":""},{"t":"for","c":"for","tr":""},{"t":"the","c":"the","tr":""},{"t":"speedy","c":"speedy","tr":""},{"t":"but","c":"but","tr":""},{"t":"highly","c":"highly","tr":""},{"t":"skilled","c":"skilled","tr":""},{"t":"person,","c":"person","tr":","},{"t":"simply","c":"simply","tr":""},{"t":"because","c":"because","tr":""},{"t":"there's","c":"there's","tr":""},{"t":"less","c":"less","tr":""},{"t":"effort","c":"effort","tr":""},{"t":"being","c":"being","tr":""},{"t":"observed.","c":"observed","tr":"."}],"blanks":{"easy":[1,3,10,15],"medium":[2,16],"hard":[]},"choices":{"1":{"choices":["easy","hard","hard","herd"],"correct":2},"2":{"choices":["hard to paying","hard to be paid","hard to pay","hardly to pay"],"correct":2},"3":{"choices":["receive","bay","say","pay"],"correct":3},"10":{"choices":["skilled","unskilled","skimmed","stilled"],"correct":0},"15":{"choices":["less","more","mess","loss"],"correct":0},"16":{"choices":["fewer effort","less effort","little effort","least effort"],"correct":1}},"mediumGroupSkip":[1,3,15]},"kr":{"words":[{"t":"속도가","c":"속도가","tr":""},{"t":"빠르지만","c":"빠르지만","tr":""},{"t":"고도로","c":"고도로","tr":""},{"t":"숙련된","c":"숙련된","tr":""},{"t":"사람에게","c":"사람에게","tr":""},{"t":"더","c":"더","tr":""},{"t":"많이","c":"많이","tr":""},{"t":"지불하는","c":"지불하는","tr":""},{"t":"것은","c":"것은","tr":""},{"t":"어렵다,","c":"어렵다","tr":","},{"t":"단순히","c":"단순히","tr":""},{"t":"관찰되는","c":"관찰되는","tr":""},{"t":"노력이","c":"노력이","tr":""},{"t":"더","c":"더","tr":""},{"t":"적기","c":"적기","tr":""},{"t":"때문에.","c":"때문에","tr":"."}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[]}},{"en":{"words":[{"t":"Two","c":"Two","tr":""},{"t":"researchers","c":"researchers","tr":""},{"t":"once","c":"once","tr":""},{"t":"did","c":"did","tr":""},{"t":"a","c":"a","tr":""},{"t":"study","c":"study","tr":""},{"t":"in","c":"in","tr":""},{"t":"which","c":"which","tr":""},{"t":"they","c":"they","tr":""},{"t":"asked","c":"asked","tr":""},{"t":"people","c":"people","tr":""},{"t":"how","c":"how","tr":""},{"t":"much","c":"much","tr":""},{"t":"they","c":"they","tr":""},{"t":"would","c":"would","tr":""},{"t":"pay","c":"pay","tr":""},{"t":"for","c":"for","tr":""},{"t":"data","c":"data","tr":""},{"t":"recovery.","c":"recovery","tr":"."}],"blanks":{"easy":[6,12],"medium":[7],"hard":[]},"choices":{"6":{"choices":["in","out","on","an"],"correct":0},"7":{"choices":["in that","in where","in which","which in"],"correct":2},"12":{"choices":["little","mush","muck","much"],"correct":3}},"mediumGroupSkip":[6]},"kr":{"words":[{"t":"두","c":"두","tr":""},{"t":"연구자들이","c":"연구자들이","tr":""},{"t":"한때","c":"한때","tr":""},{"t":"연구를","c":"연구를","tr":""},{"t":"수행했는데,","c":"수행했는데","tr":","},{"t":"그","c":"그","tr":""},{"t":"연구에서","c":"연구에서","tr":""},{"t":"그들은","c":"그들은","tr":""},{"t":"사람들에게","c":"사람들에게","tr":""},{"t":"데이터","c":"데이터","tr":""},{"t":"복구에","c":"복구에","tr":""},{"t":"얼마를","c":"얼마를","tr":""},{"t":"지불할","c":"지불할","tr":""},{"t":"것인지","c":"것인지","tr":""},{"t":"물었다.","c":"물었다","tr":"."}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[]}},{"en":{"words":[{"t":"They","c":"They","tr":""},{"t":"found","c":"found","tr":""},{"t":"that","c":"that","tr":""},{"t":"people","c":"people","tr":""},{"t":"would","c":"would","tr":""},{"t":"pay","c":"pay","tr":""},{"t":"a","c":"a","tr":""},{"t":"little","c":"little","tr":""},{"t":"more","c":"more","tr":""},{"t":"for","c":"for","tr":""},{"t":"a","c":"a","tr":""},{"t":"greater","c":"greater","tr":""},{"t":"quantity","c":"quantity","tr":""},{"t":"of","c":"of","tr":""},{"t":"rescued","c":"rescued","tr":""},{"t":"data,","c":"data","tr":","},{"t":"but","c":"but","tr":""},{"t":"what","c":"what","tr":""},{"t":"they","c":"they","tr":""},{"t":"were","c":"were","tr":""},{"t":"most","c":"most","tr":""},{"t":"sensitive","c":"sensitive","tr":""},{"t":"to","c":"to","tr":""},{"t":"was","c":"was","tr":""},{"t":"the","c":"the","tr":""},{"t":"number","c":"number","tr":""},{"t":"of","c":"of","tr":""},{"t":"hours","c":"hours","tr":""},{"t":"the","c":"the","tr":""},{"t":"technician","c":"technician","tr":""},{"t":"worked.","c":"worked","tr":"."}],"blanks":{"easy":[12,17,22],"medium":[14,21,27],"hard":[]},"choices":{"12":{"choices":["quality","quarantine","quantify","quantity"],"correct":3},"14":{"choices":["rescuing","rescued","been rescued","to rescue"],"correct":1},"17":{"choices":["that","whet","what","wait"],"correct":2},"21":{"choices":["sensitive for","sensitive about","sensitively to","sensitive to"],"correct":3},"22":{"choices":["from","too","two","to"],"correct":3},"27":{"choices":["hour","an hour","hours","the hour"],"correct":2}},"mediumGroupSkip":[22]},"kr":{"words":[{"t":"그들은","c":"그들은","tr":""},{"t":"사람들이","c":"사람들이","tr":""},{"t":"더","c":"더","tr":""},{"t":"많은","c":"많은","tr":""},{"t":"양의","c":"양의","tr":""},{"t":"복구된","c":"복구된","tr":""},{"t":"데이터에","c":"데이터에","tr":""},{"t":"대해","c":"대해","tr":""},{"t":"조금","c":"조금","tr":""},{"t":"더","c":"더","tr":""},{"t":"지불할","c":"지불할","tr":""},{"t":"것이라는","c":"것이라는","tr":""},{"t":"것을","c":"것을","tr":""},{"t":"발견했지만,","c":"발견했지만","tr":","},{"t":"그들이","c":"그들이","tr":""},{"t":"가장","c":"가장","tr":""},{"t":"민감하게","c":"민감하게","tr":""},{"t":"반응한","c":"반응한","tr":""},{"t":"것은","c":"것은","tr":""},{"t":"기술자가","c":"기술자가","tr":""},{"t":"일한","c":"일한","tr":""},{"t":"시간의","c":"시간의","tr":""},{"t":"수였다.","c":"수였다","tr":"."}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[]}},{"en":{"words":[{"t":"When","c":"When","tr":""},{"t":"the","c":"the","tr":""},{"t":"data","c":"data","tr":""},{"t":"recovery","c":"recovery","tr":""},{"t":"took","c":"took","tr":""},{"t":"only","c":"only","tr":""},{"t":"a","c":"a","tr":""},{"t":"few","c":"few","tr":""},{"t":"minutes,","c":"minutes","tr":","},{"t":"willingness","c":"willingness","tr":""},{"t":"to","c":"to","tr":""},{"t":"pay","c":"pay","tr":""},{"t":"was","c":"was","tr":""},{"t":"low,","c":"low","tr":","},{"t":"but","c":"but","tr":""},{"t":"when","c":"when","tr":""},{"t":"it","c":"it","tr":""},{"t":"took","c":"took","tr":""},{"t":"more","c":"more","tr":""},{"t":"than","c":"than","tr":""},{"t":"a","c":"a","tr":""},{"t":"week","c":"week","tr":""},{"t":"to","c":"to","tr":""},{"t":"recover","c":"recover","tr":""},{"t":"the","c":"the","tr":""},{"t":"same","c":"same","tr":""},{"t":"amount","c":"amount","tr":""},{"t":"of","c":"of","tr":""},{"t":"data,","c":"data","tr":","},{"t":"people","c":"people","tr":""},{"t":"were","c":"were","tr":""},{"t":"willing","c":"willing","tr":""},{"t":"to","c":"to","tr":""},{"t":"pay","c":"pay","tr":""},{"t":"much","c":"much","tr":""},{"t":"more.","c":"more","tr":"."}],"blanks":{"easy":[9,31],"medium":[10,32],"hard":[]},"choices":{"9":{"choices":["reluctance","wellness","willingness","willingness"],"correct":3},"10":{"choices":["willing to","willingness of","willingness for","willingness to"],"correct":3},"31":{"choices":["reluctant","willing","wiling","welling"],"correct":1},"32":{"choices":["willingness to","willing for","to be willing","willing to"],"correct":3}},"mediumGroupSkip":[9,31]},"kr":{"words":[{"t":"데이터","c":"데이터","tr":""},{"t":"복구가","c":"복구가","tr":""},{"t":"단","c":"단","tr":""},{"t":"몇","c":"몇","tr":""},{"t":"분밖에","c":"분밖에","tr":""},{"t":"걸리지","c":"걸리지","tr":""},{"t":"않았을","c":"않았을","tr":""},{"t":"때,","c":"때","tr":","},{"t":"지불","c":"지불","tr":""},{"t":"의향은","c":"의향은","tr":""},{"t":"낮았지만,","c":"낮았지만","tr":","},{"t":"동일한","c":"동일한","tr":""},{"t":"양의","c":"양의","tr":""},{"t":"데이터를","c":"데이터를","tr":""},{"t":"복구하는","c":"복구하는","tr":""},{"t":"데","c":"데","tr":""},{"t":"일주일","c":"일주일","tr":""},{"t":"이상이","c":"이상이","tr":""},{"t":"걸렸을","c":"걸렸을","tr":""},{"t":"때,","c":"때","tr":","},{"t":"사람들은","c":"사람들은","tr":""},{"t":"훨씬","c":"훨씬","tr":""},{"t":"더","c":"더","tr":""},{"t":"많이","c":"많이","tr":""},{"t":"지불할","c":"지불할","tr":""},{"t":"의향이","c":"의향이","tr":""},{"t":"있었다.","c":"있었다","tr":"."}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[]}},{"en":{"words":[{"t":"Think","c":"Think","tr":""},{"t":"about","c":"about","tr":""},{"t":"it:","c":"it","tr":":"},{"t":"They","c":"They","tr":""},{"t":"were","c":"were","tr":""},{"t":"willing","c":"willing","tr":""},{"t":"to","c":"to","tr":""},{"t":"pay","c":"pay","tr":""},{"t":"more","c":"more","tr":""},{"t":"for","c":"for","tr":""},{"t":"the","c":"the","tr":""},{"t":"slower","c":"slower","tr":""},{"t":"service","c":"service","tr":""},{"t":"with","c":"with","tr":""},{"t":"the","c":"the","tr":""},{"t":"same","c":"same","tr":""},{"t":"outcome.","c":"outcome","tr":"."}],"blanks":{"easy":[5,11],"medium":[6],"hard":[]},"choices":{"5":{"choices":["reluctant","willing","wiling","welling"],"correct":1},"6":{"choices":["willingness to","willing for","willing to","to be willing"],"correct":2},"11":{"choices":["faster","flower","slower","glower"],"correct":2}},"mediumGroupSkip":[5]},"kr":{"words":[{"t":"생각해보라:","c":"생각해보라","tr":":"},{"t":"그들은","c":"그들은","tr":""},{"t":"동일한","c":"동일한","tr":""},{"t":"결과를","c":"결과를","tr":""},{"t":"가진","c":"가진","tr":""},{"t":"더","c":"더","tr":""},{"t":"느린","c":"느린","tr":""},{"t":"서비스에","c":"서비스에","tr":""},{"t":"더","c":"더","tr":""},{"t":"많이","c":"많이","tr":""},{"t":"지불할","c":"지불할","tr":""},{"t":"의향이","c":"의향이","tr":""},{"t":"있었다.","c":"있었다","tr":"."}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[]}},{"en":{"words":[{"t":"Fundamentally,","c":"Fundamentally","tr":","},{"t":"when","c":"when","tr":""},{"t":"we","c":"we","tr":""},{"t":"value","c":"value","tr":""},{"t":"effort","c":"effort","tr":""},{"t":"over","c":"over","tr":""},{"t":"outcome","c":"outcome","tr":""},{"t":"we're","c":"we're","tr":""},{"t":"paying","c":"paying","tr":""},{"t":"for","c":"for","tr":""},{"t":"incompetence.","c":"incompetence","tr":"."}],"blanks":{"easy":[4,6],"medium":[5,10],"hard":[]},"choices":{"4":{"choices":["laziness","effect","effort","afford"],"correct":2},"5":{"choices":["effort over outcome","effort above outcome","effort on outcome","efforts over outcomes"],"correct":0},"6":{"choices":["input","income","outcome","outrun"],"correct":2},"10":{"choices":["incompetency","incompetent","incompetences","incompetence"],"correct":3}},"mediumGroupSkip":[4,6]},"kr":{"words":[{"t":"근본적으로,","c":"근본적으로","tr":","},{"t":"우리가","c":"우리가","tr":""},{"t":"결과보다","c":"결과보다","tr":""},{"t":"노력을","c":"노력을","tr":""},{"t":"가치","c":"가치","tr":""},{"t":"있게","c":"있게","tr":""},{"t":"여길","c":"여길","tr":""},{"t":"때","c":"때","tr":""},{"t":"우리는","c":"우리는","tr":""},{"t":"무능함에","c":"무능함에","tr":""},{"t":"대해","c":"대해","tr":""},{"t":"지불하고","c":"지불하고","tr":""},{"t":"있는","c":"있는","tr":""},{"t":"것이다.","c":"것이다","tr":"."}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[]}},{"en":{"words":[{"t":"Although","c":"Although","tr":""},{"t":"it","c":"it","tr":""},{"t":"is","c":"is","tr":""},{"t":"actually","c":"actually","tr":""},{"t":"irrational,","c":"irrational","tr":","},{"t":"we","c":"we","tr":""},{"t":"*feel*","c":"*feel*","tr":""},{"t":"more","c":"more","tr":""},{"t":"rational,","c":"rational","tr":","},{"t":"and","c":"and","tr":""},{"t":"more","c":"more","tr":""},{"t":"comfortable,","c":"comfortable","tr":","},{"t":"paying","c":"paying","tr":""},{"t":"for","c":"for","tr":""},{"t":"incompetence.","c":"incompetence","tr":"."}],"blanks":{"easy":[4],"medium":[14],"hard":[]},"choices":{"4":{"choices":["rational","irritational","irrational","irrational"],"correct":3},"14":{"choices":["incompetence","incompetency","incompetent","incompetences"],"correct":0}},"mediumGroupSkip":[]},"kr":{"words":[{"t":"그것이","c":"그것이","tr":""},{"t":"실제로","c":"실제로","tr":""},{"t":"비이성적임에도","c":"비이성적임에도","tr":""},{"t":"불구하고,","c":"불구하고","tr":","},{"t":"우리는","c":"우리는","tr":""},{"t":"더","c":"더","tr":""},{"t":"이성적이라고","c":"이성적이라고","tr":""},{"t":"*느끼며*,","c":"*느끼며*","tr":","},{"t":"그리고","c":"그리고","tr":""},{"t":"무능함에","c":"무능함에","tr":""},{"t":"대해","c":"대해","tr":""},{"t":"지불하는","c":"지불하는","tr":""},{"t":"것이","c":"것이","tr":""},{"t":"더","c":"더","tr":""},{"t":"편안하다.","c":"편안하다","tr":"."}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[]}}],"thresholds":{"en":{"easy":90,"medium":90,"hard":90},"kr":{"easy":90,"medium":90,"hard":90}},"includeKR":true};
+
+var CHO=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+function choseong(str){
+  var out='';
+  for(var i=0;i<str.length;i++){
+    var code=str.charCodeAt(i)-0xAC00;
+    if(code>=0&&code<=11171) out+=CHO[Math.floor(code/588)];
+    else out+=str[i];
+  }
+  return out;
+}
+
+var MODE_NAMES={en:'영어 빈칸',kr:'한글 해석 빈칸'};
+var LEVEL_NAMES={easy:'쉬움',medium:'중간',hard:'심화'};
+
+var currentMode=null, currentLevel=null, currentSentence=0;
+var blankStates={}, sentenceResults=[], sentenceRecorded={}, showRef=false;
+var progress={
+  en:{unlocked:{easy:true,medium:false,hard:false}, completed:{easy:false,medium:false,hard:false}},
+  kr:{unlocked:{easy:true,medium:false,hard:false}, completed:{easy:false,medium:false,hard:false}}
+};
+
+function init(){ if(!DATA.includeKR){ showLevelSelector('en'); } else { showModeSelector(); } }
+
+function modeCard(mode,icon,title,desc){
+  var p=progress[mode];
+  var done=['easy','medium','hard'].filter(function(l){return p.completed[l];}).length;
+  var h='<div class="mode-card"';
+  h+=' onclick="showLevelSelector(\''+mode+'\')"';
+  h+='>';
+  h+='<div class="mode-icon">'+icon+'</div>';
+  h+='<div class="mode-title">'+title+'</div>';
+  h+='<div class="mode-desc">'+desc+'</div>';
+  h+='<div class="mode-status">완료 '+done+'/3</div></div>';
+  return h;
+}
+
+function showModeSelector(){
+  currentMode=null;
+  document.getElementById('levelInfo').textContent='모드를 선택하세요';
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('actionBar').innerHTML='';
+  var h='<div class="mode-selector"><h2>연습 모드를 선택하세요</h2><div class="mode-grid">';
+  h+=modeCard('en','🔤','영어 빈칸','영어 단어·표현을 채워보세요');
+  h+=modeCard('kr','🇰🇷','한글 해석 빈칸','문장의 한글 해석을 채워보세요');
+  h+='</div></div>';
+  document.getElementById('content').innerHTML=h;
+}
+
+function showLevelSelector(mode){
+  currentMode=mode;
+  document.getElementById('levelInfo').textContent=MODE_NAMES[mode];
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('actionBar').innerHTML='';
+  var p=progress[mode];
+  var h='';
+  if(DATA.includeKR) h+='<button class="back-btn" onclick="showModeSelector()">← 모드 선택으로</button>';
+  h+='<div class="mode-selector"><h2>단계를 선택하세요</h2><div class="level-selector">';
+  ['easy','medium','hard'].forEach(function(lv){
+    var locked=!p.unlocked[lv], done=p.completed[lv];
+    var cls=lv==='medium'?'med':lv;
+    h+='<button class="level-btn '+cls+'-btn'+(locked?' locked':'')+(done?' done':'')+'"';
+    if(!locked) h+=' onclick="startLevel(\''+mode+'_'+lv+'\')"';
+    h+='>'+LEVEL_NAMES[lv]+'</button><br>';
+  });
+  h+='</div></div>';
+  document.getElementById('content').innerHTML=h;
+}
+
+function getLevelBlanks(blanksObj, level, skipList){
+  // 이전 단계를 이미 통과해야만 다음 단계에 진입할 수 있는 구조이므로,
+  // 쉬움/중간 단계는 그 단계에서 새로 추가된 빈칸만 테스트합니다.
+  // 심화 단계는 쉬움+중간 단계에서 다룬 모든 빈칸(+심화 자체 빈칸)을 주관식으로 종합 복습합니다.
+  if(level==='hard'){
+    var skipSet={}; (skipList||[]).forEach(function(i){skipSet[i]=true;});
+    var set={};
+    blanksObj.easy.forEach(function(i){ if(!skipSet[i]) set[i]=true; });
+    blanksObj.medium.forEach(function(i){ if(!skipSet[i]) set[i]=true; });
+    blanksObj.hard.forEach(function(i){ if(!skipSet[i]) set[i]=true; });
+    return Object.keys(set).map(Number).sort(function(a,b){return a-b;});
+  }
+  return blanksObj[level].slice();
+}
+
+function startLevel(key){
+  var parts=key.split('_');
+  var mode=parts[0], level=parts[1];
+  if(!progress[mode].unlocked[level]) return;
+  currentMode=mode; currentLevel=level; currentSentence=0;
+  blankStates={}; sentenceResults=[]; sentenceRecorded={}; showRef=false;
+  renderSentence();
+}
+
+function getChoicesFor(idx){ return DATA.sentences[currentSentence][currentMode].choices[idx]; }
+
+function renderSentence(){
+  var s=DATA.sentences[currentSentence];
+  var track=s[currentMode];
+  var blanks=getLevelBlanks(track.blanks, currentLevel, track.mediumGroupSkip);
+  var total=blanks.length, answered=0;
+  blanks.forEach(function(idx){ var st=blankStates[idx]; if(st&&st.answered) answered++; });
+
+  var otherWords = currentMode==='en' ? (s.kr && s.kr.words) : (s.en && s.en.words);
+  var showRefBtn = !!(otherWords && otherWords.length>0);
+  var h='';
+  if(showRefBtn) h+='<div class="ref-toggle-row"><button class="btn-ref" id="refBtn" onclick="toggleRef()"></button></div>';
+  h+='<div class="ref-box" id="refBox" style="display:none;"></div>';
+  h+='<div class="passage">';
+  var skip = (currentLevel!=='easy' && track.mediumGroupSkip) ? track.mediumGroupSkip : [];
+  var skipSet = {}; skip.forEach(function(i){ skipSet[i]=true; });
+  for (var wi=0; wi<track.words.length; wi++){
+    if (skipSet[wi]) continue;
+    var w = track.words[wi];
+    if(blanks.indexOf(wi)!==-1){
+      var st=blankStates[wi]||{answered:false,correct:false,attempts:0};
+      h += (currentLevel==='hard') ? renderTypingBlank(wi,w,st) : renderSelectBlank(wi,w,st);
+      var trailing = w.tr || '';
+      var la = wi+1;
+      while (skipSet[la]) {
+        var mw = track.words[la];
+        if (mw && mw.tr) trailing += mw.tr;
+        la++;
+      }
+      if (trailing) h += trailing;
+    } else { h+=w.t; }
+    h+=' ';
+  }
+  h+='</div>';
+  document.getElementById('content').innerHTML=h;
+
+  document.getElementById('levelInfo').textContent=MODE_NAMES[currentMode]+' · '+LEVEL_NAMES[currentLevel]+' 단계';
+  document.getElementById('sentenceInfo').textContent='문장 '+(currentSentence+1)+' / '+DATA.sentences.length;
+  document.getElementById('progressFill').style.width=((currentSentence+(total?answered/total:1))/DATA.sentences.length*100)+'%';
+
+  if(showRefBtn){ updateRefButtonLabel(); renderRefBox(); }
+
+  var ab=document.getElementById('actionBar');
+  if(total===0 || answered===total){
+    recordSentenceResultIfNeeded();
+    var isLastSentence=currentSentence>=DATA.sentences.length-1;
+    ab.innerHTML='<button class="btn btn-next" onclick="nextSentence()">'+(isLastSentence?'결과 보기':'다음 문장 →')+'</button>';
+  } else {
+    ab.innerHTML='';
+  }
+}
+
+function renderSelectBlank(idx,w,st){
+  var cfg=getChoicesFor(idx);
+  if(st.answered && st.correct){
+    return '<span class="blank-select correct"><select disabled><option>'+cfg.choices[cfg.correct]+'</option></select></span>';
+  }
+  if(st.answered && !st.correct && st.attempts>=2){
+    return '<span class="blank-select wrong"><select disabled><option>'+cfg.choices[cfg.correct]+' ✗</option></select></span>';
+  }
+  var opts='<option value="">___</option>';
+  cfg.choices.forEach(function(c,ci){ if(c) opts+='<option value="'+ci+'">'+c+'</option>'; });
+  var rb = st.attempts===1 ? '<span class="retry-badge">재도전</span>' : '';
+  return '<span class="blank-select" id="bs'+idx+'"><select onchange="checkSelect('+idx+',this.value)">'+opts+'</select>'+rb+'</span>';
+}
+
+function getTypingAnswer(idx, w){
+  var cfg = getChoicesFor(idx);
+  if(cfg && cfg.choices && cfg.choices[cfg.correct]) return cfg.choices[cfg.correct];
+  return w.c;
+}
+
+function renderTypingBlank(idx,w,st){
+  var answer=getTypingAnswer(idx,w);
+  var hint = currentMode==='kr' ? choseong(answer) : '타이핑';
+  if(st.answered && st.correct){
+    return '<span class="blank-input correct"><input disabled value="'+answer+'"></span>';
+  }
+  if(st.answered && !st.correct && st.attempts>=2){
+    return '<span class="blank-input wrong"><input disabled value="'+answer+' ✗"></span>';
+  }
+  var rb = st.attempts===1 ? '<span class="retry-badge">재도전</span>' : '';
+  var sz = Math.max(answer.length+2, 6);
+  return '<span class="blank-input" id="bs'+idx+'">'
+    +'<input size="'+sz+'" placeholder="'+hint+'" onkeydown="if(event.key===\'Enter\')checkType('+idx+',this.value)">'
+    +'<button class="check-btn" onclick="checkType('+idx+',this.previousElementSibling.value)">확인</button>'
+    +rb+'</span>';
+}
+
+function checkSelect(idx,val){
+  if(val==='') return;
+  var cfg=getChoicesFor(idx);
+  var st=blankStates[idx]||{answered:false,correct:false,attempts:0};
+  st.attempts++;
+  if(parseInt(val)===cfg.correct){
+    st.answered=true; st.correct=(st.attempts===1);
+    blankStates[idx]=st; renderSentence();
+  } else if(st.attempts>=2){
+    st.answered=true; st.correct=false;
+    blankStates[idx]=st; renderSentence();
+  } else {
+    blankStates[idx]=st; shake(idx);
+  }
+}
+
+function checkType(idx,val){
+  if(!val.trim()) return;
+  var w=DATA.sentences[currentSentence][currentMode].words[idx];
+  var answer=getTypingAnswer(idx,w);
+  var st=blankStates[idx]||{answered:false,correct:false,attempts:0};
+  st.attempts++;
+  var ok = val.trim().toLowerCase()===answer.toLowerCase();
+  if(ok){
+    st.answered=true; st.correct=true;
+    blankStates[idx]=st; renderSentence();
+  } else if(st.attempts>=2){
+    st.answered=true; st.correct=false;
+    blankStates[idx]=st; renderSentence();
+  } else {
+    blankStates[idx]=st; shake(idx);
+  }
+}
+
+function shake(idx){
+  var el=document.getElementById('bs'+idx);
+  if(el){ el.classList.add('wrong'); setTimeout(function(){ el.classList.remove('wrong'); renderSentence(); },600); }
+}
+
+function updateRefButtonLabel(){
+  var btn=document.getElementById('refBtn');
+  if(!btn) return;
+  var label = currentMode==='en' ? '해석' : '원문';
+  btn.textContent = showRef ? (label+' 숨기기') : (label+' 보기');
+}
+
+function renderRefBox(){
+  var box=document.getElementById('refBox');
+  if(!box) return;
+  if(!showRef){ box.style.display='none'; box.innerHTML=''; return; }
+  var s=DATA.sentences[currentSentence];
+  var otherMode = currentMode==='en' ? 'kr' : 'en';
+  var label = currentMode==='en' ? '한글 해석 (직역)' : '영어 원문';
+  var text = s[otherMode].words.map(function(w){return w.t;}).join(' ');
+  box.style.display='block';
+  box.innerHTML='<strong>'+label+'</strong><div>'+text+'</div>';
+}
+
+function toggleRef(){
+  showRef=!showRef;
+  updateRefButtonLabel();
+  renderRefBox();
+}
+
+function recordSentenceResultIfNeeded(){
+  if(sentenceRecorded[currentSentence]) return;
+  var s=DATA.sentences[currentSentence];
+  var blanks=getLevelBlanks(s[currentMode].blanks, currentLevel, s[currentMode].mediumGroupSkip);
+  var correct=0;
+  blanks.forEach(function(idx){ var st=blankStates[idx]; if(st&&st.correct) correct++; });
+  sentenceResults.push({correct:correct,total:blanks.length});
+  sentenceRecorded[currentSentence]=true;
+}
+
+function nextSentence(){
+  if(currentSentence<DATA.sentences.length-1){
+    currentSentence++;
+    blankStates={}; showRef=false;
+    renderSentence();
+  } else {
+    finishLevel();
+  }
+}
+
+function finishLevel(){
+  var totalCorrect=sentenceResults.reduce(function(a,r){return a+r.correct;},0);
+  var totalBlanks=sentenceResults.reduce(function(a,r){return a+r.total;},0);
+  var pct= totalBlanks>0 ? Math.round(totalCorrect/totalBlanks*100) : 100;
+  var threshold=DATA.thresholds[currentMode][currentLevel];
+  var pass=pct>=threshold;
+  if(pass){
+    progress[currentMode].completed[currentLevel]=true;
+    var order=['easy','medium','hard'];
+    var ni=order.indexOf(currentLevel)+1;
+    if(ni<order.length) progress[currentMode].unlocked[order[ni]]=true;
+  }
+  renderResultScreen(pass,pct,totalCorrect,totalBlanks,threshold);
+}
+
+function renderResultScreen(pass,pct,correct,total,threshold){
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='100%';
+
+  var h='<div class="result-card"><h2>'+MODE_NAMES[currentMode]+' · '+LEVEL_NAMES[currentLevel]+' 단계 결과</h2>';
+  h+='<div class="score '+(pass?'pass':'fail')+'">'+pct+'%</div>';
+  h+='<p>'+total+'개 빈칸 중 '+correct+'개 정답 (기준 '+threshold+'%)</p></div>';
+
+  var order=['easy','medium','hard'];
+  var isLast = currentLevel==='hard';
+  if(pass && isLast){
+    h+='<div class="congrats"><div class="emoji">🎉</div><h2>'+MODE_NAMES[currentMode]+' 트랙 완료!</h2>'
+      +'<p>쉬움 · 중간 · 심화 단계를 모두 통과했습니다.</p></div>';
+  }
+  document.getElementById('content').innerHTML=h;
+
+  var ah='';
+  if(!pass){
+    ah='<button class="btn btn-retry"';
+    ah+=' onclick="startLevel(\''+currentMode+'_'+currentLevel+'\')"';
+    ah+='>재도전</button>';
+    ah+=' <button class="btn btn-outline2"';
+    ah+=' onclick="showLevelSelector(\''+currentMode+'\')"';
+    ah+='>단계 선택으로</button>';
+  } else if(!isLast){
+    var next=order[order.indexOf(currentLevel)+1];
+    ah='<button class="btn btn-next"';
+    ah+=' onclick="startLevel(\''+currentMode+'_'+next+'\')"';
+    ah+='>다음 단계 →</button>';
+    ah+=' <button class="btn btn-outline2"';
+    ah+=' onclick="showLevelSelector(\''+currentMode+'\')"';
+    ah+='>단계 선택으로</button>';
+  } else {
+    ah='<button class="btn btn-outline2" onclick="showModeSelector()">모드 선택으로</button>';
+  }
+  document.getElementById('actionBar').innerHTML=ah;
+}
+
+init();
+</script></body></html>
