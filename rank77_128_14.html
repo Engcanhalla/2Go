@@ -494,9 +494,12 @@ function renderWordAnswerHtml(answer){
   var words = String(answer||'').trim().split(/\s+/).filter(Boolean);
   return words.map(function(w,wi){
     var isSingle = w.length<=1;
-    var first = isSingle ? '' : w.charAt(0);
-    return '<span class="word-group'+(isSingle?' single-letter':'')+'" data-first="'+esc(first)+'">'
-      + (isSingle?'':'<span class="first-letter">'+esc(first)+'</span>')
+    var first = w.charAt(0);
+    if(isSingle){
+      return '<span class="word-group single-letter" data-first="'+esc(first)+'"><span class="first-letter">'+esc(first)+'</span></span>';
+    }
+    return '<span class="word-group" data-first="'+esc(first)+'">'
+      + '<span class="first-letter">'+esc(first)+'</span>'
       + '<input type="text" class="rest-input" data-wi="'+wi+'" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">'
       + '</span>';
   }).join(' ');
