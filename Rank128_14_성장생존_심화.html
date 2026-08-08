@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연습문제지 — 성장 없는 브랜드(사람)는 도태된다 (심화)</title>
+<style>
+body{margin:0;background:#e9e9e9;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;}
+.toolbar{position:sticky;top:0;z-index:50;max-width:860px;margin:0 auto;padding:10px 14px;background:#fff;border-bottom:2px solid #3f8a83;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.toolbar button{font-family:inherit;font-size:13px;padding:7px 14px;cursor:pointer;border:1.5px solid #3f8a83;background:#fff;color:#2f6f69;border-radius:5px;font-weight:700;}
+.toolbar button.active{background:#3f8a83;color:#fff;}
+
+.ws{--ink:#1a1a1a;--soft:#444;--line:#1a1a1a;max-width:800px;margin:16px auto;background:#fff;color:var(--ink);
+  padding:26px 30px 40px;border:1px solid #ccc;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;}
+.ws h1{font-size:21px;margin:0 0 6px;}
+.ws .meta{font-size:13.5px;color:var(--soft);margin-bottom:6px;}
+.ws .namebar{font-size:14px;margin:10px 0 18px;border:1px solid #999;border-radius:6px;padding:8px 12px;display:flex;gap:26px;}
+.ws .namebar span{border-bottom:1px solid #999;display:inline-block;min-width:120px;}
+.ws .passage{border:1.5px solid var(--line);border-radius:8px;padding:18px 22px 8px;}
+.ws-seg{display:flex;align-items:stretch;gap:0;}
+.ws-seg + .ws-seg{border-top:1.5px dashed #999;}
+.ws-seg-text{flex:1;min-width:0;padding:4px 18px 6px 0;}
+.ws .stag{display:inline-block;min-width:20px;text-align:center;font-size:12px;color:#999;border:1px solid #ccc;border-radius:4px;padding:1px 5px;margin-right:6px;vertical-align:middle;}
+.ws-sentence{font-size:16.5px;line-height:2.05;margin-bottom:4px;}
+.ws-tag{display:inline-block;font-size:12px;font-weight:800;border:1.5px solid var(--line);border-radius:4px;padding:1px 7px;margin-right:6px;vertical-align:middle;}
+.tag-svoc{background:#fff;}
+.interp-underline{border-bottom:2px dotted var(--ink);padding-bottom:1px;}
+.ws-blank{font-size:14px;color:#333;margin:2px 0 12px 26px;}
+.blank-fill{display:inline-block;border-bottom:1px dotted #666;min-width:220px;height:1px;vertical-align:middle;margin-left:2px;}
+.blank-fill.short{min-width:40px;}
+.blank-lines{display:block;margin-top:4px;}
+.blank-lines .ln{display:block;border-bottom:1px dotted #888;height:22px;}
+.para-box{width:190px;flex:0 0 190px;border-left:1.5px solid var(--line);padding:14px 12px;display:flex;flex-direction:column;gap:8px;background:#fbfbfb;}
+.para-range{font-size:13px;font-weight:700;color:#555;}
+.para-write .ln{display:block;border-bottom:1px dotted #888;height:24px;}
+.task-block{border-top:2px solid var(--line);margin-top:22px;padding-top:14px;}
+.task-title{font-size:15.5px;font-weight:800;margin-bottom:6px;}
+.task-instr{font-size:13.5px;color:var(--soft);margin-bottom:10px;line-height:1.6;}
+.kw-match{display:flex;gap:30px;margin-bottom:8px;}
+.kw-col{flex:1;display:flex;flex-direction:column;gap:14px;}
+.kw-chip{border:1.5px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13.5px;}
+.kw-order-blank{font-size:12.5px;color:#555;margin-right:4px;}
+.kw-desc-block{background:#f6f6f6;border:1px dashed #999;border-radius:6px;padding:8px 12px;}
+.kw-desc-ans{font-size:13.5px;line-height:1.7;}
+.paraphrase-ko{font-size:14.5px;font-weight:700;background:#f6f6f6;border:1px dashed #999;border-radius:6px;padding:8px 12px;margin-bottom:8px;}
+.hint-box{font-size:13px;color:var(--soft);border:1px dashed #999;border-radius:6px;padding:6px 10px;margin-bottom:8px;}
+.gw-item{margin-bottom:16px;}
+.gw-hint{font-size:13.5px;margin-bottom:4px;color:var(--soft);}
+.gw-grammar-ans{font-size:13px;margin-bottom:4px;background:#f6f6f6;border:1px dashed #999;border-radius:6px;padding:4px 10px;display:inline-block;}
+.gw-ko{font-size:14.5px;font-weight:700;background:#f6f6f6;border:1px dashed #999;border-radius:6px;padding:6px 12px;margin-bottom:6px;}
+.ws .footnote{font-size:12.5px;color:#777;margin-top:18px;border-top:1px dashed #bbb;padding-top:8px;}
+.ws .ans{display:none;}
+.ws.answer-mode .ans{display:inline;color:#111;font-weight:700;}
+.ws.answer-mode .interp-blank .blank-fill,
+.ws.answer-mode .ws-blank .blank-fill.short{display:none;}
+.ws.answer-mode .blank-lines{display:none;}
+.ws.answer-mode .svoc-answer{display:block;}
+.ws.answer-mode .para-write{display:none;}
+.ws.answer-mode .para-ans{display:block;}
+.svoc-answer{background:#f6f6f6;border:1px dashed #999;border-radius:6px;padding:6px 10px;margin-left:0;}
+@media print{
+  .toolbar{display:none;}
+  body{background:#fff;}
+  .ws{border:none;margin:0;max-width:none;padding:14mm 14mm 10mm;}
+  .task-block{page-break-inside:avoid;}
+  .s-wrap{page-break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+<div class="toolbar"><button id="bStu" class="active" onclick="setAnswerMode(false)">학생용</button><button id="bAns" onclick="setAnswerMode(true)">정답 보기</button><button onclick="window.print()">🖨 인쇄 / PDF</button></div>
+<div class="ws" id="wsRoot">
+<h1>📝 연습문제지 — 심화</h1>
+<div class="meta">지문: <b>성장 없는 브랜드(사람)는 도태된다</b> · 대상 학년: <b>고2</b></div>
+<div class="namebar"><span>이름: <span></span></span><span>날짜: <span></span></span><span>점수: <span></span></span></div>
+<div class="task-instr" style="margin-bottom:14px;">① <b>점선 밑줄</b>이 있는 부분은 해당 부분만 우리말로 해석해 빈칸에 쓰시오. ② 오른쪽 칸에는 각 문단의 요지를 우리말로 쓰시오.</div>
+<div class="passage"><div class="ws-seg"><div class="ws-seg-text"><div class="s-wrap" data-idx="1"><div class="ws-sentence" data-idx="1"><span class="stag">1</span>Brands that <span class="interp-underline">fail to grow and develop</span> lose their relevance.</div><div class="ws-blank interp-blank">해석 ▸ ( <span class="ans">성장하고 발전하는 데 실패하다</span><span class="blank-fill"></span> )</div></div><div class="s-wrap" data-idx="2"><div class="ws-sentence" data-idx="2"><span class="stag">2</span>Think about the person you knew who was once on the fast track at your company, <span class="interp-underline">who is either no longer with the firm or, worse yet, appears to have hit a plateau in his or her career</span>.</div><div class="ws-blank interp-blank">해석 ▸ ( <span class="ans">이제는 회사에 없거나, 더 나쁘게는 경력이 정체기에 접어든 것처럼 보이는</span><span class="blank-fill"></span> )</div></div><div class="s-wrap" data-idx="3"><div class="ws-sentence" data-idx="3"><span class="stag">3</span>Assuming he or she did not make an ambitious move, it is likely that this individual is a victim of having been left behind in his or her industry, <span class="interp-underline">having failed to stay relevant and embrace the advances</span>.</div><div class="ws-blank interp-blank">해석 ▸ ( <span class="ans">경쟁력을 유지하고 발전을 받아들이는 데 실패하여</span><span class="blank-fill"></span> )</div></div></div><div class="para-box"><div class="para-range">문장 1–3</div><div class="para-write"><span class="ln"></span><span class="ln"></span></div><div class="ans para-ans">예시 답안: 성장·적응하지 않으면 뒤처진다는 경고</div></div></div><div class="ws-seg"><div class="ws-seg-text"><div class="s-wrap" data-idx="4"><div class="ws-sentence" data-idx="4"><span class="stag">4</span>Think about <span class="interp-underline">the impact personal computing technology had on the first wave of executive leadership exposed to the technology</span>.</div><div class="ws-blank interp-blank">해석 ▸ ( <span class="ans">그 기술에 처음 노출된 임원급 리더십 세대에 개인용 컴퓨터 기술이 미친 영향</span><span class="blank-fill"></span> )</div></div><div class="s-wrap" data-idx="5"><div class="ws-sentence" data-idx="5"><span class="stag">5</span>Those who embraced the technology were able to integrate it into their work styles and excel.</div></div><div class="s-wrap" data-idx="6"><div class="ws-sentence" data-idx="6"><span class="stag">6</span>Those who were resistant found few opportunities to advance their careers, and in many cases <span class="interp-underline">were ultimately let go through early retirement for failure to stay relevant and update their skills</span>.</div><div class="ws-blank interp-blank">해석 ▸ ( <span class="ans">경쟁력을 유지하고 기술을 업데이트하는 데 실패했다는 이유로 조기 퇴직을 통해 결국 해고되었다</span><span class="blank-fill"></span> )</div></div></div><div class="para-box"><div class="para-range">문장 4–6</div><div class="para-write"><span class="ln"></span><span class="ln"></span></div><div class="ans para-ans">예시 답안: 기술 수용 여부가 경력을 갈랐다는 구체적 사례</div></div></div></div>
+<div class="task-block"><div class="task-title">① 핵심 키워드 연결</div><div class="task-instr">지문에는 다음 핵심 용어들이 등장한다: <b>relevance</b> , <b>relevant</b> , <b>embraced</b> , <b>plateau</b> , <b>advances</b>. 이 용어들이 지문 속에서 서로 어떻게 연결되어 있는지(관계·차이점 포함) 우리말로 서술하시오.</div><div class="ws-blank"><span class="blank-lines"><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></div><div class="ans kw-desc-block">정답 예시 ▸ <div class="kw-desc-ans">• relevance — 시대나 업계의 흐름 속에서 여전히 가치 있고 필요한 존재로 인정받는 상태를 말한다.</div><div class="kw-desc-ans">• relevant — 변화하는 환경에서 뒤처지지 않고 계속 중요한 역할을 할 수 있는 상태를 의미한다.</div><div class="kw-desc-ans">• embraced — 새로운 기술이나 변화를 거부하지 않고 적극적으로 받아들여 자신의 것으로 만든 것을 뜻한다.</div><div class="kw-desc-ans">• plateau — 더 이상 성장이나 발전이 이루어지지 않고 일정 수준에서 멈춰 있는 상태를 가리킨다.</div><div class="kw-desc-ans">• advances — 기술이나 분야에서 이전보다 나아진 새로운 변화나 혁신을 총칭한다.</div></div></div><div class="task-block"><div class="task-title">② 주제문 찾기</div><div class="task-instr">이 지문의 주제문 번호를 쓰고, 우리말로 해석하시오.</div><div class="ws-blank">주제문 번호 ▸ ( <span class="ans">3</span><span class="blank-fill short"></span> ) 번</div><div class="ws-blank"><span class="blank-lines"><span class="ln"></span><span class="ln"></span></span></div><div class="ans topic-ans">정답 해석 ▸ 그 또는 그녀가 야심 찬 행보를 취하지 않았다고 가정하면, 이 사람은 자신의 업계에서 뒤처진 피해자일 가능성이 높으며, 경쟁력을 유지하고 발전을 받아들이는 데 실패한 것이다.</div></div><div class="task-block"><div class="task-title">③ 문장 다시 쓰기 (영작)</div><div class="task-instr">다음 우리말은 이 지문의 6번 문장을 다른 영어 표현으로 바꾸어 쓴 문장을 해석한 것이다(주제문이 아님). 아래 힌트를 참고하여 영어로 쓰시오.</div><div class="paraphrase-ko">"새로운 기술에 저항한 사람들은 경력을 앞으로 나아갈 기회를 거의 찾지 못했으며, 상당수는 시대에 뒤처지지 않고 자신의 역량을 갈고닦지 못했다는 이유로 조기 퇴직을 통해 결국 해고되는 신세가 되었다."</div><div class="hint-box">단어 힌트 (본문에 없는 표현) ▸ resist / dismiss / sharpen / competency(역량) / keep up with(~에 뒤처지지 않다)</div><div class="ws-blank"><span class="blank-lines"><span class="ln"></span><span class="ln"></span></span></div><div class="ans paraphrase-ans">정답 예시 ▸ People who resisted the new technology could barely find chances to move forward in their careers, and a considerable number of them ended up being dismissed via early retirement due to their inability to keep up with the times and sharpen their competencies.</div></div><div class="task-block"><div class="task-title">④ 문법 활용 영작</div><div class="task-instr">본문에 사용된 문법을 활용하여, 본문과 무관한 아래 문장을 영어로 옮기시오.</div><div class="gw-item"><div class="gw-hint">(1) 힌트 ▸ 본문에 사용된 문법을 활용할 것</div><div class="ans gw-grammar-ans">(정답 모드 참고) 대상 문법: <b>관계절(목적격 관계대명사 생략 접촉절) — 'the impact S had on O' 구조 활용</b></div><div class="gw-ko">"그 코치가 선수들에게 미친 영향을 결코 과소평가해서는 안 된다."</div><div class="hint-box">단어 힌트 (본문에 없는 단어, 원형 제시) ▸ underestimate(과소평가하다)</div><div class="ws-blank"><span class="blank-lines"><span class="ln"></span></span></div><div class="ans gw-ans">정답 예시 ▸ You should never underestimate the impact that coach had on his players.</div></div><div class="gw-item"><div class="gw-hint">(2) 힌트 ▸ 본문에 사용된 문법을 활용할 것</div><div class="ans gw-grammar-ans">(정답 모드 참고) 대상 문법: <b>조건·가정의 분사구문(Assuming ~) + 부대상황 분사구문(having p.p.)으로 원인 보완</b></div><div class="gw-ko">"그 팀이 충분히 준비하지 않았다고 가정하면, 이번 경기에서 패배할 가능성이 높으며, 상대방의 전술 변화에 적응하는 데 실패한 것이다."</div><div class="hint-box">단어 힌트 (본문에 없는 단어, 원형 제시) ▸ thoroughly(철저히) / tactical(전술적인) / opponent(상대방)</div><div class="ws-blank"><span class="blank-lines"><span class="ln"></span><span class="ln"></span></span></div><div class="ans gw-ans">정답 예시 ▸ Assuming the team did not prepare thoroughly, it is likely that they will lose the match, having failed to adapt to the opponent's tactical changes.</div></div></div>
+<div class="footnote">본 문제지는 passage-analysis-map 분석 결과(성장 없는 브랜드(사람)는 도태된다)를 바탕으로 자동 생성되었습니다.</div>
+</div>
+<script>
+function setAnswerMode(on){document.getElementById("wsRoot").classList.toggle("answer-mode",on);document.getElementById("bStu").classList.toggle("active",!on);document.getElementById("bAns").classList.toggle("active",on);}
+</script>
+</body>
+</html>
