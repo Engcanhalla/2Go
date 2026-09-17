@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Go2_25.30_blank - Vocab Practice</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Segoe UI","Malgun Gothic",sans-serif;background:#f5f6fa;color:#222;font-size:16px;line-height:1.8;padding:0;min-height:100vh;}
+.header{background:linear-gradient(135deg,#1a237e,#3949ab);color:#fff;padding:16px 20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.header h1{font-size:18px;font-weight:700;}
+.header .level-info{font-size:14px;opacity:.85;margin-top:4px;}
+.header .sentence-info{font-size:12px;opacity:.7;margin-top:2px;}
+.progress-bar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:8px;overflow:hidden;}
+.progress-fill{height:100%;background:#81c784;border-radius:3px;transition:width .3s;}
+.content{max-width:700px;margin:0 auto;padding:20px 16px;}
+.ref-toggle-row{text-align:right;margin-bottom:10px;}
+.btn-ref{background:#fff;border:2px solid #3949ab;color:#3949ab;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;}
+.ref-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:14px;color:#5d4037;}
+.ref-box strong{display:block;font-size:12px;color:#e65100;margin-bottom:4px;}
+.passage{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);line-height:2.5;font-size:16px;margin-bottom:16px;}
+.blank-select{display:inline-block;position:relative;}
+.blank-select select{appearance:none;-webkit-appearance:none;background:#e3f2fd;border:2px solid #90caf9;border-radius:6px;padding:4px 28px 4px 10px;font-size:16px;font-weight:600;color:#1565c0;cursor:pointer;min-width:100px;font-family:inherit;}
+.blank-select select:focus{border-color:#1565c0;outline:none;box-shadow:0 0 0 3px rgba(21,101,192,.15);}
+.blank-select.correct select{background:#c8e6c9;border-color:#66bb6a;color:#2e7d32;}
+.blank-select.wrong select{background:#ffcdd2;border-color:#ef5350;color:#c62828;animation:shake .3s;}
+.blank-input{display:inline-block;}
+.blank-input input{background:#e3f2fd;border:2px solid #90caf9;border-radius:6px;padding:4px 10px;font-size:16px;font-weight:600;color:#1565c0;font-family:inherit;width:auto;min-width:80px;max-width:100%;box-sizing:border-box;vertical-align:middle;}
+.blank-input input::placeholder{color:#90a4ae;font-weight:700;letter-spacing:2px;}
+.blank-input input:focus{border-color:#1565c0;outline:none;box-shadow:0 0 0 3px rgba(21,101,192,.15);}
+.blank-input.correct input{background:#c8e6c9;border-color:#66bb6a;color:#2e7d32;}
+.blank-input.wrong input{background:#ffcdd2;border-color:#ef5350;color:#c62828;animation:shake .3s;}
+.check-btn{font-size:12px;padding:4px 8px;margin-left:2px;border:1px solid #90caf9;border-radius:4px;background:#e3f2fd;cursor:pointer;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.retry-badge{display:inline-block;background:#fff3e0;color:#e65100;font-size:12px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;}
+.action-bar{text-align:center;padding:16px;position:sticky;bottom:0;background:#f5f6fa;}
+.btn{padding:12px 28px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;}
+.btn:active{transform:scale(.97);}
+.btn-retry{background:#f57c00;color:#fff;box-shadow:0 4px 12px rgba(245,124,0,.3);}
+.btn-next{background:#2e7d32;color:#fff;box-shadow:0 4px 12px rgba(46,125,50,.3);}
+.btn-outline2{background:#eee;color:#333;}
+.result-card{background:#fff;border-radius:12px;padding:24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.1);margin:10px 0;}
+.result-card h2{font-size:20px;margin-bottom:8px;color:#1a237e;}
+.result-card .score{font-size:48px;font-weight:800;margin:12px 0;}
+.result-card .score.pass{color:#2e7d32;}
+.result-card .score.fail{color:#c62828;}
+.result-card p{font-size:15px;color:#666;margin:4px 0;}
+.congrats{background:linear-gradient(135deg,#1a237e,#3949ab);color:#fff;border-radius:12px;padding:32px;text-align:center;margin:16px 0;}
+.congrats h2{font-size:22px;margin-bottom:10px;}
+.congrats .emoji{font-size:44px;margin-bottom:10px;}
+.congrats p{font-size:15px;opacity:.9;}
+.mode-selector{background:transparent;box-shadow:none;padding:0;}
+.mode-selector h2{font-size:18px;color:#1a237e;text-align:center;margin-bottom:16px;}
+.mode-grid{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.mode-card{background:#fff;border:2px solid #e0e0e0;border-radius:14px;padding:24px 20px;width:220px;text-align:center;cursor:pointer;transition:.15s;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.mode-card:hover{border-color:#3949ab;transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1);}
+.mode-icon{font-size:36px;margin-bottom:8px;}
+.mode-title{font-size:16px;font-weight:700;color:#1a237e;margin-bottom:6px;}
+.mode-desc{font-size:13px;color:#777;margin-bottom:10px;}
+.mode-status{font-size:12px;color:#2e7d32;font-weight:700;}
+.back-btn{background:none;border:none;color:#3949ab;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px;padding:0;}
+.level-selector{text-align:center;margin:10px 0;}
+.level-btn{padding:14px 24px;margin:6px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;min-width:140px;}
+.level-btn.easy-btn{background:#e8f5e9;color:#2e7d32;border:2px solid #a5d6a7;}
+.level-btn.med-btn{background:#fff3e0;color:#e65100;border:2px solid #ffcc80;}
+.level-btn.hard-btn{background:#fce4ec;color:#c62828;border:2px solid #ef9a9a;}
+.level-btn.locked{opacity:.4;cursor:not-allowed;}
+.level-btn.done::after{content:"\2713";margin-left:6px;}
+.student-info-box{background:#fff;border-radius:14px;padding:28px 24px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);max-width:360px;margin:0 auto;}
+.student-name-input{width:100%;padding:12px 14px;border:2px solid #c5cae9;border-radius:10px;font-size:16px;font-family:inherit;margin-bottom:12px;}
+.student-name-input:focus{border-color:#3949ab;outline:none;}
+.student-grade-select{width:100%;padding:11px 10px;border:1.5px solid #c5cae9;border-radius:10px;background:#fff;color:#222;font-size:16px;font-family:inherit;margin-bottom:16px;}
+.btn-start-app{width:100%;padding:13px;border:none;border-radius:10px;background:#3949ab;color:#fff;font-size:15px;font-weight:700;cursor:pointer;}
+.btn-start-app:disabled{opacity:.4;cursor:not-allowed;}
+.submit-box{background:#fff;border-radius:12px;padding:18px;text-align:center;margin:14px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.btn-submit{padding:12px 26px;border:none;border-radius:10px;background:#2e7d32;color:#fff;font-size:15px;font-weight:700;cursor:pointer;}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;}
+.submit-status{font-size:13px;color:#666;margin-top:8px;}
+</style></head><body>
+<div class="header" id="header">
+<h1 id="headerTitle">Go2_25.30_blank</h1>
+<div class="level-info" id="levelInfo"></div>
+<div class="sentence-info" id="sentenceInfo"></div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+<div class="content" id="content"></div>
+<div class="action-bar" id="actionBar"></div>
+<script>
+var DATA={"sentences":[{"en":{"words":[{"t":"Although","c":"Although","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"is","c":"is","tr":"","l":""},{"t":"widely","c":"widely","tr":"","l":""},{"t":"praised","c":"praised","tr":"","l":""},{"t":"by","c":"by","tr":"","l":""},{"t":"scholars","c":"scholars","tr":"","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"public","c":"public","tr":"","l":""},{"t":"figures,","c":"figures","tr":",","l":""},{"t":"not","c":"not","tr":"","l":""},{"t":"everyone","c":"everyone","tr":"","l":""},{"t":"is","c":"is","tr":"","l":""},{"t":"an","c":"an","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"booster.","c":"booster","tr":".","l":""}],"blanks":{"easy":[15],"medium":[10],"hard":[10,15]},"choices":{"10":{"choices":["not anyone","no everyone","not somebody","not everyone"],"correct":3},"15":{"choices":["blocker","booster","rooster","boaster"],"correct":1}},"mediumGroupSkip":[11],"easyGroupSkip":[],"hardGroupSkip":[11],"hardAnswers":{"10":"not everyone","15":"booster"}},"kr":{"words":[{"t":"비록","c":"비록","tr":"","l":""},{"t":"공감은","c":"공감은","tr":"","l":""},{"t":"학자들과","c":"학자들과","tr":"","l":""},{"t":"공인들에","c":"공인들에","tr":"","l":""},{"t":"의해","c":"의해","tr":"","l":""},{"t":"널리","c":"널리","tr":"","l":""},{"t":"찬사를","c":"찬사를","tr":"","l":""},{"t":"받지만,","c":"받지만","tr":",","l":""},{"t":"모든","c":"모든","tr":"","l":""},{"t":"사람이","c":"사람이","tr":"","l":""},{"t":"공감","c":"공감","tr":"","l":""},{"t":"지지자인","c":"지지자인","tr":"","l":""},{"t":"것은","c":"것은","tr":"","l":""},{"t":"아니다.","c":"아니다","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"Critics","c":"Critics","tr":"","l":""},{"t":"of","c":"of","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"argue","c":"argue","tr":"","l":""},{"t":"that","c":"that","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"will","c":"will","tr":"","l":""},{"t":"not","c":"not","tr":"","l":""},{"t":"save","c":"save","tr":"","l":""},{"t":"us","c":"us","tr":"","l":""},{"t":"from","c":"from","tr":"","l":""},{"t":"interpersonal","c":"interpersonal","tr":"","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"intergroup","c":"intergroup","tr":"","l":""},{"t":"conflict.","c":"conflict","tr":".","l":""}],"blanks":{"easy":[0,14],"medium":[11,13],"hard":[0,11,13]},"choices":{"0":{"choices":["Supporters","Critiques","Critics","Criticize"],"correct":2},"11":{"choices":["intrapersonal","interpersonally","interpersonal","inter-personing"],"correct":2},"13":{"choices":["intragroup","intergroup","intergrouping","inter-grouped"],"correct":1},"14":{"choices":["harmony","conflict","confront","inflict"],"correct":1}},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[14],"hardAnswers":{"0":"Critics","11":"interpersonal","13":"intergroup conflict"}},"kr":{"words":[{"t":"공감의","c":"공감의","tr":"","l":""},{"t":"비판자들은","c":"비판자들은","tr":"","l":""},{"t":"공감이","c":"공감이","tr":"","l":""},{"t":"대인","c":"대인","tr":"","l":""},{"t":"간","c":"간","tr":"","l":""},{"t":"및","c":"및","tr":"","l":""},{"t":"집단","c":"집단","tr":"","l":""},{"t":"간","c":"간","tr":"","l":""},{"t":"갈등으로부터","c":"갈등으로부터","tr":"","l":""},{"t":"우리를","c":"우리를","tr":"","l":""},{"t":"구하지","c":"구하지","tr":"","l":""},{"t":"못할","c":"못할","tr":"","l":""},{"t":"것이라고","c":"것이라고","tr":"","l":""},{"t":"주장한다.","c":"주장한다","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"In","c":"In","tr":"","l":""},{"t":"fact,","c":"fact","tr":",","l":""},{"t":"they","c":"they","tr":"","l":""},{"t":"argue,","c":"argue","tr":",","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"makes","c":"makes","tr":"","l":""},{"t":"such","c":"such","tr":"","l":""},{"t":"conflicts","c":"conflicts","tr":"","l":""},{"t":"worse.","c":"worse","tr":".","l":""}],"blanks":{"easy":[8],"medium":[],"hard":[8]},"choices":{"8":{"choices":["worse","better","horse",""],"correct":0}},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{"8":"worse"}},"kr":{"words":[{"t":"사실,","c":"사실","tr":",","l":""},{"t":"그들은","c":"그들은","tr":"","l":""},{"t":"주장한다,","c":"주장한다","tr":",","l":""},{"t":"공감은","c":"공감은","tr":"","l":""},{"t":"그러한","c":"그러한","tr":"","l":""},{"t":"갈등들을","c":"갈등들을","tr":"","l":""},{"t":"더","c":"더","tr":"","l":""},{"t":"악화시킨다고.","c":"악화시킨다고","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"These","c":"These","tr":"","l":""},{"t":"critics","c":"critics","tr":"","l":""},{"t":"maintain","c":"maintain","tr":"","l":""},{"t":"that","c":"that","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"can","c":"can","tr":"","l":""},{"t":"be","c":"be","tr":"","l":""},{"t":"exhausting","c":"exhausting","tr":"","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"lead","c":"lead","tr":"","l":""},{"t":"to","c":"to","tr":"","l":""},{"t":"burnout","c":"burnout","tr":"","l":""},{"t":"or","c":"or","tr":"","l":""},{"t":"insensitivity","c":"insensitivity","tr":"","l":""},{"t":"to","c":"to","tr":"","l":""},{"t":"suffering.","c":"suffering","tr":".","l":""}],"blanks":{"easy":[1,7,11],"medium":[13],"hard":[1,7,11,13]},"choices":{"1":{"choices":["Supporters","Critiques","Critics","Criticize"],"correct":2},"7":{"choices":["refreshing","exhausted","exhausting","exhibiting"],"correct":2},"11":{"choices":["burnout","recovery","turnout","burnish"],"correct":0},"13":{"choices":["insensitive to suffering","insensitivity of suffering","insensitivity for suffering","insensitivity to suffering"],"correct":3}},"mediumGroupSkip":[14,15],"easyGroupSkip":[],"hardGroupSkip":[14,15],"hardAnswers":{"1":"Critics","7":"exhausting","11":"burnout","13":"insensitivity to suffering"}},"kr":{"words":[{"t":"이","c":"이","tr":"","l":""},{"t":"비판자들은","c":"비판자들은","tr":"","l":""},{"t":"공감이","c":"공감이","tr":"","l":""},{"t":"지칠","c":"지칠","tr":"","l":""},{"t":"수","c":"수","tr":"","l":""},{"t":"있고","c":"있고","tr":"","l":""},{"t":"번아웃","c":"번아웃","tr":"","l":""},{"t":"또는","c":"또는","tr":"","l":""},{"t":"고통에","c":"고통에","tr":"","l":""},{"t":"대한","c":"대한","tr":"","l":""},{"t":"무감각으로","c":"무감각으로","tr":"","l":""},{"t":"이어질","c":"이어질","tr":"","l":""},{"t":"수","c":"수","tr":"","l":""},{"t":"있다고","c":"있다고","tr":"","l":""},{"t":"주장한다.","c":"주장한다","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"They","c":"They","tr":"","l":""},{"t":"argue","c":"argue","tr":"","l":""},{"t":"that","c":"that","tr":"","l":""},{"t":"we","c":"we","tr":"","l":""},{"t":"tend","c":"tend","tr":"","l":""},{"t":"to","c":"to","tr":"","l":""},{"t":"empathize","c":"empathize","tr":"","l":""},{"t":"strongly","c":"strongly","tr":"","l":""},{"t":"with","c":"with","tr":"","l":""},{"t":"our","c":"our","tr":"","l":""},{"t":"in-group","c":"in-group","tr":"","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"resist","c":"resist","tr":"","l":""},{"t":"empathizing","c":"empathizing","tr":"","l":""},{"t":"with","c":"with","tr":"","l":""},{"t":"out-groups,","c":"out-groups","tr":",","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"even","c":"even","tr":"","l":""},{"t":"enjoy","c":"enjoy","tr":"","l":""},{"t":"the","c":"the","tr":"","l":""},{"t":"suffering","c":"suffering","tr":"","l":""},{"t":"of","c":"of","tr":"","l":""},{"t":"out-groups","c":"out-groups","tr":"","l":""},{"t":"in","c":"in","tr":"","l":""},{"t":"competitive","c":"competitive","tr":"","l":""},{"t":"or","c":"or","tr":"","l":""},{"t":"threatening","c":"threatening","tr":"","l":""},{"t":"contexts.","c":"contexts","tr":".","l":""}],"blanks":{"easy":[7,18],"medium":[24,26],"hard":[7,18,24,26]},"choices":{"7":{"choices":["weakly","strongly","strangely","stronly"],"correct":1},"18":{"choices":["enjoy the suffering","feel sympathy for","enjoy the suffering of","enjoy their suffering"],"correct":0},"24":{"choices":["competed","competitive","competitively","competing"],"correct":1},"26":{"choices":["threatened contexts","threatening contexts","threaten contexts","threatens contexts"],"correct":1}},"mediumGroupSkip":[27],"easyGroupSkip":[19,20],"hardGroupSkip":[19,20,27],"hardAnswers":{"7":"strongly","18":"enjoy the suffering","24":"competitive","26":"threatening contexts"}},"kr":{"words":[{"t":"그들은","c":"그들은","tr":"","l":""},{"t":"우리가","c":"우리가","tr":"","l":""},{"t":"내집단과","c":"내집단과","tr":"","l":""},{"t":"강하게","c":"강하게","tr":"","l":""},{"t":"공감하는","c":"공감하는","tr":"","l":""},{"t":"경향이","c":"경향이","tr":"","l":""},{"t":"있고","c":"있고","tr":"","l":""},{"t":"외집단과","c":"외집단과","tr":"","l":""},{"t":"공감하는","c":"공감하는","tr":"","l":""},{"t":"것에","c":"것에","tr":"","l":""},{"t":"저항하며,","c":"저항하며","tr":",","l":""},{"t":"심지어","c":"심지어","tr":"","l":""},{"t":"경쟁적이거나","c":"경쟁적이거나","tr":"","l":""},{"t":"위협적인","c":"위협적인","tr":"","l":""},{"t":"맥락에서","c":"맥락에서","tr":"","l":""},{"t":"외집단의","c":"외집단의","tr":"","l":""},{"t":"고통을","c":"고통을","tr":"","l":""},{"t":"즐기기까지","c":"즐기기까지","tr":"","l":""},{"t":"한다고","c":"한다고","tr":"","l":""},{"t":"주장한다.","c":"주장한다","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"Thus,","c":"Thus","tr":",","l":""},{"t":"the","c":"the","tr":"","l":""},{"t":"prescription","c":"prescription","tr":"","l":""},{"t":"for","c":"for","tr":"","l":""},{"t":"more","c":"more","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"is","c":"is","tr":"","l":""},{"t":"often","c":"often","tr":"","l":""},{"t":"counterproductive","c":"counterproductive","tr":"","l":""},{"t":"in","c":"in","tr":"","l":""},{"t":"cases","c":"cases","tr":"","l":""},{"t":"of","c":"of","tr":"","l":""},{"t":"conflict.","c":"conflict","tr":".","l":""}],"blanks":{"easy":[2,8],"medium":[],"hard":[2,8]},"choices":{"2":{"choices":["prohibition","prescription","proscription","description"],"correct":1},"8":{"choices":["counterproductive","beneficial","counterfunctional","counterproducing"],"correct":0}},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{"2":"prescription","8":"counterproductive"}},"kr":{"words":[{"t":"따라서,","c":"따라서","tr":",","l":""},{"t":"더","c":"더","tr":"","l":""},{"t":"많은","c":"많은","tr":"","l":""},{"t":"공감에","c":"공감에","tr":"","l":""},{"t":"대한","c":"대한","tr":"","l":""},{"t":"처방은","c":"처방은","tr":"","l":""},{"t":"갈등의","c":"갈등의","tr":"","l":""},{"t":"경우에","c":"경우에","tr":"","l":""},{"t":"종종","c":"종종","tr":"","l":""},{"t":"역효과를","c":"역효과를","tr":"","l":""},{"t":"낳는다.","c":"낳는다","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"Empathy,","c":"Empathy","tr":",","l":""},{"t":"they","c":"they","tr":"","l":""},{"t":"argue,","c":"argue","tr":",","l":""},{"t":"can","c":"can","tr":"","l":""},{"t":"further","c":"further","tr":"","l":""},{"t":"encourage","c":"encourage","tr":"","l":""},{"t":"conflict","c":"conflict","tr":"","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"force","c":"force","tr":"","l":""},{"t":"us","c":"us","tr":"","l":""},{"t":"into","c":"into","tr":"","l":""},{"t":"an","c":"an","tr":"","l":""},{"t":"us","c":"us","tr":"","l":""},{"t":"vs.them","c":"vs.them","tr":"","l":""},{"t":"mentality.","c":"mentality","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}},"kr":{"words":[{"t":"공감은,","c":"공감은","tr":",","l":""},{"t":"그들은","c":"그들은","tr":"","l":""},{"t":"주장한다,","c":"주장한다","tr":",","l":""},{"t":"갈등을","c":"갈등을","tr":"","l":""},{"t":"더욱","c":"더욱","tr":"","l":""},{"t":"부추기고","c":"부추기고","tr":"","l":""},{"t":"우리를","c":"우리를","tr":"","l":""},{"t":"우리","c":"우리","tr":"","l":""},{"t":"대","c":"대","tr":"","l":""},{"t":"그들의","c":"그들의","tr":"","l":""},{"t":"사고방식으로","c":"사고방식으로","tr":"","l":""},{"t":"몰아넣을","c":"몰아넣을","tr":"","l":""},{"t":"수","c":"수","tr":"","l":""},{"t":"있다고.","c":"있다고","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"Finally,","c":"Finally","tr":",","l":""},{"t":"even","c":"even","tr":"","l":""},{"t":"when","c":"when","tr":"","l":""},{"t":"we","c":"we","tr":"","l":""},{"t":"try","c":"try","tr":"","l":""},{"t":"to","c":"to","tr":"","l":""},{"t":"empathize","c":"empathize","tr":"","l":""},{"t":"with","c":"with","tr":"","l":""},{"t":"others","c":"others","tr":"","l":""},{"t":"who","c":"who","tr":"","l":""},{"t":"are","c":"are","tr":"","l":""},{"t":"dissimilar","c":"dissimilar","tr":"","l":""},{"t":"from","c":"from","tr":"","l":""},{"t":"us","c":"us","tr":"","l":""},{"t":"or","c":"or","tr":"","l":""},{"t":"in","c":"in","tr":"","l":""},{"t":"unfamiliar","c":"unfamiliar","tr":"","l":""},{"t":"contexts,","c":"contexts","tr":",","l":""},{"t":"sometimes","c":"sometimes","tr":"","l":""},{"t":"we","c":"we","tr":"","l":""},{"t":"are","c":"are","tr":"","l":""},{"t":"unable","c":"unable","tr":"","l":""},{"t":"to","c":"to","tr":"","l":""},{"t":"accurately","c":"accurately","tr":"","l":""},{"t":"empathize","c":"empathize","tr":"","l":""},{"t":"with","c":"with","tr":"","l":""},{"t":"their","c":"their","tr":"","l":""},{"t":"experiences,","c":"experiences","tr":",","l":""},{"t":"causing","c":"causing","tr":"","l":""},{"t":"further","c":"further","tr":"","l":""},{"t":"misunderstandings","c":"misunderstandings","tr":"","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"frustration.","c":"frustration","tr":".","l":""}],"blanks":{"easy":[11],"medium":[16],"hard":[11,16]},"choices":{"11":{"choices":["identical","dissimilar","similar","dissimilarity"],"correct":1},"16":{"choices":["unfamiliarly","unfamiliar","unfamiliared","unfamiliarize"],"correct":1}},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{"11":"dissimilar","16":"unfamiliar"}},"kr":{"words":[{"t":"마지막으로,","c":"마지막으로","tr":",","l":""},{"t":"심지어","c":"심지어","tr":"","l":""},{"t":"우리가","c":"우리가","tr":"","l":""},{"t":"우리와","c":"우리와","tr":"","l":""},{"t":"다르거나","c":"다르거나","tr":"","l":""},{"t":"낯선","c":"낯선","tr":"","l":""},{"t":"맥락에","c":"맥락에","tr":"","l":""},{"t":"있는","c":"있는","tr":"","l":""},{"t":"타인들과","c":"타인들과","tr":"","l":""},{"t":"공감하려","c":"공감하려","tr":"","l":""},{"t":"할","c":"할","tr":"","l":""},{"t":"때에도,","c":"때에도","tr":",","l":""},{"t":"때때로","c":"때때로","tr":"","l":""},{"t":"우리는","c":"우리는","tr":"","l":""},{"t":"그들의","c":"그들의","tr":"","l":""},{"t":"경험에","c":"경험에","tr":"","l":""},{"t":"정확히","c":"정확히","tr":"","l":""},{"t":"공감하지","c":"공감하지","tr":"","l":""},{"t":"못하여,","c":"못하여","tr":",","l":""},{"t":"추가적인","c":"추가적인","tr":"","l":""},{"t":"오해와","c":"오해와","tr":"","l":""},{"t":"좌절을","c":"좌절을","tr":"","l":""},{"t":"야기한다.","c":"야기한다","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}},{"en":{"words":[{"t":"Critics","c":"Critics","tr":"","l":""},{"t":"of","c":"of","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"argue","c":"argue","tr":"","l":""},{"t":"that","c":"that","tr":"","l":""},{"t":"we","c":"we","tr":"","l":""},{"t":"should","c":"should","tr":"","l":""},{"t":"give","c":"give","tr":"","l":""},{"t":"up","c":"up","tr":"","l":""},{"t":"on","c":"on","tr":"","l":""},{"t":"empathy","c":"empathy","tr":"","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"employ","c":"employ","tr":"","l":""},{"t":"other","c":"other","tr":"","l":""},{"t":"tools","c":"tools","tr":"","l":""},{"t":"in","c":"in","tr":"","l":""},{"t":"pursuit","c":"pursuit","tr":"","l":""},{"t":"of","c":"of","tr":"","l":""},{"t":"social","c":"social","tr":"","l":""},{"t":"harmony,","c":"harmony","tr":",","l":""},{"t":"e.g.,rational","c":"e.g.,rational","tr":"","l":""},{"t":"compassion","c":"compassion","tr":"","l":""},{"t":"or","c":"or","tr":"","l":""},{"t":"moral","c":"moral","tr":"","l":""},{"t":"emotions","c":"emotions","tr":"","l":""},{"t":"like","c":"like","tr":"","l":""},{"t":"fear,","c":"fear","tr":",","l":""},{"t":"anger,","c":"anger","tr":",","l":""},{"t":"and","c":"and","tr":"","l":""},{"t":"shame.","c":"shame","tr":".","l":""}],"blanks":{"easy":[0,7,23],"medium":[18],"hard":[0,7,18,23]},"choices":{"0":{"choices":["Critics","Supporters","Critiques","Criticize"],"correct":0},"7":{"choices":["hold on to","give out on","give up in","give up on"],"correct":3},"18":{"choices":["social harmony","socially harmony","social harmonize","social harmonious"],"correct":0},"23":{"choices":["moral emotions","immoral emotions","moral notions","morale emotions"],"correct":0}},"mediumGroupSkip":[19],"easyGroupSkip":[8,9,24],"hardGroupSkip":[8,9,19,24],"hardAnswers":{"0":"Critics","7":"give up on","18":"social harmony","23":"moral emotions"}},"kr":{"words":[{"t":"공감의","c":"공감의","tr":"","l":""},{"t":"비판자들은","c":"비판자들은","tr":"","l":""},{"t":"우리가","c":"우리가","tr":"","l":""},{"t":"공감을","c":"공감을","tr":"","l":""},{"t":"포기하고","c":"포기하고","tr":"","l":""},{"t":"사회적","c":"사회적","tr":"","l":""},{"t":"조화의","c":"조화의","tr":"","l":""},{"t":"추구에","c":"추구에","tr":"","l":""},{"t":"있어","c":"있어","tr":"","l":""},{"t":"다른","c":"다른","tr":"","l":""},{"t":"도구들을","c":"도구들을","tr":"","l":""},{"t":"활용해야","c":"활용해야","tr":"","l":""},{"t":"한다고","c":"한다고","tr":"","l":""},{"t":"주장한다,","c":"주장한다","tr":",","l":""},{"t":"예를","c":"예를","tr":"","l":""},{"t":"들어,","c":"들어","tr":",","l":""},{"t":"이성적","c":"이성적","tr":"","l":""},{"t":"연민","c":"연민","tr":"","l":""},{"t":"또는","c":"또는","tr":"","l":""},{"t":"두려움,","c":"두려움","tr":",","l":""},{"t":"분노,","c":"분노","tr":",","l":""},{"t":"수치심과","c":"수치심과","tr":"","l":""},{"t":"같은","c":"같은","tr":"","l":""},{"t":"도덕적","c":"도덕적","tr":"","l":""},{"t":"감정들.","c":"감정들","tr":".","l":""}],"blanks":{"easy":[],"medium":[],"hard":[]},"choices":{},"mediumGroupSkip":[],"easyGroupSkip":[],"hardGroupSkip":[],"hardAnswers":{}}}],"thresholds":{"en":{"easy":90,"medium":90,"hard":80},"kr":{"easy":80,"medium":80,"hard":80}},"includeKR":false,"title":"Go2_25.30_blank","sheetUrl":"https://script.google.com/macros/s/AKfycbxmFjMCPdfk7wNNREKnnvDnmtWjJ2n74titBUtUMtVzmbSjbcc3_LxRJ7YS4Fz-Dis/exec","unlockAll":true};
+
+var CHO=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+function choseong(str){
+  var out='';
+  for(var i=0;i<str.length;i++){
+    var code=str.charCodeAt(i)-0xAC00;
+    if(code>=0&&code<=11171) out+=CHO[Math.floor(code/588)];
+    else out+=str[i];
+  }
+  return out;
+}
+
+var MODE_NAMES={en:'영어 빈칸',kr:'한글 해석 빈칸'};
+var LEVEL_NAMES={easy:'쉬움',medium:'중간',hard:'심화'};
+
+var currentMode=null, currentLevel=null, currentSentence=0;
+var blankStates={}, sentenceResults=[], sentenceRecorded={}, showRef=false;
+var levelBlankLog=[], reviewSnapshotBySentence=[], reviewWrongBySentence=[], reviewHasWrong=false, reviewModeActive=false;
+var hardOriginalWrongTotal=null;
+var progress={
+  en:{unlocked:{easy:true,medium:!!DATA.unlockAll,hard:!!DATA.unlockAll}, completed:{easy:false,medium:false,hard:false}},
+  kr:{unlocked:{easy:true,medium:!!DATA.unlockAll,hard:!!DATA.unlockAll}, completed:{easy:false,medium:false,hard:false}}
+};
+
+/* ===== 학생 정보 / 소요시간 추적 (구글시트 결과 제출용) ===== */
+var studentName='', studentGrade='', testStartTime=null;
+var stageTimes={easy:0, medium:0, hard:0};
+var curStage=null, stageStart=null;
+var resultSubmitted=false, resultSubmitting=false;
+
+/* ===== 진행상황 로컬 저장/복원 =====
+   모바일 브라우저(특히 아이폰 사파리)는 메모리가 부족하면 백그라운드 탭을 강제로
+   새로고침하는 일이 흔해, 학생이 다른 앱을 켰다 돌아오면 풀던 내용이 사라질 수 있습니다.
+   그래서 답을 매길 때마다 localStorage에 진행상황을 자동 저장하고, 다시 열었을 때 이어서
+   풀 수 있게 합니다. (같은 브라우저의 같은 기기에서만 유효하며, 다른 학생과는 공유되지 않습니다.) */
+var PROGRESS_KEY = (function(){
+  var raw = 'vtprogress_' + (DATA.title||'') + '_' + DATA.sentences.length + '_' + JSON.stringify(DATA.sentences).length;
+  var h = 0;
+  for (var i=0; i<raw.length; i++){ h = ((h<<5)-h+raw.charCodeAt(i))|0; }
+  return 'vtprogress_' + h;
+})();
+var SAVED_PROGRESS = null;
+
+function saveProgress(){
+  try{
+    var data = {
+      studentName: studentName, studentGrade: studentGrade,
+      testStartTime: testStartTime ? testStartTime.toISOString() : null,
+      stageTimes: stageTimes, resultSubmitted: resultSubmitted,
+      hardOriginalWrongTotal: hardOriginalWrongTotal, progress: progress,
+      currentMode: currentMode, currentLevel: currentLevel, currentSentence: currentSentence,
+      blankStates: blankStates, levelBlankLog: levelBlankLog,
+      reviewSnapshotBySentence: reviewSnapshotBySentence, reviewWrongBySentence: reviewWrongBySentence,
+      reviewHasWrong: reviewHasWrong, reviewModeActive: reviewModeActive,
+      sentenceResults: sentenceResults, sentenceRecorded: sentenceRecorded
+    };
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
+  }catch(e){ /* localStorage 사용 불가(프라이빗 모드 등) 시 조용히 무시 */ }
+}
+
+function loadProgress(){
+  try{
+    var raw = localStorage.getItem(PROGRESS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+
+function clearProgress(){
+  try{ localStorage.removeItem(PROGRESS_KEY); }catch(e){}
+}
+
+function restoreAndContinue(){
+  var saved = SAVED_PROGRESS;
+  if(!saved) return;
+  studentName = saved.studentName||'';
+  studentGrade = saved.studentGrade||'';
+  testStartTime = saved.testStartTime ? new Date(saved.testStartTime) : null;
+  stageTimes = saved.stageTimes || {easy:0, medium:0, hard:0};
+  resultSubmitted = !!saved.resultSubmitted;
+  hardOriginalWrongTotal = (typeof saved.hardOriginalWrongTotal==='number') ? saved.hardOriginalWrongTotal : null;
+  progress = saved.progress || progress;
+  currentMode = saved.currentMode || null;
+  currentLevel = saved.currentLevel || null;
+  currentSentence = saved.currentSentence || 0;
+  blankStates = saved.blankStates || {};
+  levelBlankLog = saved.levelBlankLog || [];
+  reviewSnapshotBySentence = saved.reviewSnapshotBySentence || [];
+  reviewWrongBySentence = saved.reviewWrongBySentence || [];
+  reviewHasWrong = !!saved.reviewHasWrong;
+  reviewModeActive = !!saved.reviewModeActive;
+  sentenceResults = saved.sentenceResults || [];
+  sentenceRecorded = saved.sentenceRecorded || {};
+  showRef = false;
+
+  if (currentMode && currentLevel){
+    enterStage(currentLevel);
+    renderSentence();
+  } else if (currentMode){
+    showLevelSelector(currentMode);
+  } else if (DATA.includeKR){
+    showModeSelector();
+  } else {
+    showLevelSelector('en');
+  }
+}
+
+function renderResumeGate(saved){
+  SAVED_PROGRESS = saved;
+  document.getElementById('levelInfo').textContent='이어서 풀기';
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('actionBar').innerHTML='';
+  var h='<div class="student-info-box">';
+  h+='<h2 style="margin-bottom:10px;">이전 풀이 기록이 있어요</h2>';
+  h+='<p style="font-size:13px;color:#777;margin-bottom:18px;">'+esc(saved.studentName||'')+' 님, 저장된 진행 상황을 이어서 풀까요?</p>';
+  h+='<button class="btn-start-app" style="margin-bottom:10px;" onclick="restoreAndContinue()">이어서 풀기</button>';
+  h+='<button class="btn-start-app" style="background:#eee;color:#333;" onclick="clearProgress();renderStudentInfoGate();">처음부터 다시 시작</button>';
+  h+='</div>';
+  document.getElementById('content').innerHTML=h;
+}
+
+function esc(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; }
+// 모바일/PC 키보드의 "스마트 따옴표" 자동 변환(' -> ' 또는 " -> ")으로 인해
+// 학생이 실제로는 정답을 맞게 입력했는데도 문장부호 모양 차이로 오답 처리되는 것을 막기 위한 정규화.
+// 채점 비교 시 양쪽 모두 이 함수를 거쳐 표준 따옴표로 통일합니다.
+function normalizeQuotes(s){
+  return String(s==null?'':s)
+    .replace(/[‘’ʼ′´`]/g, "'")
+    .replace(/[“”″]/g, '"');
+}
+function enterStage(stage){ stopStage(); curStage=stage; stageStart=Date.now(); }
+function stopStage(){ if(curStage && stageStart){ stageTimes[curStage]=(stageTimes[curStage]||0)+(Date.now()-stageStart); } stageStart=null; curStage=null; }
+function fmtTime(ms){ ms=Math.max(0,ms|0); var s=Math.floor(ms/1000); var m=Math.floor(s/60); s=s%60; return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
+function fmtDateTime(d){ d=d||new Date(); var p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+function studentInfoReady(){ return !!(studentName && studentName.trim() && studentGrade); }
+function markTestStart(){ if(!testStartTime) testStartTime=new Date(); }
+
+function renderStudentInfoGate(){
+  document.getElementById('levelInfo').textContent='학생 정보 입력';
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('actionBar').innerHTML='';
+  var grades=['고3','고2','고1','중3','중2','중1','초6','초5','초4'];
+  var gradeOpts='<option value=""'+(studentGrade?'':' selected')+' disabled>학년을 선택하세요</option>'
+    + grades.map(function(g){return '<option value="'+g+'"'+(studentGrade===g?' selected':'')+'>'+g+'</option>';}).join('');
+  var h='<div class="student-info-box">';
+  h+='<h2 style="margin-bottom:14px;">시작하기 전에</h2>';
+  h+='<input type="text" id="studentNameInput" class="student-name-input" placeholder="이름을 입력하세요" value="'+esc(studentName)+'" maxlength="20">';
+  h+='<select id="studentGradeInput" class="student-grade-select">'+gradeOpts+'</select>';
+  h+='<button class="btn-start-app" id="startAppBtn"'+(studentInfoReady()?'':' disabled')+' onclick="confirmStudentInfoAndStart()">시작하기</button>';
+  h+='</div>';
+  document.getElementById('content').innerHTML=h;
+  var ni=document.getElementById('studentNameInput');
+  ni.addEventListener('input', function(){ studentName=ni.value; document.getElementById('startAppBtn').disabled=!studentInfoReady(); });
+  var gi=document.getElementById('studentGradeInput');
+  gi.addEventListener('change', function(){ studentGrade=gi.value; document.getElementById('startAppBtn').disabled=!studentInfoReady(); });
+}
+
+function confirmStudentInfoAndStart(){
+  if(!studentInfoReady()) return;
+  markTestStart();
+  if(!DATA.includeKR){ showLevelSelector('en'); } else { showModeSelector(); }
+}
+
+function init(){
+  var saved = loadProgress();
+  if (saved && (saved.studentName || saved.currentMode)){
+    renderResumeGate(saved);
+  } else {
+    renderStudentInfoGate();
+  }
+}
+
+function submitResultToSheet(){
+  if(!DATA.sheetUrl){ return; }
+  var statusEl=document.getElementById('submitStatus');
+  var btnEl=document.getElementById('submitResultBtn');
+  if(resultSubmitted){ if(statusEl) statusEl.textContent='✅ 이미 제출됐어요!'; return; }
+  if(resultSubmitting) return;
+  resultSubmitting=true;
+  if(btnEl) btnEl.disabled=true;
+  if(statusEl) statusEl.textContent='저장 중...';
+
+  var easyMediumMs=(stageTimes.easy||0)+(stageTimes.medium||0);
+  var hardMs=stageTimes.hard||0;
+  var totalMs=easyMediumMs+hardMs;
+  var hardCorrect=0, hardTotal=0;
+  (reviewSnapshotBySentence||[]).forEach(function(snap){
+    Object.keys(snap||{}).forEach(function(k){
+      hardTotal++; if(snap[k].correct) hardCorrect++;
+    });
+  });
+  var hardPct= hardTotal>0 ? Math.round(hardCorrect/hardTotal*100) : 0;
+  var retryStr='';
+  if(hardOriginalWrongTotal){
+    var stillWrong=(reviewWrongBySentence||[]).reduce(function(a,arr){return a+arr.length;},0);
+    var fixed=hardOriginalWrongTotal-stillWrong;
+    retryStr=fixed+'/'+hardOriginalWrongTotal;
+  }
+  var payload={
+    '이름': studentName,
+    '학년': studentGrade,
+    '테스트명': DATA.title||'',
+    '날짜시각': fmtDateTime(testStartTime||new Date()),
+    '쉬움중간시간': fmtTime(easyMediumMs),
+    '심화%': hardPct,
+    '심화오답재도전': retryStr,
+    '총공부시간': fmtTime(totalMs)
+  };
+
+  fetch(DATA.sheetUrl, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) })
+    .then(function(){
+      resultSubmitted=true; resultSubmitting=false;
+      saveProgress();
+      if(statusEl) statusEl.textContent='✅ 저장 완료 ('+fmtDateTime(new Date())+')';
+      if(btnEl) btnEl.disabled=false;
+    })
+    .catch(function(){
+      resultSubmitting=false;
+      if(statusEl) statusEl.textContent='❌ 저장 실패 — 네트워크를 확인하고 다시 눌러주세요.';
+      if(btnEl) btnEl.disabled=false;
+    });
+}
+
+function modeCard(mode,icon,title,desc){
+  var p=progress[mode];
+  var done=['easy','medium','hard'].filter(function(l){return p.completed[l];}).length;
+  var h='<div class="mode-card"';
+  h+=' onclick="showLevelSelector(\''+mode+'\')"';
+  h+='>';
+  h+='<div class="mode-icon">'+icon+'</div>';
+  h+='<div class="mode-title">'+title+'</div>';
+  h+='<div class="mode-desc">'+desc+'</div>';
+  h+='<div class="mode-status">완료 '+done+'/3</div></div>';
+  return h;
+}
+
+function showModeSelector(){
+  stopStage();
+  currentMode=null;
+  document.getElementById('levelInfo').textContent='모드를 선택하세요';
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('actionBar').innerHTML='';
+  var h='<div class="mode-selector"><h2>연습 모드를 선택하세요</h2><div class="mode-grid">';
+  h+=modeCard('en','🔤','영어 빈칸','영어 단어·표현을 채워보세요');
+  h+=modeCard('kr','🇰🇷','한글 해석 빈칸','문장의 한글 해석을 채워보세요');
+  h+='</div></div>';
+  document.getElementById('content').innerHTML=h;
+  saveProgress();
+}
+
+function showLevelSelector(mode){
+  stopStage();
+  currentMode=mode;
+  document.getElementById('levelInfo').textContent=MODE_NAMES[mode];
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('actionBar').innerHTML='';
+  var p=progress[mode];
+  var h='';
+  if(DATA.includeKR) h+='<button class="back-btn" onclick="showModeSelector()">← 모드 선택으로</button>';
+  h+='<div class="mode-selector"><h2>단계를 선택하세요</h2><div class="level-selector">';
+  ['easy','medium','hard'].forEach(function(lv){
+    var locked=!p.unlocked[lv], done=p.completed[lv];
+    var cls=lv==='medium'?'med':lv;
+    h+='<button class="level-btn '+cls+'-btn'+(locked?' locked':'')+(done?' done':'')+'"';
+    if(!locked) h+=' onclick="startLevel(\''+mode+'_'+lv+'\')"';
+    h+='>'+LEVEL_NAMES[lv]+'</button><br>';
+  });
+  h+='</div></div>';
+  document.getElementById('content').innerHTML=h;
+  saveProgress();
+}
+
+function getLevelBlanks(blanksObj, level){
+  // 이전 단계를 이미 통과해야만 다음 단계에 진입할 수 있는 구조이므로,
+  // 쉬움/중간 단계는 그 단계에서 새로 추가된 빈칸만 테스트합니다.
+  // 심화 단계는 쉬움+중간 단계에서 다룬 모든 빈칸(+심화 자체 빈칸)을, 레벨 구분 없이 인접한 것끼리
+  // 이미 하나로 합친 blanksObj.hard(빌드 시 getHardMergedGroups로 계산됨)를 그대로 사용합니다.
+  return blanksObj[level].slice();
+}
+
+function startLevel(key){
+  var parts=key.split('_');
+  var mode=parts[0], level=parts[1];
+  if(!progress[mode].unlocked[level]) return;
+  currentMode=mode; currentLevel=level; currentSentence=0;
+  blankStates={}; sentenceResults=[]; sentenceRecorded={}; showRef=false;
+  levelBlankLog=[]; reviewSnapshotBySentence=[]; reviewWrongBySentence=[]; reviewHasWrong=false; reviewModeActive=false;
+  if(level==='hard'){ hardOriginalWrongTotal=null; resultSubmitted=false; }
+  enterStage(level);
+  renderSentence();
+}
+
+// 재도전 시 특정 문장으로 이동할 때, 이전에 맞췄던 빈칸은 정답으로 미리 채우고
+// 틀렸던 빈칸만 다시 풀 수 있도록 blankStates를 세팅합니다.
+function loadSentenceReviewState(si){
+  var snap=reviewSnapshotBySentence[si]||{};
+  var wrongIdx=reviewWrongBySentence[si]||[];
+  var wrongSet={}; wrongIdx.forEach(function(i){ wrongSet[i]=true; });
+  blankStates={};
+  Object.keys(snap).forEach(function(k){
+    if(!wrongSet[k]) blankStates[k]={answered:true, correct:true, attempts:1};
+  });
+}
+
+// 재도전 모드에서, fromIdx부터 시작해 틀린 빈칸이 하나라도 있는 다음 문장의 인덱스를 찾습니다.
+// 없으면 -1을 반환합니다.
+function findNextReviewSentence(fromIdx){
+  for (var i=fromIdx; i<DATA.sentences.length; i++){
+    if (reviewWrongBySentence[i] && reviewWrongBySentence[i].length>0) return i;
+  }
+  return -1;
+}
+
+function startLevelReview(){
+  if(!reviewHasWrong) return;
+  reviewModeActive=true;
+  levelBlankLog=[];
+  var startIdx=findNextReviewSentence(0);
+  if(startIdx===-1) startIdx=0;
+  currentSentence=startIdx;
+  loadSentenceReviewState(currentSentence);
+  sentenceResults=[]; sentenceRecorded={}; showRef=false;
+  enterStage(currentLevel);
+  renderSentence();
+}
+
+function getChoicesFor(idx){ return DATA.sentences[currentSentence][currentMode].choices[idx]; }
+
+function renderSentence(){
+  var s=DATA.sentences[currentSentence];
+  var track=s[currentMode];
+  var blanks=getLevelBlanks(track.blanks, currentLevel);
+  var total=blanks.length, answered=0;
+  blanks.forEach(function(idx){ var st=blankStates[idx]; if(st&&st.answered) answered++; });
+
+  var otherWords = currentMode==='en' ? (s.kr && s.kr.words) : (s.en && s.en.words);
+  var showRefBtn = !!(otherWords && otherWords.length>0);
+  var h='';
+  if(showRefBtn) h+='<div class="ref-toggle-row"><button class="btn-ref" id="refBtn" onclick="toggleRef()"></button></div>';
+  h+='<div class="ref-box" id="refBox" style="display:none;"></div>';
+  h+='<div class="passage">';
+  var skip;
+  if (currentLevel==='easy') skip = track.easyGroupSkip || [];
+  else if (currentLevel==='medium') skip = track.mediumGroupSkip || [];
+  else skip = track.hardGroupSkip || [];
+  var skipSet = {}; skip.forEach(function(i){ skipSet[i]=true; });
+  for (var wi=0; wi<track.words.length; wi++){
+    if (skipSet[wi]) continue;
+    var w = track.words[wi];
+    if(blanks.indexOf(wi)!==-1){
+      var st=blankStates[wi]||{answered:false,correct:false,attempts:0};
+      if (w.l) h += w.l;
+      h += (currentLevel==='hard') ? renderTypingBlank(wi,w,st) : renderSelectBlank(wi,w,st);
+      var trailing = w.tr || '';
+      var la = wi+1;
+      while (skipSet[la]) {
+        var mw = track.words[la];
+        if (mw && mw.tr) trailing += mw.tr;
+        la++;
+      }
+      if (trailing) h += trailing;
+    } else { h+=w.t; }
+    h+=' ';
+  }
+  h+='</div>';
+  document.getElementById('content').innerHTML=h;
+
+  document.getElementById('levelInfo').textContent=MODE_NAMES[currentMode]+' · '+LEVEL_NAMES[currentLevel]+' 단계';
+  document.getElementById('sentenceInfo').textContent='문장 '+(currentSentence+1)+' / '+DATA.sentences.length;
+  document.getElementById('progressFill').style.width=((currentSentence+(total?answered/total:1))/DATA.sentences.length*100)+'%';
+
+  if(showRefBtn){ updateRefButtonLabel(); renderRefBox(); }
+
+  var ab=document.getElementById('actionBar');
+  if(total===0 || answered===total){
+    recordSentenceResultIfNeeded();
+    var isLastSentence = reviewModeActive
+      ? (findNextReviewSentence(currentSentence+1)===-1)
+      : (currentSentence>=DATA.sentences.length-1);
+    ab.innerHTML='<button class="btn btn-next" onclick="nextSentence()">'+(isLastSentence?'결과 보기':'다음 문장 →')+'</button>';
+  } else {
+    ab.innerHTML='';
+  }
+  saveProgress();
+}
+
+function renderSelectBlank(idx,w,st){
+  var cfg=getChoicesFor(idx);
+  if(st.answered && st.correct){
+    return '<span class="blank-select correct"><select disabled><option>'+cfg.choices[cfg.correct]+'</option></select></span>';
+  }
+  if(st.answered && !st.correct){
+    return '<span class="blank-select wrong"><select disabled><option>'+cfg.choices[cfg.correct]+' ✗</option></select></span>';
+  }
+  // 같은 텍스트의 보기가 중복되지 않도록 정리 (정답 인덱스는 항상 대표값으로 유지)
+  var seen={}, order=[];
+  cfg.choices.forEach(function(c,ci){
+    if(!c) return;
+    var key=c.trim().toLowerCase();
+    if(!(key in seen)){ seen[key]=ci; order.push(key); }
+    else if(ci===cfg.correct){ seen[key]=ci; }
+  });
+  var opts='<option value="">___</option>';
+  order.forEach(function(key){
+    var ci=seen[key];
+    opts+='<option value="'+ci+'">'+cfg.choices[ci]+'</option>';
+  });
+  return '<span class="blank-select" id="bs'+idx+'"><select onchange="checkSelect('+idx+',this.value)">'+opts+'</select></span>';
+}
+
+function getTypingAnswer(idx, w){
+  // 심화 단계는 인접한 쉬움/중간 묶음을 합친 별도 정답(hardAnswers)을 사용합니다.
+  // choices 맵은 쉬움/중간 오답 보기 전용이라 여기서 읽으면 안 됩니다(인덱스가 겹침).
+  var track = DATA.sentences[currentSentence][currentMode];
+  if (currentLevel==='hard' && track.hardAnswers && track.hardAnswers[idx] !== undefined) return track.hardAnswers[idx];
+  var cfg = getChoicesFor(idx);
+  if(cfg && cfg.choices && cfg.choices[cfg.correct]) return cfg.choices[cfg.correct];
+  return w.c;
+}
+
+function renderTypingBlank(idx,w,st){
+  var answer=getTypingAnswer(idx,w);
+  var hint = currentMode==='kr' ? choseong(answer) : '타이핑';
+  if(st.answered && st.correct){
+    return '<span class="blank-input correct"><input disabled value="'+answer+'"></span>';
+  }
+  if(st.answered && !st.correct && st.attempts>=2){
+    return '<span class="blank-input wrong"><input disabled value="'+answer+' ✗"></span>';
+  }
+  var rb = st.attempts===1 ? '<span class="retry-badge">재도전</span>' : '';
+  var sz = Math.max(answer.length+2, 6);
+  return '<span class="blank-input" id="bs'+idx+'">'
+    +'<input size="'+sz+'" placeholder="'+hint+'" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkType('+idx+',this.value)">'
+    +'<button class="check-btn" onclick="checkType('+idx+',this.previousElementSibling.value)">확인</button>'
+    +rb+'</span>';
+}
+
+function focusNextBlank(){
+  var el = document.querySelector('#content .blank-input:not(.correct):not(.wrong) input, #content .blank-select:not(.correct):not(.wrong) select');
+  if(el) el.focus();
+}
+
+function checkSelect(idx,val){
+  if(val==='') return;
+  var cfg=getChoicesFor(idx);
+  var st=blankStates[idx]||{answered:false,correct:false,attempts:0};
+  st.attempts++;
+  st.answered=true;
+  st.correct=(parseInt(val)===cfg.correct);
+  blankStates[idx]=st; renderSentence(); focusNextBlank();
+}
+
+function checkType(idx,val){
+  if(!val.trim()) return;
+  var w=DATA.sentences[currentSentence][currentMode].words[idx];
+  var answer=getTypingAnswer(idx,w);
+  var st=blankStates[idx]||{answered:false,correct:false,attempts:0};
+  st.attempts++;
+  var ok = normalizeQuotes(val.trim()).toLowerCase()===normalizeQuotes(answer).toLowerCase();
+  if(ok){
+    st.answered=true; st.correct=true;
+    blankStates[idx]=st; renderSentence(); focusNextBlank();
+  } else if(st.attempts>=2){
+    st.answered=true; st.correct=false;
+    blankStates[idx]=st; renderSentence(); focusNextBlank();
+  } else {
+    blankStates[idx]=st; shake(idx);
+  }
+}
+
+function shake(idx){
+  var el=document.getElementById('bs'+idx);
+  if(el){ el.classList.add('wrong'); setTimeout(function(){ el.classList.remove('wrong'); renderSentence(); },600); }
+}
+
+function updateRefButtonLabel(){
+  var btn=document.getElementById('refBtn');
+  if(!btn) return;
+  var label = currentMode==='en' ? '해석' : '원문';
+  btn.textContent = showRef ? (label+' 숨기기') : (label+' 보기');
+}
+
+function renderRefBox(){
+  var box=document.getElementById('refBox');
+  if(!box) return;
+  if(!showRef){ box.style.display='none'; box.innerHTML=''; return; }
+  var s=DATA.sentences[currentSentence];
+  var otherMode = currentMode==='en' ? 'kr' : 'en';
+  var label = currentMode==='en' ? '한글 해석 (직역)' : '영어 원문';
+  var text = s[otherMode].words.map(function(w){return w.t;}).join(' ');
+  box.style.display='block';
+  box.innerHTML='<strong>'+label+'</strong><div>'+text+'</div>';
+}
+
+function toggleRef(){
+  showRef=!showRef;
+  updateRefButtonLabel();
+  renderRefBox();
+}
+
+function recordSentenceResultIfNeeded(){
+  if(sentenceRecorded[currentSentence]) return;
+  var s=DATA.sentences[currentSentence];
+  var blanks=getLevelBlanks(s[currentMode].blanks, currentLevel);
+  var correct=0;
+  blanks.forEach(function(idx){ var st=blankStates[idx]; if(st&&st.correct) correct++; });
+  sentenceResults.push({correct:correct,total:blanks.length});
+  sentenceRecorded[currentSentence]=true;
+}
+
+function nextSentence(){
+  levelBlankLog[currentSentence]=Object.assign({},blankStates);
+  if(reviewModeActive){
+    var ni=findNextReviewSentence(currentSentence+1);
+    if(ni!==-1){
+      currentSentence=ni;
+      loadSentenceReviewState(currentSentence);
+      showRef=false;
+      renderSentence();
+    } else {
+      finishLevel();
+    }
+    return;
+  }
+  if(currentSentence<DATA.sentences.length-1){
+    currentSentence++;
+    blankStates={};
+    showRef=false;
+    renderSentence();
+  } else {
+    finishLevel();
+  }
+}
+
+function finishLevel(){
+  stopStage();
+  var totalCorrect=sentenceResults.reduce(function(a,r){return a+r.correct;},0);
+  var totalBlanks=sentenceResults.reduce(function(a,r){return a+r.total;},0);
+  var pct= totalBlanks>0 ? Math.round(totalCorrect/totalBlanks*100) : 100;
+  var threshold=DATA.thresholds[currentMode][currentLevel];
+  var pass=pct>=threshold;
+  if(pass){
+    progress[currentMode].completed[currentLevel]=true;
+    var order=['easy','medium','hard'];
+    var ni=order.indexOf(currentLevel)+1;
+    if(ni<order.length) progress[currentMode].unlocked[order[ni]]=true;
+  }
+  // 다음 "틀린 문제만 재도전"을 위해, 모든 문장에 대해 정답/오답 상태를 문장별로 정리합니다.
+  // (blankStates는 문장을 넘어갈 때마다 초기화되므로, levelBlankLog에 문장별로 남긴 스냅샷을 사용합니다)
+  reviewSnapshotBySentence=levelBlankLog.slice();
+  reviewWrongBySentence=levelBlankLog.map(function(snap){
+    return Object.keys(snap||{})
+      .filter(function(k){ return !snap[k].correct; })
+      .map(Number);
+  });
+  var totalWrongCount=reviewWrongBySentence.reduce(function(a,arr){return a+arr.length;},0);
+  reviewHasWrong=totalWrongCount>0;
+  // 심화 단계는 "N/M 재도전" 기록을 위해 이번 세션 첫 채점 시점의 오답 총개수를 고정해둡니다.
+  if(currentLevel==='hard' && hardOriginalWrongTotal===null){
+    hardOriginalWrongTotal = totalWrongCount;
+  }
+  renderResultScreen(pass,pct,totalCorrect,totalBlanks,threshold);
+}
+
+function renderResultScreen(pass,pct,correct,total,threshold){
+  document.getElementById('sentenceInfo').textContent='';
+  document.getElementById('progressFill').style.width='100%';
+
+  var h='<div class="result-card"><h2>'+MODE_NAMES[currentMode]+' · '+LEVEL_NAMES[currentLevel]+' 단계 결과</h2>';
+  h+='<div class="score '+(pass?'pass':'fail')+'">'+pct+'%</div>';
+  h+='<p>'+total+'개 빈칸 중 '+correct+'개 정답 (기준 '+threshold+'%)</p></div>';
+
+  var order=['easy','medium','hard'];
+  var isLast = currentLevel==='hard';
+  if(pass && pct===100 && isLast){
+    h+='<div class="congrats"><div class="emoji">🎉</div><h2>'+MODE_NAMES[currentMode]+' 트랙 완료!</h2>'
+      +'<p>쉬움 · 중간 · 심화 단계를 모두 통과했습니다.</p></div>';
+  }
+  if(isLast && DATA.sheetUrl){
+    h+='<div class="submit-box">';
+    h+='<button class="btn-submit" id="submitResultBtn" onclick="submitResultToSheet()">📤 결과 제출</button>';
+    h+='<div class="submit-status" id="submitStatus">'+(resultSubmitted?'✅ 이미 제출됐어요!':'제출하면 이름·학년·소요시간·달성률이 선생님께 전달됩니다.')+'</div>';
+    h+='</div>';
+  }
+  document.getElementById('content').innerHTML=h;
+
+  var buttons=[];
+  if(reviewHasWrong){
+    buttons.push('<button class="btn btn-retry" onclick="startLevelReview()">틀린 문제만 재도전 ('+(total-correct)+'개)</button>');
+  }
+  if(pass && !isLast){
+    var next=order[order.indexOf(currentLevel)+1];
+    buttons.push('<button class="btn btn-next" onclick="startLevel(\''+currentMode+'_'+next+'\')">다음 단계 →</button>');
+  }
+  if(pass && isLast && pct===100){
+    buttons.push('<button class="btn btn-outline2" onclick="showModeSelector()">모드 선택으로</button>');
+  } else {
+    buttons.push('<button class="btn btn-outline2" onclick="showLevelSelector(\''+currentMode+'\')">단계 선택으로</button>');
+  }
+  document.getElementById('actionBar').innerHTML=buttons.join(' ');
+  saveProgress();
+}
+
+init();
+</script></body></html>
